@@ -2,12 +2,9 @@ import { defineConfig } from "vite";
 import del from 'rollup-plugin-delete';
 
 export default defineConfig({
-  plugins: [
-    del({ targets: ["dist/*"], ignore: ["dist/assets"], runOnce: true }),
-    del({ targets: ["dist/*"], ignore: ["dist/assets", "dist/index"], runOnce: true, hook: "buildEnd" }),
-  ],
-  base: "./", // Change base to relative path for Vercel
-  mode: "production", // Change to production for deployment
+  root: './src', // Đặt thư mục gốc là src
+  base: './', 
+  mode: "production", 
   server: {
     open: true,
     port: 2900,
@@ -16,12 +13,12 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: "dist",
-    assetsDir: "assets", // Specify assets directory
-    minify: true, // Enable minification for production
+    outDir: '../dist', // Build ra ngoài thư mục dist gốc
+    assetsDir: 'assets', 
+    minify: true, 
     emptyOutDir: true,
     copyPublicDir: true,
-    chunkSizeWarningLimit: 2048, // 2MB chunk size warning
+    chunkSizeWarningLimit: 2048, 
   },
-  publicDir: "assets", // This will copy the assets folder to the dist folder
+  publicDir: '../public', // Nếu bạn có thư mục public
 });

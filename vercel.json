@@ -12,9 +12,10 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/"
+        "dest": "/src/index.html"
       }
     ],
     "buildCommand": "npm run build",
-    "outputDirectory": "dist"
+    "outputDirectory": "dist",
+    "framework": "vite"
   }
