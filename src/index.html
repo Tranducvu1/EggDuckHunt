@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.playcanvas.com/playcanvas-stable.js"></script>
+    <title>Duck Egg Hunt</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+   
+    <div class="counter-container">
+        <div id="eggCounter" class="counter egg-counter">
+            <img src="../assets/duck/egg.png" alt="Egg">
+            <span>0</span>
+        </div>
+        <div id="coinCounter" class="counter coin-counter">
+            <img src="../assets/duck/coins/coin.png" alt="Coin">
+            <span>0</span>
+        </div>
+    </div>
+
+    
+    <div class="icon-duck">
+        <img  src="../assets/icon-duck.png" alt="Egg">
+    </div>
+
+    <div class="icon-bag">
+        <img  src="../assets/bag.png" alt="Egg">
+    </div>
+
+    <!-- Hồ nước -->
+    <div class="pond">
+        <img src="../assets/grass.png" class="grass" alt="Grass">
+        <img src="../assets/grass.png" class="grass2" alt="Grass">
+    </div>
+    <div id="bagPopup" class="bag-popup">Cửa hàng của bạn
+
+       
+        <div class="exchange-container">
+            <div class="resource-display">
+                <div class="resource-item">
+                    <img src="../assets/duck/egg.png" alt="Trứng" class="resource-icon">
+                    <span id="eggCount" class="resource-value">0</span>
+                </div>
+                <div class="resource-item">
+                    <img src="../assets//duck/coins/coin.png" alt="Xu" class="resource-icon">
+                    <span id="coinCount" class="resource-value">0</span>
+                </div>
+            </div>
+    
+            <div class="control-buttons">
+                <button id="decreaseEgg" class="btn">-</button>
+                <button id="increaseEgg" class="btn">+</button>
+            </div>
+    
+            <div class="control-buttons">
+                <button id="exchangeBtn" class="btn btn-exchange">Đổi Xu</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <audio id="bgMusic" loop>
+        <source src="../assets/sound/backgroundmusic.mp3" type="audio/mp3">
+    </audio>
+    
+    <audio id="duckSound">
+        <source src="../assets/sound/soundduck.mp3" type="audio/mp3">
+    </audio>
+    <!-- Các rổ trứng trong hồ -->
+    <img src="../assets/rotrung.png" class="egg-basket basket1" alt="Rổ trứng">
+    <img src="../assets/rotrung.png" class="egg-basket basket2" alt="Rổ trứng">
+    <img src="../assets/rotrung.png" class="egg-basket basket3" alt="Rổ trứng">
+
+    <!-- Các con vịt -->
+    <img id="duck1" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck2" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck3" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <!-- <img id="duck4" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck5" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck6" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck7" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck8" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck8" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck">
+    <img id="duck10" class="duck" src="../assets/duck/right-left/a1.png" alt="Duck"> -->
+   <script src="./change.ts"> </script>
+    <script src="./bad.ts"> </script>
+    <script src="./index.ts"> </script>
+   
+    
+</body>
+</html>
