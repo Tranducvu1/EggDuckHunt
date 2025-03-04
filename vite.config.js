@@ -1,21 +1,27 @@
 import { defineConfig } from "vite";
+import del from 'rollup-plugin-delete';
+
 export default defineConfig({
-  base: "/duckegghunt/",
-  mode: "development",
+  plugins: [
+    del({ targets: ["dist/*"], ignore: ["dist/assets"], runOnce: true }),
+    del({ targets: ["dist/*"], ignore: ["dist/assets", "dist/index"], runOnce: true, hook: "buildEnd" }),
+  ],
+  base: "./", // Change base to relative path for Vercel
+  mode: "production", // Change to production for deployment
   server: {
     open: true,
     port: 2900,
     watch: {
-      usePolling: true,
-    },
+      usePolling: true
+    }
   },
   build: {
     outDir: "dist",
-    assetsDir: "",
-    minify: false,
+    assetsDir: "assets", // Specify assets directory
+    minify: true, // Enable minification for production
     emptyOutDir: true,
     copyPublicDir: true,
-    chunkSizeWarningLimit: 2048,
+    chunkSizeWarningLimit: 2048, // 2MB chunk size warning
   },
-  publicDir: "assets",
+  publicDir: "assets", // This will copy the assets folder to the dist folder
 });
