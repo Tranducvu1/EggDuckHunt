@@ -1,21 +1,20 @@
 {
-  "name": "EggDuckHunt",
+  "name": "warlords",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npx vite build",
     "preview": "vite preview --port 2900"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "del": "^8.0.0",
     "rollup-plugin-delete": "^2.1.0",
     "typescript": "^5.6.3",
     "vite": "^5.4.14"
-  },
-  "dependencies": {
-    "ammo.js": "^0.0.10",
-    "playcanvas": "^2.1.0"
   }
 }
