@@ -1,40 +1,57 @@
-
+/**
+ * Waits until the document is fully loaded, then sets up the bag popup toggle functionality.
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const bagIcon = document.querySelector(".icon-bag") as HTMLDivElement;
     const bagPopup = document.getElementById("bagPopup") as HTMLDivElement;
 
     if (bagIcon && bagPopup) {
         bagIcon.addEventListener("click", () => {
+            // Toggle the visibility of the bag popup
             bagPopup.style.display = bagPopup.style.display === "none" || bagPopup.style.display === "" ? "block" : "none";
         });
     }
 });
 
-
+/**
+ * Waits until the document is fully loaded, then sets up a click event for each duck.
+ */
 document.addEventListener("DOMContentLoaded", () => {
-    const ducks = document.querySelectorAll(".duck");
+    const ducks = document.querySelectorAll(".duck"); // Select all elements with class "duck"
 
     ducks.forEach((duck) => {
         duck.addEventListener("click", (event) => {
-            const duckId = (event.target as HTMLElement).id; // Lấy ID của con vịt
-            const duckName = `Vịt ${duckId.replace("duck", "")}`;
-            const nextEggTime = getNextEggTime(duckId);
+            const duckId = (event.target as HTMLElement).id; // Get the clicked duck's ID
+            const duckName = `Duck ${duckId.replace("duck", "")}`; // Format the duck name
+            const nextEggTime = getNextEggTime(duckId); // Get the time until the next egg
 
+            // Display the duck's info
             showDuckInfo(event, duckName, nextEggTime);
         });
     });
 });
 
+/**
+ * Generates a random time between 5 and 15 seconds for the next egg drop.
+ * @param duckId - The ID of the duck (not used in this case, but can be useful for future logic).
+ * @returns A string representing the time in seconds.
+ */
 function getNextEggTime(duckId: string): string {
-    // Giả lập thời gian đẻ trứng ngẫu nhiên từ 5 đến 15 giây
-    const timeLeft = Math.floor(Math.random() * 10) + 5;
-    return `${timeLeft} giây`;
+    const timeLeft = Math.floor(Math.random() * 10) + 5; // Generate a random time (5-15 seconds)
+    return `${timeLeft} seconds`;
 }
 
+/**
+ * Displays a floating information box near the clicked duck showing its name and egg-laying time.
+ * @param event - The mouse event that triggered the click.
+ * @param name - The name of the duck.
+ * @param time - The time remaining for the duck to lay an egg.
+ */
 function showDuckInfo(event: Event, name: string, time: string) {
     let infoBox = document.getElementById("duckInfo");
 
     if (!infoBox) {
+        // Create the info box if it doesn't exist
         infoBox = document.createElement("div");
         infoBox.id = "duckInfo";
         infoBox.style.position = "absolute";
@@ -43,19 +60,20 @@ function showDuckInfo(event: Event, name: string, time: string) {
         infoBox.style.color = "#fff";
         infoBox.style.borderRadius = "5px";
         infoBox.style.fontSize = "16px";
-        infoBox.style.pointerEvents = "none";
+        infoBox.style.pointerEvents = "none"; // Prevent interactions
         document.body.appendChild(infoBox);
     }
 
+    // Position the info box near the mouse click location
     const mouseEvent = event as MouseEvent;
     infoBox.style.top = `${mouseEvent.clientY + 10}px`;
     infoBox.style.left = `${mouseEvent.clientX + 10}px`;
 
-    infoBox.innerHTML = `<div>${name}</div><div>Đẻ trứng sau: ${time}</div>`;
+    // Update the content of the info box
+    infoBox.innerHTML = `<div>${name}</div><div>Next egg in: ${time}</div>`;
 
+    // Remove the info box after 3 seconds
     setTimeout(() => {
         infoBox?.remove();
     }, 3000);
 }
-
-
