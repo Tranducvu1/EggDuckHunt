@@ -31,7 +31,7 @@ export function initializeBaskets(): void {
         basketElement.classList.add('basket');
         basketElement.src = "../assets/rotrung.png"; // Đường dẫn đến hình ảnh rổ
         basketElement.style.position = 'absolute';
-        basketElement.style.width = '40px'; // Điều chỉnh kích thước phù hợp
+        basketElement.style.width = '100px'; // Điều chỉnh kích thước phù hợp
         basketElement.style.left = `${basket.left}%`;
         basketElement.style.top = `${basket.top}%`;
         basketElement.style.zIndex = '1'; // Đảm bảo rổ nằm dưới vịt
@@ -51,10 +51,12 @@ export function updateDucksBasedOnCount(): void {
             // Create a new duck with randomized properties
             const newDuck: Duck = {
                 id: `duck${i + 1}`,
+                size: 100 ,
                 position: {
                     left: 10 + Math.random() * 70,
                     top: 30 + Math.random() * 55
                 },
+                
                 direction: {
                     x: Math.random() > 0.5 ? 1 : -1,
                     y: Math.random() > 0.5 ? 0.5 : -0.5
@@ -87,7 +89,7 @@ export function updateDucksBasedOnCount(): void {
             duckElement.classList.add('duck');
             duckElement.src = `../assets/duck/right-left/a${newDuck.direction.x > 0 ? 1 : 3}.png`;
             duckElement.style.position = 'absolute';
-            duckElement.style.width = '50px';
+            duckElement.style.width = '100px';
             duckElement.style.left = `${newDuck.position.left}%`;
             duckElement.style.top = `${newDuck.position.top}%`;
             duckElement.style.cursor = 'pointer';
@@ -198,8 +200,11 @@ export function moveDuck(duck: Duck): void {
     duckElement.style.top = `${duck.position.top}%`;
     
     // Check if duck is in pond
-    const pondLeft = 42, pondRight = 55, pondTop = 78;
-    const isInPond = duck.position.left >= pondLeft -5 && duck.position.left <= pondRight+5 && duck.position.top >= pondTop -5;
+    const pondLeft = 0, pondRight = 100, pondTop = 70, pondBottom = 100;
+    const isInPond = duck.position.left >= pondLeft && 
+                     duck.position.left <= pondRight && 
+                     duck.position.top >= pondTop && 
+                     duck.position.top <= pondBottom;
 
     if (isInPond && !duck.inPond) {
         duck.inPond = true;
@@ -211,7 +216,7 @@ export function moveDuck(duck: Duck): void {
                     if (duck.inPond) {
                         duckElement.src = duck.direction.x === 1 ? "../assets/duck/relax/a6.png" : "../assets/duck/relax/a8.png";
                     }
-                }, 2000);
+                }, 5000);
             }
         }, 2000);
     } else if (!isInPond && duck.inPond) {
@@ -354,14 +359,13 @@ function layEgg(duck: Duck, duckElement: HTMLImageElement): void {
         egg.style.position = "absolute";
         egg.style.width = "30px";
         egg.style.zIndex = "2"; 
-        // Fixed: Check if selectedBasket exists and has valid position
         if(duck.selectedBasket && duck.selectedBasket.position){
-            egg.style.left = `${duck.position.left +0.33}%`;
-            egg.style.top = `${duck.position.top}%`;
+            egg.style.left = `${duck.position.left + 1.5}%`;  // Added 10px to the right
+            egg.style.top = `${duck.position.top + 3}%`;  // Added 10px down
         } else {
             // Fallback position if no basket is selected
-            egg.style.left = `${duck.position.left-1.55}%`;
-            egg.style.top = `${duck.position.top +1.55}%`;
+            egg.style.left = `${duck.position.left - 1.55 }%`;  // Added 10px to the right
+            egg.style.top = `${duck.position.top + 1.55 }%`;    // Added 10px down
         }
         
         egg.style.cursor = "pointer"; // Add pointer cursor to indicate clickability

@@ -22,7 +22,7 @@ export interface Egg {
  */
 export interface Duck {
     id: string;              // Unique identifier for the duck
-    
+    size: number; 
     position: { left: number; top: number }; // Current position of the duck
     direction: { x: number; y: number };     // Movement direction (vector)
     speed: number;           // Speed of the duck's movement

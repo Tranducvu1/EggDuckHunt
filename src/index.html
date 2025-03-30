@@ -127,12 +127,7 @@
     </div>
     <div class="icon-bag">
         <img src="../assets/bag.png" alt="Bag Icon">
-    </div>
-    <!-- Pond Section -->
-    <div class="pond">
-        <img src="../assets/grass.png" class="grass" alt="Grass">
-        <img src="../assets/grass.png" class="grass2" alt="Grass">
-    </div>
+    
     <!-- Bag Popup -->
     <div id="bagPopup" class="bag-popup">Your Store
         <div class="exchange-container">
@@ -181,10 +176,10 @@
 
     <!-- Audio Elements -->
     <audio id="bgMusic" loop>
-        <source src="assets/sound/backgroundmusic.mp3" type="audio/mp3">
+        <source src="./../assets/sound/backgroundmusic.mp3" type="audio/mp3">
     </audio>
     <audio id="duckSound">
-        <source src="assets/sound/soundduck.mp3" type="audio/mp3">
+        <source src="./../assets//sound/soundduck.mp3" type="audio/mp3">
     </audio>
  <!-- Scripts -->
  <script type="module" src="./change.ts"></script>
@@ -204,7 +199,6 @@
         const balanceElement = document.getElementById('balance');
         const logoutButton = document.getElementById('logoutButton');
         const avatar = document.getElementById('avatar');
-
 
         let web3;
     if (window.ethereum) {
@@ -243,7 +237,6 @@
             userName.textContent = storedName;
             shortAddress.textContent = storedAddress;
             balanceElement.textContent = storedBalance || '0';
-            
             if (storedInitial) {
                 avatar.textContent = storedInitial;
             } else if (storedName) {
