@@ -6,7 +6,7 @@
     <title>Duck Egg Hunt</title>
     <script src="https://code.playcanvas.com/playcanvas-stable.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./styles/style.css">
     <style>
         .user-profile {
             position: absolute;
@@ -179,16 +179,12 @@
         <source src="./../assets/sound/backgroundmusic.mp3" type="audio/mp3">
     </audio>
     <audio id="duckSound">
-        <source src="./../assets//sound/soundduck.mp3" type="audio/mp3">
+        <source src="./../assets/sound/soundduck.mp3" type="audio/mp3">
     </audio>
  <!-- Scripts -->
- <script type="module" src="./change.ts"></script>
- <script type="module" src="./bad.ts"></script>
  <script type="module" src="./game.ts"></script>
- <script type="module" src="./ducks.ts"></script>
- <script type="module" src="./types.ts"></script>
- <script type="module" src="./storage.ts"></script>
-  
+<script type="module" src="./UI/bad.ts"></script>
+<script type="module" src="./UI/change.ts"></script>
  <script>
     document.addEventListener('DOMContentLoaded', function() {
         const userProfile = document.getElementById('userProfile');

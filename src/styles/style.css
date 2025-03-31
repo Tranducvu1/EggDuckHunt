@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: url('../assets/Ground2.png') no-repeat center center fixed;
+    background: url('../../assets/Ground2.png') no-repeat center center fixed;
     background-size: 2400px 1200px; /* Điều chỉnh chiều rộng và chiều cao của nền */
     background-position: center;
 }

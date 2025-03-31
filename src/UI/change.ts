@@ -6,7 +6,6 @@ const exchangeBtn = document.getElementById('exchangeBtn') as HTMLButtonElement;
 const duckcountcoinEl = document.getElementById('duckcoinCount') as HTMLElement;
 const exchangeduckBtn = document.getElementById('exchangeduckBtn') as HTMLButtonElement;
 const duckCountEl = document.getElementById('duckCount') as HTMLElement;
-
 // 📌 Set up constants for exchange rates
 const EGGS_PER_COIN: number = 10;  // 10 eggs = 1 coin
 const COIN_PER_DUCK: number = 10;  // 10 coins = 1 duck

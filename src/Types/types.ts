@@ -5,9 +5,12 @@ export interface Basket {
     id: string;       // Unique identifier for the basket
     left: number;     // Position from the left (percentage or pixels)
     top: number;      // Position from the top (percentage or pixels)
-    position: { left: number; top: number }; // Position object for consistency
+    position: Position; // Position object for easier access
 }
-
+export interface Position {
+    left: number;
+    top: number;
+}
 /**
  * Represents an egg that appears in the game.
  */

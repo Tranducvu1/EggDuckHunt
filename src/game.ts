@@ -1,5 +1,5 @@
 // Import necessary functions from other modules
-import { initializeGameStorage, updateCounters, incrementEggAndCoin } from './storage';
+import { initializeGameStorage, updateCounters, incrementEggAndCoin } from './Ultils/storage';
 import { ducks, moveDuck, moveDuckToBasket, changeDuckMovementType, updateDucksBasedOnCount, setuprandomlayegg, initializeBaskets } from './ducks';
 
 // Execute when the HTML document has fully loaded

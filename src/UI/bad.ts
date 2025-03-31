@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const duckId = (event.target as HTMLElement).id; // Get the clicked duck's ID
             const duckName = `Duck ${duckId.replace("duck", "")}`; // Format the duck name
             const nextEggTime = getNextEggTime(duckId); // Get the time until the next egg
-
             // Display the duck's info
             showDuckInfo(event, duckName, nextEggTime);
         });
@@ -60,7 +59,7 @@ function showDuckInfo(event: Event, name: string, time: string) {
         infoBox.style.color = "#fff";
         infoBox.style.borderRadius = "5px";
         infoBox.style.fontSize = "16px";
-        infoBox.style.pointerEvents = "none"; // Prevent interactions
+        infoBox.style.pointerEvents = "none"; 
         document.body.appendChild(infoBox);
     }
 

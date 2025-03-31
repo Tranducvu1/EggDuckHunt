@@ -1,5 +1,5 @@
-import { Duck, Basket } from './types';
-import { incrementEggAndCoin } from './storage';
+import { Duck, Basket } from './Types/types';
+import { incrementEggAndCoin } from './Ultils/storage';
 
 // Duck definitions with movement types
 export const ducks: Duck[] = [];
