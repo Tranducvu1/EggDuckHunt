@@ -6,11 +6,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const bagPopup = document.getElementById("bagPopup") as HTMLDivElement;
 
     if (bagIcon && bagPopup) {
-        bagIcon.addEventListener("click", () => {
+        bagIcon.addEventListener("click", (event) => {
             // Toggle the visibility of the bag popup
+            event.stopPropagation();
             bagPopup.style.display = bagPopup.style.display === "none" || bagPopup.style.display === "" ? "block" : "none";
         });
+        bagPopup.addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
     }
+    document.addEventListener("click", () => {
+        if(bagPopup.style.display === "block") {
+            bagPopup.style.display = "none"; // Hide the popup when clicking outside
+        }
+    });
+    // Initialize the bag popup to be hidden on load
+
 });
 
 /**

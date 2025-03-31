@@ -1,5 +1,9 @@
+import { Duck, Position } from "../Types/types";
+import { GAME_CONSTANTS,MOVEMENT_TYPES } from "../Constant/constant"; // Adjust the path as needed
+
+
 export function getRandomMovementType(): Duck["movementType"] {
-    return MOVEMENT_TYPES[Math.floor(Math.random() * MOVEMENT_TYPES.length)];
+         return MOVEMENT_TYPES[Math.floor(Math.random() * MOVEMENT_TYPES.length)];
 }
 
 export function getRandomDirection(): { x: number, y: number } {

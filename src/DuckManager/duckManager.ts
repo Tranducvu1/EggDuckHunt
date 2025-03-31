@@ -63,7 +63,7 @@ function createDuckElement(duck: Duck): void {
     const duckElement = document.createElement('img');
     duckElement.id = duck.id;
     duckElement.classList.add('duck');
-    duckElement.src = `../../assets/duck/right-left/a${duck.direction.x > 0 ? 1 : 3}.png`;
+    duckElement.src = `../assets/duck/right-left/a${duck.direction.x > 0 ? 1 : 3}.png`;
     duckElement.style.position = 'absolute';
     duckElement.style.width = '100px';
     duckElement.style.left = `${duck.position.left}%`;

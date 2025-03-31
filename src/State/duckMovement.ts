@@ -142,14 +142,14 @@ function handlePondDetection(duck: Duck, duckElement: HTMLImageElement): void {
 
 function enterPond(duck: Duck, duckElement: HTMLImageElement): void {
     duck.inPond = true;
-    duckElement.src = duck.direction.x === 1 ? "../assets/duck/relax/a3.png" : "../../assets/duck/relax/a1.png";
+    duckElement.src = duck.direction.x === 1 ? "../assets/duck/relax/a3.png" : "../assets/duck/relax/a1.png";
     
     duck.relaxTimer1 = setTimeout(() => {
         if (duck.inPond) {
-            duckElement.src = duck.direction.x === 1 ? "../../assets/duck/relax/a5.png" : "../../assets/duck/relax/a7.png";
+            duckElement.src = duck.direction.x === 1 ? "../assets/duck/relax/a5.png" : "../assets/duck/relax/a7.png";
             duck.relaxTimer2 = setTimeout(() => {
                 if (duck.inPond) {
-                    duckElement.src = duck.direction.x === 1 ? "../../assets/duck/relax/a6.png" : "../../assets/duck/relax/a8.png";
+                    duckElement.src = duck.direction.x === 1 ? "../assets/duck/relax/a6.png" : "../assets/duck/relax/a8.png";
                 }
             }, 5000);
         }
@@ -163,6 +163,6 @@ function exitPond(duck: Duck): void {
 }
 
 function updateDuckSprite(duck: Duck, duckElement: HTMLImageElement): void {
-    duckElement.src = `../../assets/duck/right-left/a${duck.frame + (duck.direction.x === -1 ? 2 : 0)}.png`;
+    duckElement.src = `../assets/duck/right-left/a${duck.frame + (duck.direction.x === -1 ? 2 : 0)}.png`;
     duck.frame = duck.frame === 1 ? 2 : 1;
 }

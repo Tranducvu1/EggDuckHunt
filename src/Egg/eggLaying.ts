@@ -46,7 +46,7 @@ function animateDuckToBasket(
     
     // Update duck sprite based on initial horizontal direction
     const initialDirection = targetLeft > duck.position.left ? 1 : -1;
-    duckElement.src = `../../assets/duck/right-left/a${initialDirection > 0 ? 1 : 3}.png`;
+    duckElement.src = `../assets/duck/right-left/a${initialDirection > 0 ? 1 : 3}.png`;
     
     const moveInterval = setInterval(() => {
         const elapsedTime = Date.now() - startTime;
@@ -104,7 +104,7 @@ function calculateMovementPosition(
 
 function updateMovingDuckSprite(duck: Duck, duckElement: HTMLImageElement, startPosition: Position): void {
     const currentDirection = duck.position.left > startPosition.left ? 1 : -1;
-    duckElement.src = `../../assets/duck/right-left/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
+    duckElement.src = `../assets/duck/right-left/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
     duck.frame = duck.frame === 1 ? 2 : 1;
 }
 
@@ -124,7 +124,7 @@ function layEgg(duck: Duck, duckElement: HTMLImageElement): void {
 
 function createEggElement(duck: Duck): void {
     const egg = document.createElement("img");
-    egg.src = "../../assets/duck/egg.png";
+    egg.src = "../assets/duck/egg.png";
     egg.classList.add("egg-basket");
     egg.style.position = "absolute";
     egg.style.width = "30px";
@@ -185,7 +185,7 @@ function returnToOriginal(duck: Duck, duckElement: HTMLImageElement): void {
         
         // Update duck sprite based on horizontal direction
         const currentDirection = duck.position.left > startPosition.left ? 1 : -1;
-        duckElement.src = `../../assets/duck/right-left/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
+        duckElement.src = `../assets/duck/right-left/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
         duck.frame = duck.frame === 1 ? 2 : 1;
     }, 50);
 }

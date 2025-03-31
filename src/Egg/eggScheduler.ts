@@ -1,7 +1,7 @@
 import { Duck } from '../Types/types';
 import { moveDuckToBasket } from './eggLaying';
 import { GAME_CONSTANTS } from '../Constant/constant';
-import { ducks } from '../ducks';
+import { ducks } from '../DuckManager/duckManager';
 
 export function setupRandomEggLaying(): void {
     ducks.forEach(scheduleEggLayingForDuck);

@@ -1,3 +1,5 @@
+import { Duck } from "../Types/types";
+
 export const GAME_CONSTANTS = {
     POND: {
         LEFT: 0,
@@ -19,3 +21,6 @@ export const GAME_CONSTANTS = {
         DEFAULT_COUNT: 3
     }
 };
+
+export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random"];
+

@@ -23,6 +23,8 @@ export interface Egg {
 /**
  * Represents a duck with its movement, position, and interaction details.
  */
+export type MovementType = "linear" | "circular" | "zigzag" | "random";
+
 export interface Duck {
     id: string;              // Unique identifier for the duck
     size: number; 
@@ -34,8 +36,7 @@ export interface Duck {
     moving: boolean;         // Whether the duck is currently moving
     inPond: boolean;         // Whether the duck is in the pond
     
-    movementType: "linear" | "circular" | "zigzag" | "random"; // Movement behavior
-    
+    movementType: MovementType;
     pathProgress?: number;   // Used for circular/zigzag movements to track progress
     centerPoint?: { left: number; top: number }; // Center point for circular movement
     radius?: number;         // Radius for circular movement

@@ -4,6 +4,7 @@ export const baskets: Basket[] = [];
 
 export function initializeBaskets(): void {
     // Clear existing baskets
+    console.log("Initializing baskets..."); 
     baskets.length = 0;
     
     // Create 3 baskets with fixed positions
@@ -30,7 +31,7 @@ function createBasketElement(basket: Basket): void {
     const basketElement = document.createElement('img');
     basketElement.id = basket.id;
     basketElement.classList.add('basket');
-    basketElement.src = "../../assets/rotrung.png";
+    basketElement.src = "../assets/rotrung.png";
     basketElement.style.position = 'absolute';
     basketElement.style.width = '100px';
     basketElement.style.left = `${basket.left}%`;
