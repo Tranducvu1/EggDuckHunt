@@ -1,7 +1,9 @@
-import { Duck, Basket, Position } from '../Types/types';
+import { Duck, Position } from '../Types/types';
 import { baskets } from '../Basket/baskets';
 import { incrementEggAndCoin } from '../Ultils/storage';
 import { GAME_CONSTANTS } from '../Constant/constant';
+import { updateDisplay } from '../UI/change';
+
 
 export function moveDuckToBasket(duck: Duck): void {
     if (!duck.moving) return;
@@ -118,6 +120,7 @@ function playDuckSound(): void {
 function layEgg(duck: Duck, duckElement: HTMLImageElement): void {
     setTimeout(() => {
         createEggElement(duck);
+       
         setTimeout(() => returnToOriginal(duck, duckElement), 2000);
     }, 1000);
 }
@@ -149,6 +152,7 @@ function createEggElement(duck: Duck): void {
         
         // Remove the egg from the DOM
         document.body.removeChild(egg);
+    
     });
     
     document.body.appendChild(egg);
@@ -189,3 +193,4 @@ function returnToOriginal(duck: Duck, duckElement: HTMLImageElement): void {
         duck.frame = duck.frame === 1 ? 2 : 1;
     }, 50);
 }
+

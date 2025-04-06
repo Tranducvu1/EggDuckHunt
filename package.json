@@ -12,12 +12,14 @@
     "node": "18.x"
   },
   "devDependencies": {
+    "@types/web3": "^1.0.20",
     "typescript": "^5.8.2",
     "vite": "^5.4.14"
   },
   "description": "",
   "main": "vite.config.js",
   "dependencies": {
+    "@tweenjs/tween.js": "^25.0.0",
     "aggregate-error": "^3.1.0",
     "ammo.js": "^0.0.10",
     "array-union": "^2.1.0",
@@ -37,6 +39,7 @@
     "glob-parent": "^5.1.2",
     "globby": "^14.1.0",
     "graceful-fs": "^4.2.11",
+    "gsap": "^3.12.7",
     "ignore": "^7.0.3",
     "indent-string": "^4.0.0",
     "inflight": "^1.0.6",
@@ -68,6 +71,7 @@
     "source-map-js": "^1.2.1",
     "to-regex-range": "^5.0.1",
     "unicorn-magic": "^0.3.0",
+    "web3": "^4.16.0",
     "wrappy": "^1.0.2"
   },
   "keywords": [],

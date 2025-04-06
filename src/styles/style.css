@@ -2,10 +2,9 @@ body {
     margin: 0;
     padding: 0;
     background: url('../../assets/Ground2.png') no-repeat center center fixed;
-    background-size: 2400px 1200px; /* Điều chỉnh chiều rộng và chiều cao của nền */
-    background-position: center;
+    background-size: 2400px 2000px; /* Điều chỉnh chiều rộng và chiều cao của nền */
+    background-position: center ;
 }
-
 
 /* Tạo hồ nước */
 .pond {
@@ -403,4 +402,471 @@ body {
     width: 80px;
     height: 80px;
     fill: white;
+}
+.user-profile {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.user-profile:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: linear-gradient(45deg, #8E2DE2, #4A00E0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.name-input {
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 2px solid #4A00E0;
+    padding: 5px 0;
+    color: #333;
+}
+
+.tooltip {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: rgba(51, 51, 51, 0.95);
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    white-space: nowrap;
+    text-align: left;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    display: none;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    opacity: 0;
+}
+
+.tooltip p {
+    margin: 0;
+    padding: 5px 0;
+}
+
+.tooltip p:first-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.logout-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #FF416C, #FF4B2B);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+    background: linear-gradient(90deg, #FF4B2B, #FF416C);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+}
+/* Animation Styles for DuckGame Currency System */
+
+/* General Animation Classes */
+.animate-float {
+animation: float-up 1s ease-out forwards;
+}
+
+.animate-pulse {
+animation: pulse 0.6s ease-out;
+}
+
+.animate-glow {
+animation: glow 0.8s ease-in-out;
+}
+
+.animate-bounce {
+animation: bounce 0.5s ease-in-out;
+}
+
+/* Floating Number Styles */
+.floating-number {
+position: absolute;
+font-weight: bold;
+text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+pointer-events: none;
+z-index: 1000;
+}
+
+.floating-number.positive {
+color: #2ecc71;
+}
+
+.floating-number.negative {
+color: #e74c3c;
+}
+
+/* Currency Animation Styles */
+.currency-animation {
+display: flex;
+align-items: center;
+justify-content: center;
+position: absolute;
+pointer-events: none;
+z-index: 1000;
+}
+
+.currency-animation img {
+filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+
+.currency-animation span {
+margin-left: 4px;
+font-weight: bold;
+color: white;
+text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Particle Effects */
+.particle {
+position: absolute;
+width: 6px;
+height: 6px;
+border-radius: 50%;
+pointer-events: none;
+z-index: 999;
+}
+
+/* Fancy Button Styles */
+.btn-exchange {
+position: relative;
+overflow: hidden;
+transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.btn-exchange:hover {
+transform: translateY(-2px);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-exchange:active {
+transform: translateY(1px);
+}
+
+.btn-exchange::after {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: linear-gradient(
+to right, 
+rgba(255, 255, 255, 0) 0%,
+rgba(255, 255, 255, 0.4) 50%,
+rgba(255, 255, 255, 0) 100%
+);
+transform: rotate(30deg) translateY(-100%);
+opacity: 0;
+transition: transform 0.5s, opacity 0.3s;
+}
+
+.btn-exchange:hover::after {
+opacity: 1;
+transform: rotate(30deg) translateY(100%);
+}
+
+/* Resource Item Hover Effects */
+.resource-item {
+position: relative;
+transition: transform 0.2s ease;
+}
+
+.resource-item:hover {
+transform: scale(1.05);
+}
+
+.resource-item::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+border-radius: 8px;
+box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+transition: box-shadow 0.3s;
+}
+
+.resource-item:hover::before {
+box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Keyframe Animations */
+@keyframes float-up {
+0% {
+transform: translateY(0) scale(1);
+opacity: 0;
+}
+20% {
+transform: translateY(-10px) scale(1.2);
+opacity: 1;
+}
+100% {
+transform: translateY(-40px) scale(1);
+opacity: 0;
+}
+}
+
+@keyframes pulse {
+0% {
+transform: scale(1);
+}
+50% {
+transform: scale(1.1);
+}
+100% {
+transform: scale(1);
+}
+}
+
+@keyframes glow {
+0% {
+box-shadow: 0 0 0 0 rgba(255, 204, 0, 0);
+}
+50% {
+box-shadow: 0 0 10px 5px rgba(255, 204, 0, 0.5);
+}
+100% {
+box-shadow: 0 0 0 0 rgba(255, 204, 0, 0);
+}
+}
+
+@keyframes bounce {
+0% {
+transform: translateY(0);
+}
+40% {
+transform: translateY(-10px);
+}
+60% {
+transform: translateY(-5px);
+}
+80% {
+transform: translateY(-8px);
+}
+100% {
+transform: translateY(0);
+}
+}
+
+/* Counter container animation */
+.counter {
+position: relative;
+transition: all 0.3s ease;
+}
+
+.counter.highlight {
+animation: highlight-pulse 0.6s ease-out;
+}
+
+@keyframes highlight-pulse {
+0% {
+transform: scale(1);
+filter: brightness(1);
+}
+50% {
+transform: scale(1.15);
+filter: brightness(1.3);
+}
+100% {
+transform: scale(1);
+filter: brightness(1);
+}
+}
+
+/* Coin Rain Effect */
+.coin-rain {
+position: fixed;
+top: -50px;
+left: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 9000;
+}
+
+.rain-coin {
+position: absolute;
+width: 24px;
+height: 24px;
+background-image: url('../assets/duck/coins/coin.png');
+background-size: contain;
+background-repeat: no-repeat;
+}
+
+/* Duck celebration animation */
+@keyframes celebrate {
+0% {
+transform: translateY(0) rotate(0);
+}
+25% {
+transform: translateY(-15px) rotate(-5deg);
+}
+50% {
+transform: translateY(0) rotate(5deg);
+}
+75% {
+transform: translateY(-10px) rotate(-3deg);
+}
+100% {
+transform: translateY(0) rotate(0);
+}
+}
+
+.celebrate {
+animation: celebrate 1s ease-in-out;
+}
+/* Add these styles to your CSS file */
+
+/* Animation for counters */
+.counter {
+position: relative;
+transition: transform 0.2s ease-out;
+}
+
+.counter span {
+display: inline-block;
+transition: all 0.3s ease-out;
+}
+
+/* Particle effects for exchanges */
+.particle {
+position: absolute;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+pointer-events: none;
+z-index: 100;
+}
+
+.coin-particle {
+background-color: gold;
+box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+}
+
+.duck-particle {
+background-color: white;
+box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+.egg-particle {
+background-color: #f0f0f0;
+box-shadow: 0 0 5px rgba(240, 240, 240, 0.8);
+}
+
+/* Flash effect for button click */
+@keyframes buttonFlash {
+0% { transform: scale(1); }
+50% { transform: scale(1.05); background-color: #ffcc00; }
+100% { transform: scale(1); }
+}
+
+.btn-exchange:active {
+animation: buttonFlash 0.3s ease-out;
+}
+
+/* Resource value animation */
+.resource-value {
+display: inline-block;
+transition: all 0.3s ease;
+}
+
+/* Pop effect for resource counters */
+@keyframes pop {
+0% { transform: scale(1); }
+50% { transform: scale(1.2); }
+100% { transform: scale(1); }
+}
+
+.resource-item.pop img,
+.resource-item.pop .resource-value {
+animation: pop 0.5s ease;
+}
+/* setting*/
+.settings-btn {
+    position: fixed;
+    top: 20px;
+    left:50px;
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Settings menu */
+.settings-menu {
+    position: fixed;
+    top: 80px;
+    left: 50px;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    width: 220px;
+    display: none;
+    z-index: 999;
+}
+
+.settings-menu h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+}
+
+.volume-control input[type="range"] {
+    width: 100%;
 }

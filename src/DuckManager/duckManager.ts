@@ -7,7 +7,6 @@ export const ducks: Duck[] = [];
 export function updateDucksBasedOnCount(): void {
     const duckCount = parseInt(localStorage.getItem('duckCount') || GAME_CONSTANTS.DUCK.DEFAULT_COUNT.toString());
     const currentDuckCount = ducks.length;
-    
     // Add more ducks if needed
     if (duckCount > currentDuckCount) {
         for (let i = currentDuckCount; i < duckCount; i++) {
@@ -19,6 +18,8 @@ export function updateDucksBasedOnCount(): void {
         removeExcessDucks(currentDuckCount - duckCount);
     }
 }
+
+// Function to initialize ducks based on the count in localStorage
 
 function createNewDuck(index: number): void {
     const position = getRandomPosition();
@@ -63,7 +64,7 @@ function createDuckElement(duck: Duck): void {
     const duckElement = document.createElement('img');
     duckElement.id = duck.id;
     duckElement.classList.add('duck');
-    duckElement.src = `../assets/duck/right-left/a${duck.direction.x > 0 ? 1 : 3}.png`;
+    duckElement.src = `../../assets/duck/right-left/a${duck.direction.x > 0 ? 1 : 3}.png`;
     duckElement.style.position = 'absolute';
     duckElement.style.width = '100px';
     duckElement.style.left = `${duck.position.left}%`;

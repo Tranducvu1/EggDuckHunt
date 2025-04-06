@@ -260,8 +260,7 @@
             const balanceElement = document.getElementById('balance');
             const logoutButton = document.getElementById('logoutButton');
             const avatar = document.getElementById('avatar');
-            
-            let account = '';
+            const token = ''
             let walletName = '';
             let balance = '0';
             let web3;
@@ -280,7 +279,6 @@
                         checkWalletName(account);
                         getBalance(account);
                         showUserProfile();
-                        
                         // Redirect to game page after successful login
                         setTimeout(() => {
                             window.location.href = "src/index.html";
@@ -307,15 +305,21 @@
             };
 
             // Check if wallet name exists in localStorage
-            const checkWalletName = (address) => {
+            const checkWalletName = async (address) => {
                 const savedName = localStorage.getItem(`walletName_${address}`);
                 if (savedName) {
                     walletName = savedName;
                     userName.textContent = savedName;
                     setAvatarInitial(savedName);
-                    
                     // Store name in sessionStorage for use in the game page
                     sessionStorage.setItem('userName', savedName);
+                        // Store name in sessionStorage for use in the game page
+                    const checkcontainacoout = await getPlayer();
+                    if(checkcontainacoout){
+                        alert("Bạn đã đăng nhập rồi! Vui lòng đăng xuất trước khi đăng nhập lại!");
+                    } else {
+                        await createPlayer({ token: address, name: savedName });
+                    } 
                 } else {
                     const enteredName = prompt("Nhập tên của bạn:");
                     if (enteredName) {
@@ -323,13 +327,47 @@
                         walletName = enteredName;
                         userName.textContent = enteredName;
                         setAvatarInitial(enteredName);
-                        
-                        // Store name in sessionStorage for use in the game page
                         sessionStorage.setItem('userName', enteredName);
                     }
                 }
             };
 
+           // Create player and send data to API
+            const createPlayer = async (playerData) => {
+                try {
+                    const response = await fetch('http://localhost:7272/api/v1/player/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(playerData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Không thể tạo người chơi');
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Người chơi đã được tạo:', data);
+                } catch (error) {
+                    console.error("Lỗi khi tạo người chơi:", error);
+                    alert("Đã xảy ra lỗi khi tạo người chơi. Vui lòng thử lại.");
+                }
+            };
+
+            const getPlayer = async() => {
+                try {
+                    const response = await fetch('http://localhost:7272/api/v1/player');
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy thông tin người chơi');
+                    }
+                    const data = await response.json();
+                    return data.some(player => player.token === account);
+                } catch (error) {
+                    console.error("Lỗi khi lấy thông tin người chơi:", error);
+                    alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
+                }
+            };
             // Set avatar initial
             const setAvatarInitial = (name) => {
                 if (name && name.length > 0) {

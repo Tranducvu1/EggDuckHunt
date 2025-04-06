@@ -32,10 +32,11 @@ export interface Duck {
     direction: { x: number; y: number };     // Movement direction (vector)
     speed: number;           // Speed of the duck's movement
     frame: number;           // Animation frame for sprite handling
-    
+    startTime?: number;
+    restDuration?: number; // Duration for which the duck rests
     moving: boolean;         // Whether the duck is currently moving
     inPond: boolean;         // Whether the duck is in the pond
-    
+    relaxState?: number; 
     movementType: MovementType;
     pathProgress?: number;   // Used for circular/zigzag movements to track progress
     centerPoint?: { left: number; top: number }; // Center point for circular movement
@@ -50,3 +51,17 @@ export interface Duck {
     selectedBasket: Basket | null; // Which basket the duck is heading to or null if none
     autoMoveInterval: ReturnType<typeof setTimeout> | undefined; // Interval ID for automated movement
 }
+
+
+export interface PlayerData {
+    id: number;
+    name: string;
+    token: string;
+    whiteDuck: number;
+    redDuck: number;
+    yellowDuck: number;
+    coins: number;
+    eth: number;
+    egg: number;
+  }
+  
