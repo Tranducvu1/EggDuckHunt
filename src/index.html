@@ -2,11 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Duck Egg Hunt</title>
     <script src="https://code.playcanvas.com/playcanvas-stable.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <link rel="stylesheet" href="./styles/style.css">
+    <style>
+        .user-profile {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .user-profile:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: linear-gradient(45deg, #8E2DE2, #4A00E0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .name-input {
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            outline: none;
+            background: transparent;
+            border-bottom: 2px solid #4A00E0;
+            padding: 5px 0;
+            color: #333;
+        }
+
+        .tooltip {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(51, 51, 51, 0.95);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            text-align: left;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        .tooltip p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        .tooltip p:first-child {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .logout-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: linear-gradient(90deg, #FF4B2B, #FF416C);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+        }
+    </style>
 </head>
 <body>
     <div class="counter-container">
@@ -24,7 +125,7 @@
     </div>
     <div class="icon-bag">
         <img src="../assets/bag.png" alt="Bag Icon">
-    </div>
+    
     <!-- Bag Popup -->
     <div id="bagPopup" class="bag-popup">Your Store
         <div class="exchange-container">
@@ -59,16 +160,6 @@
         </div>
     </div>
 
-    <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
-
-    <!-- Settings Menu -->
-    <div class="settings-menu" id="settingsMenuVolumn">
-        <h3>Âm lượng</h3>
-        <div class="volume-control">
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
-        </div>
-    </div>
-
     <div class="user-profile" id="userProfile">
         <div class="avatar" id="avatar"></div>
         <p class="user-name" id="userName"></p>
@@ -89,16 +180,12 @@
         <source src="./../assets/sound/soundduck.mp3" type="audio/mp3">
     </audio>
  <!-- Scripts -->
- <script type="module" src = "./login.ts"></script>
-<script tyoe="module" src="./Ultils/storage.ts"></script>
  <script type="module" src="./game.ts"></script>
 <script type="module" src="./UI/bad.ts"></script>
+<script type="module" src="./UI/change.ts"></script>
 <script type="module" src="./Egg/eggScheduler.ts"></script>
 <script type="module" src = "./Egg/eggLaying.ts"></script>
-<script type="module" src = "./UI/change.ts"></script>
-<script type="module" src = "./settings/volumns.ts"></script>
-
- <!-- <script>
+ <script>
     document.addEventListener('DOMContentLoaded', function() {
         const userProfile = document.getElementById('userProfile');
         const userName = document.getElementById('userName');
@@ -108,26 +195,13 @@
         const balanceElement = document.getElementById('balance');
         const logoutButton = document.getElementById('logoutButton');
         const avatar = document.getElementById('avatar');
-        
 
         let web3;
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
     }
 
-    const getPlayer = async() => {
-                try {
-                    const response = await fetch('http://localhost:7272/api/v1/player');
-                    if (!response.ok) {
-                        throw new Error('Không thể lấy thông tin người chơi');
-                    }
-                    const data = await response.json();
-                    return data.some(player => player.token === token);
-                } catch (error) {
-                    console.error("Lỗi khi lấy thông tin người chơi:", error);
-                    alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-                }
-            }
+    
         const refreshBalance = async () => {
         if (web3) {
             try {
@@ -135,7 +209,8 @@
                 if (userAddress) {
                     const weiBalance = await web3.eth.getBalance(userAddress);
                     const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
-                    const balance = parseFloat(ethBalance).toFixed(4);                   
+                    const balance = parseFloat(ethBalance).toFixed(4);
+                    
                     // Update UI and sessionStorage
                     balanceElement.textContent = balance;
                     sessionStorage.setItem('userBalance', balance);
@@ -145,55 +220,41 @@
             }
         }
     };
-    const loadUserData = () => {
-    const storedName = sessionStorage.getItem('userName');
-    const storedAddress = sessionStorage.getItem('shortAddress');
-    const storedBalance = sessionStorage.getItem('userBalance');
-    const storedInitial = sessionStorage.getItem('userInitial');
-    const fullAddress = sessionStorage.getItem('userAddress');
-    
-    if (storedName && storedAddress) {
-        // Hiển thị thông tin người dùng
-        userName.textContent = storedName;
-        shortAddress.textContent = storedAddress;
-        balanceElement.textContent = storedBalance || '0';
+        // Load user data from sessionStorage
+        const loadUserData = () => {
+        const storedName = sessionStorage.getItem('userName');
+        const storedAddress = sessionStorage.getItem('shortAddress');
+        const storedBalance = sessionStorage.getItem('userBalance');
+        const storedInitial = sessionStorage.getItem('userInitial');
+        const fullAddress = sessionStorage.getItem('userAddress');
         
-        if (storedInitial) {
-            avatar.textContent = storedInitial;
-        } else if (storedName) {
-            avatar.textContent = storedName.charAt(0).toUpperCase();
-        }
-        if (fullAddress) {
-            localStorage.removeItem(`walletName_${fullAddress}`);
-        }
-        
-        
-        userProfile.style.display = 'flex';
-        
-        // Cập nhật số dư từ network
-        if (fullAddress) {
-            refreshBalance();
+        if (storedName && storedAddress) {
+            // Display user profile
+            userName.textContent = storedName;
+            shortAddress.textContent = storedAddress;
+            balanceElement.textContent = storedBalance || '0';
+            if (storedInitial) {
+                avatar.textContent = storedInitial;
+            } else if (storedName) {
+                avatar.textContent = storedName.charAt(0).toUpperCase();
+            }
             
-            // Xóa dữ liệu ví khỏi localStorage ngay sau khi sử dụng
-            removeWalletData(fullAddress);
+            userProfile.style.display = 'flex';
+            
+            // Refresh balance from network
+            if (fullAddress) {
+                refreshBalance();
+            }
+        } else {
+            // No user data found, redirect to login page
+            window.location.href = "../index.html";
         }
-        
-        // Xóa dữ liệu khỏi sessionStorage
-        sessionStorage.removeItem('userBalance');
-        sessionStorage.removeItem('shortAddress');
-        sessionStorage.removeItem('userName');
-        sessionStorage.removeItem('userInitial');
-        sessionStorage.removeItem('userAddress');
-    } else {
-        // Không có dữ liệu người dùng, chuyển hướng đến trang đăng nhập
-        window.location.href = "../index.html";
-    }
-};
-
+    };
         
         const handleLogout = () => {
     // Set logged out flag
     sessionStorage.setItem('loggedOut', 'true');
+    
     // Clear remaining session data
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('userAddress');
@@ -205,14 +266,6 @@
     window.location.href = "../index.html";
 };
         
-const removeWalletData = (address) => {
-    if (address) {
-        // Xóa khóa walletName_ cụ thể cho địa chỉ này
-        localStorage.removeItem(`walletName_${address}`);
-        console.log(`Đã xóa dữ liệu ví: walletName_${address}`);
-    }
-};
-
         // Handle name editing
         const handleEditName = () => {
             userName.style.display = 'none';
@@ -220,6 +273,7 @@ const removeWalletData = (address) => {
             nameInput.value = userName.textContent;
             nameInput.focus();
         };
+        
         // Handle saving name
         const handleSaveName = () => {
             const newName = nameInput.value;
@@ -233,7 +287,6 @@ const removeWalletData = (address) => {
                     // Update name in sessionStorage
                     sessionStorage.setItem('userName', newName);
                     sessionStorage.setItem('userInitial', newName.charAt(0).toUpperCase());
-                    localStorage.removeItem(`walletName_${userAddress}`, newName);
                 }
             }
             nameInput.style.display = 'none';
@@ -253,8 +306,6 @@ const removeWalletData = (address) => {
                 handleSaveName();
             }
         });
-
-
         
         // Show/hide tooltip
         userProfile.addEventListener('mouseenter', () => {
@@ -276,6 +327,6 @@ const removeWalletData = (address) => {
         // Load user data on page load
         loadUserData();
     });
-</script> -->
+</script>
 </body>
 </html>

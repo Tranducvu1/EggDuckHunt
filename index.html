@@ -260,26 +260,37 @@
             const balanceElement = document.getElementById('balance');
             const logoutButton = document.getElementById('logoutButton');
             const avatar = document.getElementById('avatar');
-            const token = ''
+            const savedAccountsList = document.createElement('div');
+            
+            let account = '';
             let walletName = '';
             let balance = '0';
             let web3;
-
+        
             if (window.ethereum) {
                 web3 = new Web3(window.ethereum);
             }
-
-            // Connect to MetaMask
+        
+            savedAccountsList.id = 'savedAccountsList';
+            savedAccountsList.style.cssText = `
+                margin-bottom: 10px;
+                max-height: 150px;
+                overflow-y: auto;
+                width: 100%;
+            `;
+            loginContainer.insertBefore(savedAccountsList, connectButton); // Chèn danh sách trước nút Connect
+        
             const connectMetaMask = async () => {
                 if (window.ethereum) {
                     try {
                         await window.ethereum.request({ method: 'eth_requestAccounts' });
                         const accounts = await web3.eth.getAccounts();
                         account = accounts[0];
+                        saveAccount(account);
                         checkWalletName(account);
                         getBalance(account);
                         showUserProfile();
-                        // Redirect to game page after successful login
+                        
                         setTimeout(() => {
                             window.location.href = "src/index.html";
                         }, 1000);
@@ -291,35 +302,117 @@
                     alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
                 }
             };
-
-            // Get wallet balance
+        
+            const saveAccount = (address) => {
+                let savedAccounts = JSON.parse(localStorage.getItem('savedAccounts') || '[]');
+                if (!savedAccounts.some(acc => acc.address === address)) {
+                    const accountInfo = {
+                        address: address,
+                        name: walletName || 'Unnamed'
+                    };
+                    savedAccounts.push(accountInfo);
+                    localStorage.setItem('savedAccounts', JSON.stringify(savedAccounts));
+                }
+                displaySavedAccounts();
+            };
+        
+            const displaySavedAccounts = () => {
+                let savedAccounts = JSON.parse(localStorage.getItem('savedAccounts') || '[]');
+                savedAccountsList.innerHTML = '';
+                
+                if (savedAccounts.length === 0) {
+                    savedAccountsList.innerHTML = '<p style="color: #666;">Chưa có tài khoản nào được lưu.</p>';
+                    return;
+                }
+        
+                savedAccounts.forEach(acc => {
+                    const accountDiv = document.createElement('div');
+                    accountDiv.style.cssText = `
+                        padding: 8px;
+                        margin: 4px 0;
+                        background: #f0f0f0;
+                        border-radius: 4px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    `;
+                    
+                    const accountInfo = document.createElement('span');
+                    accountInfo.textContent = `${acc.name} (${acc.address.slice(0, 6)}...${acc.address.slice(-4)})`;
+                    accountInfo.style.cssText = 'cursor: pointer; flex-grow: 1;';
+                    accountInfo.onclick = () => tryLoginWithSavedAccount(acc.address); // Click vào tên để đăng nhập
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Xóa';
+                    deleteBtn.style.cssText = `
+                        padding: 2px 8px;
+                        font-size: 12px;
+                        background: #ff4444;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                    `;
+                    deleteBtn.onclick = (e) => {
+                        e.stopPropagation(); // Ngăn click vào tên khi nhấn nút xóa
+                        deleteSavedAccount(acc.address);
+                    };
+                    
+                    accountDiv.appendChild(accountInfo);
+                    accountDiv.appendChild(deleteBtn);
+                    savedAccountsList.appendChild(accountDiv);
+                });
+            };
+        
+            const tryLoginWithSavedAccount = async (savedAddress) => {
+                if (window.ethereum) {
+                    try {
+                        const accounts = await web3.eth.getAccounts();
+                        const currentAccount = accounts[0];
+                        
+                        if (currentAccount && currentAccount.toLowerCase() === savedAddress.toLowerCase()) {
+                            account = currentAccount;
+                            checkWalletName(account);
+                            getBalance(account);
+                            showUserProfile();
+                            
+                            setTimeout(() => {
+                                window.location.href = "src/index.html";
+                            }, 1000);
+                        } else {
+                            alert('Tài khoản này không khớp với tài khoản hiện tại trong MetaMask. Vui lòng chọn đúng tài khoản trong MetaMask.');
+                        }
+                    } catch (error) {
+                        console.error("Lỗi khi đăng nhập với tài khoản đã lưu:", error);
+                        alert("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.");
+                    }
+                }
+            };
+        
+            const deleteSavedAccount = (address) => {
+                let savedAccounts = JSON.parse(localStorage.getItem('savedAccounts') || '[]');
+                savedAccounts = savedAccounts.filter(acc => acc.address !== address);
+                localStorage.setItem('savedAccounts', JSON.stringify(savedAccounts));
+                localStorage.removeItem(`walletName_${address}`); // Xóa tên liên quan nếu có
+                displaySavedAccounts(); // Cập nhật lại danh sách
+            };
+        
             const getBalance = async (address) => {
                 const weiBalance = await web3.eth.getBalance(address);
                 const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
                 balance = parseFloat(ethBalance).toFixed(4);
                 balanceElement.textContent = balance;
-                
-                // Store balance in sessionStorage for use in the game page
                 sessionStorage.setItem('userBalance', balance);
                 sessionStorage.setItem('userAddress', address);
             };
-
-            // Check if wallet name exists in localStorage
-            const checkWalletName = async (address) => {
+        
+            const checkWalletName = (address) => {
                 const savedName = localStorage.getItem(`walletName_${address}`);
                 if (savedName) {
                     walletName = savedName;
                     userName.textContent = savedName;
                     setAvatarInitial(savedName);
-                    // Store name in sessionStorage for use in the game page
                     sessionStorage.setItem('userName', savedName);
-                        // Store name in sessionStorage for use in the game page
-                    const checkcontainacoout = await getPlayer();
-                    if(checkcontainacoout){
-                        alert("Bạn đã đăng nhập rồi! Vui lòng đăng xuất trước khi đăng nhập lại!");
-                    } else {
-                        await createPlayer({ token: address, name: savedName });
-                    } 
+                    updateSavedAccountName(address, savedName);
                 } else {
                     const enteredName = prompt("Nhập tên của bạn:");
                     if (enteredName) {
@@ -328,87 +421,53 @@
                         userName.textContent = enteredName;
                         setAvatarInitial(enteredName);
                         sessionStorage.setItem('userName', enteredName);
+                        updateSavedAccountName(address, enteredName);
                     }
                 }
             };
-
-           // Create player and send data to API
-            const createPlayer = async (playerData) => {
-                try {
-                    const response = await fetch('http://localhost:7272/api/v1/player/create', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(playerData)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Không thể tạo người chơi');
-                    }
-                    
-                    const data = await response.json();
-                    console.log('Người chơi đã được tạo:', data);
-                } catch (error) {
-                    console.error("Lỗi khi tạo người chơi:", error);
-                    alert("Đã xảy ra lỗi khi tạo người chơi. Vui lòng thử lại.");
+        
+            const updateSavedAccountName = (address, name) => {
+                let savedAccounts = JSON.parse(localStorage.getItem('savedAccounts') || '[]');
+                const accountIndex = savedAccounts.findIndex(acc => acc.address === address);
+                if (accountIndex !== -1) {
+                    savedAccounts[accountIndex].name = name;
+                    localStorage.setItem('savedAccounts', JSON.stringify(savedAccounts));
+                    displaySavedAccounts();
                 }
             };
-
-            const getPlayer = async() => {
-                try {
-                    const response = await fetch('http://localhost:7272/api/v1/player');
-                    if (!response.ok) {
-                        throw new Error('Không thể lấy thông tin người chơi');
-                    }
-                    const data = await response.json();
-                    return data.some(player => player.token === account);
-                } catch (error) {
-                    console.error("Lỗi khi lấy thông tin người chơi:", error);
-                    alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-                }
-            };
-            // Set avatar initial
+        
             const setAvatarInitial = (name) => {
                 if (name && name.length > 0) {
                     avatar.textContent = name.charAt(0).toUpperCase();
-                    
-                    // Store initial in sessionStorage for use in the game page
                     sessionStorage.setItem('userInitial', name.charAt(0).toUpperCase());
                 }
             };
-
-            // Show user profile after login
+        
             const showUserProfile = () => {
                 loginContainer.style.display = 'none';
                 userProfile.style.display = 'flex';
                 shortAddress.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
-                
-                // Store shortened address in sessionStorage for use in the game page
                 sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)}`);
             };
-
-            // Handle logout
+        
             const handleLogout = () => {
                 userProfile.style.display = 'none';
                 loginContainer.style.display = 'block';
                 account = '';
                 walletName = '';
                 balance = '0';
-                
-                // Clear session storage
                 sessionStorage.clear();
+                sessionStorage.setItem('loggedOut', 'true');
+                displaySavedAccounts();
             };
-
-            // Handle name editing
+        
             const handleEditName = () => {
                 userName.style.display = 'none';
                 nameInput.style.display = 'block';
                 nameInput.value = walletName;
                 nameInput.focus();
             };
-
-            // Handle saving name
+        
             const handleSaveName = () => {
                 const newName = nameInput.value;
                 if (newName.trim() !== '') {
@@ -416,80 +475,53 @@
                     walletName = newName;
                     userName.textContent = newName;
                     setAvatarInitial(newName);
-                    
-                    // Update name in sessionStorage
                     sessionStorage.setItem('userName', newName);
+                    updateSavedAccountName(account, newName);
                 }
                 nameInput.style.display = 'none';
                 userName.style.display = 'block';
             };
-
-            // Add button animation
-            connectButton.addEventListener('mousedown', function() {
-                this.style.transform = 'scale(0.95)';
-            });
-            
-            connectButton.addEventListener('mouseup', function() {
-                this.style.transform = 'scale(1)';
-            });
-
+        
             // Event listeners
             connectButton.addEventListener('click', connectMetaMask);
             logoutButton.addEventListener('click', handleLogout);
-            
-            // Double click to edit name
             userName.addEventListener('dblclick', handleEditName);
-            
-            // Save on blur
             nameInput.addEventListener('blur', handleSaveName);
             nameInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     handleSaveName();
                 }
             });
-            
-            // Show/hide tooltip
-            userProfile.addEventListener('mouseenter', () => {
-                tooltip.style.display = 'block';
-                setTimeout(() => {
-                    tooltip.style.transform = 'translateY(0)';
-                    tooltip.style.opacity = '1';
-                }, 50);
-            });
-            
-            userProfile.addEventListener('mouseleave', () => {
-                tooltip.style.transform = 'translateY(10px)';
-                tooltip.style.opacity = '0';
-                setTimeout(() => {
-                    tooltip.style.display = 'none';
-                }, 300);
-            });
-            
-            // In your login page file (paste.txt)
-const checkSavedSession = async () => {
-    // Skip auto-login if user just logged out
-    if (sessionStorage.getItem('loggedOut') === 'true') {
-        sessionStorage.removeItem('loggedOut');
-        return;
-    }
-    
-    if (window.ethereum) {
-        try {
-            const accounts = await web3.eth.getAccounts();
-            if (accounts.length > 0) {
-                account = accounts[0];
-                checkWalletName(account);
-                getBalance(account);
-                showUserProfile();
-            }
-        } catch (error) {
-            console.error("Không thể kiểm tra phiên đã lưu:", error);
-        }
-    }
-};
-            // Try to restore session on page load
+        
+            const checkSavedSession = async () => {
+                if (sessionStorage.getItem('loggedOut') === 'true') {
+                    sessionStorage.removeItem('loggedOut');
+                    displaySavedAccounts();
+                    return;
+                }
+                
+                if (window.ethereum) {
+                    try {
+                        const accounts = await web3.eth.getAccounts();
+                        if (accounts.length > 0) {
+                            account = accounts[0];
+                            checkWalletName(account);
+                            getBalance(account);
+                            showUserProfile();
+                        } else {
+                            displaySavedAccounts();
+                        }
+                    } catch (error) {
+                        console.error("Không thể kiểm tra phiên đã lưu:", error);
+                        displaySavedAccounts();
+                    }
+                } else {
+                    displaySavedAccounts();
+                }
+            };
+        
             checkSavedSession();
         });
-    </script>
+        </script>
 </body>
 </html>
