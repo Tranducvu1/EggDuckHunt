@@ -4,7 +4,7 @@ import { changeDuckMovementType, updateDucksBasedOnCount } from './DuckManager/d
 import { moveDuck, setupDuckMovement } from './State/duckMovement';
 import { initializeGameStorage, updateCounters, incrementEggAndCoin } from './Ultils/storage';
 import {ducks} from './DuckManager/duckManager';
-import { moveDuckToBasket } from './Egg/eggLaying';
+import { moveDuckToBasket, startWarningCycle } from './Egg/eggLaying';
 import { setupRandomEggLaying } from './Egg/eggScheduler';
 // import { autoUpdate } from './UI/change';
 // Execute when the HTML document has fully loaded
@@ -16,10 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCounters();
 
     // Adjust duck-related elements based on current count
-
+ startWarningCycle(); // Khởi động lại vòng lặp cảnh báo sau khi đẻ trứng
+    // Start the warning cycle for duck movement
+    
     updateDucksBasedOnCount();
     // Set up duck movement types based on the number of ducks
    // autoUpdate();
+
+
+
+
+
+
+
+   
     // Move each duck at an interval of 150 milliseconds
     setupDuckMovement();
 

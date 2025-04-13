@@ -1,0 +1,202 @@
+
+/* General Animation Classes */
+.animate-float {
+    animation: float-up 1s ease-out forwards;
+    }
+    
+    .animate-pulse {
+    animation: pulse 0.6s ease-out;
+    }
+    
+    .animate-glow {
+    animation: glow 0.8s ease-in-out;
+    }
+    
+    .animate-bounce {
+    animation: bounce 0.5s ease-in-out;
+    }
+    
+    /* Floating Number Styles */
+    .floating-number {
+    position: absolute;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 1000;
+    }
+    
+    .floating-number.positive {
+    color: #2ecc71;
+    }
+    
+    .floating-number.negative {
+    color: #e74c3c;
+    }
+    
+    /* Currency Animation Styles */
+    .currency-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    }
+    
+    .currency-animation img {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+    }
+    
+    .currency-animation span {
+    margin-left: 4px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    }
+    
+    /* Particle Effects */
+    .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    }
+    
+    /* Fancy Button Styles */
+    .btn-exchange {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.3s;
+    }
+    
+    .btn-exchange:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-exchange:active {
+    transform: translateY(1px);
+    }
+    
+    .btn-exchange::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+    to right, 
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg) translateY(-100%);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.3s;
+    }
+    
+    .btn-exchange:hover::after {
+    opacity: 1;
+    transform: rotate(30deg) translateY(100%);
+    }
+    
+    /* Resource Item Hover Effects */
+    .resource-item {
+    position: relative;
+    transition: transform 0.2s ease;
+    }
+    
+    .resource-item:hover {
+    transform: scale(1.05);
+    }
+    
+    .resource-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    transition: box-shadow 0.3s;
+    }
+
+    /* Vịt */
+.duck {
+    position: absolute;
+    width: 60px;
+    height: auto;
+    z-index: 10;
+}
+
+.exchange-container {
+    right: -200px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+}
+
+.resource-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+}
+
+.resource-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+}
+
+.resource-value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.control-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.btn-exchange {
+    background-color: #2196F3;
+}
+
+.btn-exchange:hover {
+    background-color: #1E88E5;
+}
+
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+    

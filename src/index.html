@@ -7,8 +7,15 @@
     <script src="https://code.playcanvas.com/playcanvas-stable.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/settings.css">
+    <link rel="stylesheet" href="./styles/change.css">
+    <link rel="stylesheet" href="./styles/effects.css">
+    <link rel="stylesheet" href="./styles/enviroment.css">
+    <link rel="stylesheet" href="./styles/login.css">
+
 </head>
 <body>
+    <div class="background-wrapper"></div>
     <div class="counter-container">
         <div id="eggCounter" class="counter egg-counter">
             <img src="../assets/duck/egg.png" alt="Egg">
@@ -18,9 +25,6 @@
             <img src="../assets/duck/coins/coin.png" alt="Coin">
             <span>0</span>
         </div>
-    </div>
-    <div class="icon-duck">
-        <img src="../assets/icon-duck.png" alt="Duck Icon">
     </div>
     <div class="icon-bag">
         <img src="../assets/bag.png" alt="Bag Icon">
@@ -56,7 +60,77 @@
             <div class="control-buttons">
                 <button id="exchangeduckBtn" class="btn btn-exchange">Exchange Ducks</button>
             </div>
+            <div class="resource-display">
+                <div class="resource-item">
+                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
+                    <span id="duckcoinCount" class="resource-value">0</span>
+                </div>
+                <div class="resource-item">
+                    <img src="../assets/duck/relax -yellow/a1.png" alt="Duck" class="resource-icon">
+                    <span id="yellowDuckCount" class="resource-value">0</span>
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button id="exchangeYellowDuckBtn" class="btn btn-exchange">Exchange Ducks</button>
+            </div>
+            <div class="resource-display">
+                <div class="resource-item">
+                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
+                    <span id="duckcoinCount" class="resource-value">0</span>
+                </div>
+                <div class="resource-item">
+                    <img src="../assets/duck/relax - red/a1.png" alt="Duck" class="resource-icon">
+                    <span id="redDuckCount" class="resource-value">0</span>
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button id="exchangeRedDuckBtn" class="btn btn-exchange">Exchange Ducks</button>
+            </div>
         </div>
+
+         <!-- React + Babel -->
+       <!-- Contract Info -->
+      <div>
+        <h2>Contract Balance: <span id="contractBalance">0</span> Token</h2>
+        <p>Connected Account: <span id="connectedAccount">Not connected</span></p>
+        <p>Contract Owner: <span id="contractOwner">Loading...</span></p>
+      </div>
+   <!-- Nhúng script -->
+      <script src="./components/ContractInfo.js" type="module"></script>
+
+
+      
+      <div>
+        <h2>Contract Actions</h2>
+        <p><strong>Your Balance:</strong> <span id="userBalance">0</span> Token</p>
+
+        <!-- Radio chọn hành động -->
+        <div>
+            <label>
+                <input type="radio" value="deposit" name="action" id="depositRadio" checked>
+                Deposit
+            </label>
+            <label>
+                <input type="radio" value="withdraw" name="action" id="withdrawRadio">
+                Withdraw
+            </label>
+        </div>
+
+        <!-- Input chung -->
+        <div>
+            <input type="text" id="amountInput" placeholder="Amount in ETH">
+            <button id="actionButton">Deposit Funds</button>
+        </div>
+
+        <!-- Convert Token -> ETH -->
+        <h3>Convert Token to ETH</h3>
+        <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
+        <input type="text" id="convertAmountInput" placeholder="Enter token amount">
+        <button id="convertButton">Convert</button>
+    </div>
+</div>
     </div>
 
     <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
@@ -90,7 +164,7 @@
     </audio>
  <!-- Scripts -->
  <script type="module" src = "./login.ts"></script>
-<script tyoe="module" src="./Ultils/storage.ts"></script>
+<script type="module" src="./Ultils/storage.ts"></script>
  <script type="module" src="./game.ts"></script>
 <script type="module" src="./UI/bad.ts"></script>
 <script type="module" src="./Egg/eggScheduler.ts"></script>
@@ -98,7 +172,7 @@
 <script type="module" src = "./UI/change.ts"></script>
 <script type="module" src = "./settings/volumns.ts"></script>
 
- <!-- <script>
+ <script>
     document.addEventListener('DOMContentLoaded', function() {
         const userProfile = document.getElementById('userProfile');
         const userName = document.getElementById('userName');
@@ -108,8 +182,6 @@
         const balanceElement = document.getElementById('balance');
         const logoutButton = document.getElementById('logoutButton');
         const avatar = document.getElementById('avatar');
-        
-
         let web3;
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
@@ -145,6 +217,37 @@
             }
         }
     };
+
+
+const updatePlayer = async (username) => {
+    try {
+        const response = await fetch(`http://localhost:7272/api/v1/player/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+               username : name,
+
+            }),
+        });
+
+        if (response.ok) {
+            console.log("Cập nhật thêm thành công!");
+        } else {
+            console.error("Lỗi cập nhật người chơi");
+            // Nếu cập nhật thất bại, có thể token không còn hợp lệ
+            tokenVerified = false;
+            localStorage.removeItem('verifiedToken');
+        }
+    } catch (err) {
+        console.error("Lỗi khi gửi yêu cầu:", err);
+        // Nếu có lỗi kết nối, đánh dấu token là chưa xác thực để thử lại lần sau
+        tokenVerified = false;
+        localStorage.removeItem('verifiedToken');
+    }
+}; 
+
     const loadUserData = () => {
     const storedName = sessionStorage.getItem('userName');
     const storedAddress = sessionStorage.getItem('shortAddress');
@@ -276,6 +379,6 @@ const removeWalletData = (address) => {
         // Load user data on page load
         loadUserData();
     });
-</script> -->
+</script>
 </body>
 </html>
