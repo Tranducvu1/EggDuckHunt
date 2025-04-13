@@ -1,0 +1,43 @@
+/* setting*/
+.settings-btn {
+    position: fixed;
+    top: 20px;
+    left:50px;
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Settings menu */
+.settings-menu {
+    position: fixed;
+    top: 80px;
+    left: 50px;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    width: 220px;
+    display: none;
+    z-index: 999;
+}
+
+.settings-menu h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+}
+
+.volume-control input[type="range"] {
+    width: 100%;
+}

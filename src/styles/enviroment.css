@@ -1,0 +1,164 @@
+/* Create the pond */
+.pond {
+    position: absolute;
+    width: 300px;
+    height: 120px;
+    background: rgba(0, 162, 232, 0.7); /* Water blue color */
+    border-radius: 50%;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Grass around the pond */
+.grass {
+    position: absolute;
+    width: 120px;
+    left: 10%;
+    bottom: 15%;
+    z-index: 5;
+}
+
+/* Modify counter style to display both eggs and coins */
+.counter-container {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0px 4px 15px rgba(0, 191, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0px 6px 20px rgba(0, 191, 255, 0.7);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0px 4px 15px rgba(0, 191, 255, 0.5);
+    }
+}
+
+@keyframes colorChange {
+    0% {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    50% {
+        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+    100% {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+}
+
+.counter {
+    background: linear-gradient(135deg, #4facfe, #00f2fe); /* Blue to aqua gradient */
+    padding: 12px 24px;
+    width: 80px;
+    height: 35px;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 191, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+
+    /* Continuous animation effect */
+    animation: pulse 1.5s infinite ease-in-out, colorChange 3s infinite alternate;
+}
+
+.egg-counter {
+    background: rgba(255, 255, 0, 0.8);
+}
+
+.coin-counter {
+    background: rgba(255, 215, 0, 0.8);
+}
+
+.counter img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.grass2 {
+    position: absolute;
+    width: 120px;
+    right: 10%;
+    bottom: 15%;
+    z-index: 5;
+}
+
+.bag-popup {
+    display: none;
+    position: absolute;
+    top: 80px;
+    right: 6%;
+    background: white;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.icon-duck {
+    display: flex;
+    position: absolute;
+    top: 7%;
+    left: 28%;
+    transform: translate(-50%, -50%); 
+}
+
+.icon-duck img {
+    width: 20%; 
+    height: auto; 
+}
+
+.icon-bag {
+    display: flex;
+    position: absolute;
+    top: 5%;
+    right: -100px;
+    width: 230px;
+    height: 57px;
+    transform: translate(-50%, -50%); 
+}
+
+.icon-bag img {
+    width: 25%;
+    height: auto;
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+
+    /* Highlight effect */
+    filter: brightness(2); /* Slightly brighten the image */
+    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0));
+}
+
+/* Hover effect */
+.icon-bag img:hover {
+    transform: scale(1.2) rotate(-5deg); /* Enlarge by 1.2 and slightly rotate */
+    filter: drop-shadow(0px 4px 10px rgb(74, 197, 231)); /* Light shadow */
+}
+
+/* Adjust the position of egg basket in the pond */
+.egg-basket {
+    position: absolute;
+    width: 50px;
+    height: 40px;
+    filter: contrast(120%) brightness(110%) saturate(120%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.egg-basket:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 4px 15px rgba(255, 255, 0, 0.6);
+}
