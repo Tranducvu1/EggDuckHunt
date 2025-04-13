@@ -140,7 +140,6 @@ function moveRandom(duck: Duck): void {
             duck.direction.y /= magnitude;
         }
     }
-    
     duck.position.left += duck.direction.x * duck.speed;
     duck.position.top += duck.direction.y * duck.speed;
 }
@@ -164,7 +163,6 @@ function updateActualDirection(duck: Duck, prevPosition: { left: number, top: nu
 
 function handlePondDetection(duck: Duck, duckElement: HTMLImageElement): void {
     const { POND } = GAME_CONSTANTS;
-    
     const isInPond = 
         duck.position.left >= POND.LEFT && 
         duck.position.left <= POND.RIGHT && 
@@ -213,8 +211,7 @@ function enterPond(duck: Duck, duckElement: HTMLImageElement): void {
     // Set up relaxation animation sequence - just update the state, sprite will be updated in handlePondDetection
     duck.relaxTimer1 = setTimeout(() => {
         if (duck.inPond) {
-            duck.relaxState = 1;
-            
+            duck.relaxState = 1;      
             duck.relaxTimer2 = setTimeout(() => {
                 if (duck.inPond) {
                     duck.relaxState = 2;
@@ -242,13 +239,11 @@ function updateDuckSprite(duck: Duck, duckElement: HTMLImageElement): void {
 }
 // Store movement intervals to clear them later
 const duckMovementIntervals: NodeJS.Timeout[] = [];
-
 // Function to set up duck movement
 export function setupDuckMovement() {
     // Clear any existing intervals
     duckMovementIntervals.forEach(interval => clearInterval(interval));
-    duckMovementIntervals.length = 0;
-    
+    duckMovementIntervals.length = 0;  
     // Set up new intervals for each duck
     ducks.forEach(duck => {
         const interval = setInterval(() => moveDuck(duck), 150);

@@ -16,6 +16,11 @@ let player: PlayerData;
 let tokenVerified = false;
 
 // 📌 Get DOM elements
+const yellowDuckCountEl = document.getElementById('yellowDuckCount') as HTMLElement;
+const redDuckCountEl = document.getElementById('redDuckCount') as HTMLElement;
+const exchangeYellowDuckBtn = document.getElementById('exchangeYellowDuckBtn') as HTMLButtonElement;
+const exchangeRedDuckBtn = document.getElementById('exchangeRedDuckBtn') as HTMLButtonElement;
+
 const eggCountchangeEl = document.getElementById('eggCount') as HTMLElement;
 const coinCountchangeEl = document.getElementById('coinCount') as HTMLElement;
 const exchangeBtn = document.getElementById('exchangeBtn') as HTMLButtonElement;
