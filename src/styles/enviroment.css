@@ -102,14 +102,74 @@
 .bag-popup {
     display: none;
     position: absolute;
-    top: 80px;
-    right: 6%;
+    top: 90px;
+    left: 70px;
     background: white;
     padding: 10px;
     border: 1px solid black;
+    z-index: 11;
     border-radius: 5px;
 }
+.contract-popup {
+    display: none;
+    position: absolute;
+    top: 90px;
+    left: 10px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 11;
+    transition: opacity 0.3s ease;
+}
 
+.contract-popup h2,
+.contract-popup h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.contract-popup p {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.contract-popup label {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.contract-popup input[type="text"] {
+    width: 60%;
+    padding: 8px 10px;
+    margin: 8px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+.contract-popup button {
+    width: 38%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 4px;
+}
+
+.contract-popup button:hover {
+    background-color: #0056b3;
+}
 .icon-duck {
     display: flex;
     position: absolute;
@@ -126,34 +186,55 @@
 .icon-bag {
     display: flex;
     position: absolute;
-    top: 5%;
-    right: -100px;
-    width: 230px;
+    top: 40px;
+    left: 250px;
+    width: 58px;
     height: 57px;
     transform: translate(-50%, -50%); 
 }
 
 .icon-bag img {
-    width: 25%;
+    width: 100%;
     height: auto;
     transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
-
     /* Highlight effect */
-    filter: brightness(2); /* Slightly brighten the image */
-    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0));
+    filter: brightness(5); /* Slightly brighten the image */
+    filter: drop-shadow(0px 4px 10px rgb(255, 255, 255));
 }
 
 /* Hover effect */
 .icon-bag img:hover {
     transform: scale(1.2) rotate(-5deg); /* Enlarge by 1.2 and slightly rotate */
-    filter: drop-shadow(0px 4px 10px rgb(74, 197, 231)); /* Light shadow */
+    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0)); /* Light shadow */
+}
+.icon-contract {
+    display: flex;
+    position: absolute;
+    top: 45px;
+    left: 165px;
+    width: 58px;
+    height: 57px;
+    transform: translate(-50%, -50%); 
+}
+
+.icon-contract img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+    /* Highlight effect */
+    filter: brightness(5); /* Slightly brighten the image */
+    filter: drop-shadow(0px 4px 10px rgb(255, 255, 255));
+}
+
+/* Hover effect */
+.icon-contract img:hover {
+    transform: scale(1.2) rotate(-5deg); /* Enlarge by 1.2 and slightly rotate */
+    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0)); /* Light shadow */
 }
 
 /* Adjust the position of egg basket in the pond */
 .egg-basket {
     position: absolute;
-    width: 50px;
-    height: 40px;
     filter: contrast(120%) brightness(110%) saturate(120%);
     transition: transform 0.3s ease-in-out;
 }
