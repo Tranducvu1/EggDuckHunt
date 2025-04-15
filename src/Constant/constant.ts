@@ -18,7 +18,7 @@ export const GAME_CONSTANTS = {
         MAX_LEFT: 80,
         MIN_TOP: 30,
         MAX_TOP: 85,
-        DEFAULT_COUNT: 3
+        DEFAULT_COUNT: 1
     }
 };
 

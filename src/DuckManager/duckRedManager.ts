@@ -2,11 +2,12 @@ import { Duck } from '../Types/types';
 import { getRandomMovementType, getRandomDirection, getRandomPosition } from '../Ultils/Ultils';
 import { GAME_CONSTANTS } from '../Constant/constant';
 
-export const normalDucks: Duck[] = [];
+export const redDucks: Duck[] = [];
+
 
 export function updateDucksBasedOnCount(): void {
-    const duckCount = parseInt(localStorage.getItem('duckCount') || GAME_CONSTANTS.DUCK.DEFAULT_COUNT.toString());
-    const currentDuckCount = normalDucks.length;
+    const duckCount = parseInt(localStorage.getItem('redDuckCount') || GAME_CONSTANTS.DUCK.DEFAULT_COUNT.toString());
+    const currentDuckCount = redDucks.length;
     // Add more ducks if needed
     if (duckCount > currentDuckCount) {
         for (let i = currentDuckCount; i < duckCount; i++) {
@@ -20,14 +21,13 @@ export function updateDucksBasedOnCount(): void {
 }
 
 // Function to initialize ducks based on the count in localStorage
-
 function createNewDuck(index: number): void {
     const position = getRandomPosition();
     const movementType = getRandomMovementType();
     
     // Create a new duck with randomized properties
     const newDuck: Duck = {
-        id: `duck${index}`,
+        id: `redduck${index}`,
         size: 100,
         position: position,
         direction: getRandomDirection(),
@@ -44,7 +44,7 @@ function createNewDuck(index: number): void {
     initializeMovementProperties(newDuck);
     
     // Add to ducks array
-    normalDucks.push(newDuck);
+    redDucks.push(newDuck);
     
     // Create DOM element
     createDuckElement(newDuck);
@@ -63,21 +63,20 @@ function initializeMovementProperties(duck: Duck): void {
 function createDuckElement(duck: Duck): void {
     const duckElement = document.createElement('img');
     duckElement.id = duck.id;
-    duckElement.classList.add('duck');
-    duckElement.src = `../../assets/duck/right-left/a${duck.direction.x > 0 ? 1 : 3}.png`;
+    duckElement.classList.add('redduck');
+    duckElement.src = `../../assets/duck/right-left-red/a${duck.direction.x > 0 ? 1 : 3}.png`;
     duckElement.style.position = 'absolute';
     duckElement.style.width = '100px';
     duckElement.style.left = `${duck.position.left}%`;
     duckElement.style.top = `${duck.position.top}%`;
     duckElement.style.cursor = 'pointer';
-    
     // Add to DOM
     document.body.appendChild(duckElement);
 }
 
 function removeExcessDucks(count: number): void {
     for (let i = 0; i < count; i++) {
-        const duckToRemove = normalDucks.pop();
+        const duckToRemove = redDucks.pop();
         if (duckToRemove) {
             const element = document.getElementById(duckToRemove.id);
             if (element) element.remove();
@@ -96,11 +95,9 @@ function clearDuckTimers(duck: Duck): void {
 
 // Configuration functions
 export function changeDuckMovementType(duckId: string, newMovementType: Duck["movementType"]): void {
-    const duck = normalDucks.find(d => d.id === duckId);
+    const duck = redDucks.find(d => d.id === duckId);
     if (!duck) return;
-    
     duck.movementType = newMovementType;
-    
     // Reset any movement-specific properties
     if (newMovementType === "circular") {
         duck.centerPoint = { 

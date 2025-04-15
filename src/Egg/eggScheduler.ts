@@ -1,35 +1,41 @@
 import { Duck } from '../Types/types';
-import { moveDuckToBasket } from './eggLaying';
+import { moveDuckToBasket as moveNormalDuckToBasket } from './eggLaying';
+import { moveDuckToBasket as moveYellowDuckToBasket } from './eggLayingYellow';
+import { moveDuckToBasket as moveRedDuckToBasket } from './eggLayingRed';
 import { GAME_CONSTANTS } from '../Constant/constant';
-import { ducks } from '../DuckManager/duckManager';
+import { normalDucks} from '../DuckManager/duckManager';
+import { redDucks} from '../DuckManager/duckRedManager';
+import { yellowDucks } from '../DuckManager/duckYellowManager';
 
 export function setupRandomEggLaying(): void {
-    ducks.forEach(scheduleEggLayingForDuck);
+    normalDucks.forEach(scheduleEggLayingForDuck);
+    redDucks.forEach(scheduleEggLayingForDuck);
+    yellowDucks.forEach(scheduleEggLayingForDuck);
 }
 
 function scheduleEggLayingForDuck(duck: Duck): void {
     const { MIN_EGG_TIME, MAX_EGG_TIME } = GAME_CONSTANTS.MOVEMENT;
-    
-    // Clear any existing interval for this duck
+
     if (duck.autoMoveInterval) {
         clearTimeout(duck.autoMoveInterval);
     }
-    
-    // Calculate a random time for this specific duck
+
     const nextEggTime = MIN_EGG_TIME + Math.random() * (MAX_EGG_TIME - MIN_EGG_TIME);
-    
-    // Schedule the egg-laying event for this duck
+
     duck.autoMoveInterval = setTimeout(() => {
         if (duck.moving) {
-            // Make the duck go to the basket
-            moveDuckToBasket(duck);
-            
-            // After the duck returns from laying, schedule the next egg-laying
+            if (normalDucks.includes(duck)) {
+                moveNormalDuckToBasket(duck);
+            } else if (redDucks.includes(duck)) {
+                moveRedDuckToBasket(duck);
+            } else if (yellowDucks.includes(duck)) {
+                moveYellowDuckToBasket(duck);
+            }
+
             setTimeout(() => {
                 scheduleEggLayingForDuck(duck);
-            }, 25000); // allow time for movement + laying + return
+            }, 25000);
         } else {
-            // If duck is busy, try again in a bit
             setTimeout(() => {
                 scheduleEggLayingForDuck(duck);
             }, 5000);

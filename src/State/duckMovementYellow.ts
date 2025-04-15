@@ -1,7 +1,7 @@
 // duckMovement.ts - Duck movement logic
 import { Duck } from '../Types/types';
 import { GAME_CONSTANTS } from '../Constant/constant';
-import { normalDucks } from '../DuckManager/duckManager';
+import { yellowDucks } from '../DuckManager/duckYellowManager';
 
 export function moveDuck(duck: Duck): void {
     if (!duck.moving) return;
@@ -192,11 +192,11 @@ function updateDuckInPondSprite(duck: Duck, duckElement: HTMLImageElement): void
     
     // Determine which animation frame to use based on duck's relaxation state
     if (!duck.relaxState || duck.relaxState === 0) {
-        duckElement.src = facingRight ? "../assets/duck/relax/a3.png" : "../assets/duck/relax/a1.png";
+        duckElement.src = facingRight ? "../assets/duck/relax-yellow/a3.png" : "../assets/duck/relax-yellow/a1.png";
     } else if (duck.relaxState === 1) {
-        duckElement.src = facingRight ? "../assets/duck/relax/a5.png" : "../assets/duck/relax/a7.png";
+        duckElement.src = facingRight ? "../assets/duck/relax-yellow/a5.png" : "../assets/duck/relax-yellow/a7.png";
     } else if (duck.relaxState === 2) {
-        duckElement.src = facingRight ? "../assets/duck/relax/a6.png" : "../assets/duck/relax/a8.png";
+        duckElement.src = facingRight ? "../assets/duck/relax-yellow/a6.png" : "../assets/duck/relax-yellow/a8.png";
     }
 }
 
@@ -233,7 +233,7 @@ function exitPond(duck: Duck): void {
 function updateDuckSprite(duck: Duck, duckElement: HTMLImageElement): void {
     // Update frame less frequently for smoother animation
     if (Math.random() < 0.1) { // Only update sprite 10% of the time
-        duckElement.src = `../assets/duck/right-left/a${duck.frame + (duck.direction.x < 0 ? 2 : 0)}.png`;
+        duckElement.src = `../assets/duck/right-left-yellow/a${duck.frame + (duck.direction.x < 0 ? 2 : 0)}.png`;
         duck.frame = duck.frame === 1 ? 2 : 1;
     }
 }
@@ -245,7 +245,7 @@ export function setupDuckMovement() {
     duckMovementIntervals.forEach(interval => clearInterval(interval));
     duckMovementIntervals.length = 0;  
     // Set up new intervals for each duck
-    normalDucks.forEach(duck => {
+    yellowDucks.forEach(duck => {
         const interval = setInterval(() => moveDuck(duck), 150);
         duckMovementIntervals.push(interval);
     });
