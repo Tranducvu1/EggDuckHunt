@@ -249,859 +249,395 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-     const connectButton = document.getElementById('connectButton');
-     const loginContainer = document.getElementById('loginContainer');
-     const userProfile = document.getElementById('userProfile');
-     const userName = document.getElementById('userName');
-     const nameInput = document.getElementById('nameInput');
-     const tooltip = document.getElementById('tooltip');
-     const shortAddress = document.getElementById('shortAddress');
-     const balanceElement = document.getElementById('balance');
-     const logoutButton = document.getElementById('logoutButton');
-     const avatar = document.getElementById('avatar');
-     let account = '';
-     let walletName = '';
-     let balance = '0';
-     let web3;
- 
-     // Create savedAccountsList element
-     const savedAccountsList = document.createElement('div');
-     savedAccountsList.id = 'savedAccountsList';
-     savedAccountsList.style.cssText = `
-    margin-bottom: 10px;
-    max-height: 150px;
-    overflow-y: auto;
-    width: 100%;
-`;
-     loginContainer.insertBefore(savedAccountsList, connectButton);
- 
-     if (window.ethereum) {
-         web3 = new Web3(window.ethereum);
-     }
- 
-     // Connect to MetaMask
-     const connectMetaMask = async () => {
-         if (window.ethereum) {
-             try {
-                 await window.ethereum.request({ method: 'eth_requestAccounts' });
-                 const accounts = await web3.eth.getAccounts();
-                 account = accounts[0];
-                 checkWalletName(account);
-                 getBalance(account);
-                 showUserProfile();
-                 // Redirect to game page after successful login
-                 setTimeout(() => {
-                     window.location.href = "src/index.html";
-                 }, 50);
-             } catch (error) {
-                 console.error("Lỗi khi kết nối MetaMask:", error);
-                 alert("Đã xảy ra lỗi khi kết nối MetaMask. Vui lòng thử lại.");
-             }
-         } else {
-             alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
-         }
-     };
- 
-     // Get wallet balance
-     const getBalance = async (address) => {
-         const weiBalance = await web3.eth.getBalance(address);
-         const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
-         balance = parseFloat(ethBalance).toFixed(4);
-         balanceElement.textContent = balance;
-         
-         // Store balance in sessionStorage for use in the game page
-         sessionStorage.setItem('userBalance', balance);
-         sessionStorage.setItem('userAddress', address);
-     };
- 
-     // Check if wallet name exists in localStorage
-     const checkWalletName = async (address) => {
-         const savedName =  address
-         if (savedName) {
-             walletName = savedName;
-             userName.textContent = savedName;
-             setAvatarInitial(savedName);
-             // Store name in sessionStorage for use in the game page
-             sessionStorage.setItem('userName', savedName);
-             // Check if account exists in the API
-             const accountExists = await checkPlayerExists(address);
-             if(accountExists) {
-                 console.log("Tài khoản đã tồn tại trong hệ thống");
-             } else {
-                console.log(accountExists);
-                 await createPlayer({ token: address, name: savedName });
-             } 
-         } else {
-             const enteredName = prompt("Nhập tên của bạn:");
-             if (enteredName) {
-                 localStorage.setItem(`walletName_${address}`, enteredName);
-                 walletName = enteredName;
-                 userName.textContent = enteredName;
-                 setAvatarInitial(enteredName);
-                 sessionStorage.setItem('userName', enteredName);
-                 await createPlayer({ token: address, name: enteredName });
-             }
-         }
-     };
-     // Create player and send data to API
-     const createPlayer = async (playerData) => {
-         try {
-             const response = await fetch('http://localhost:7272/api/v1/player/create', {
-                 method: 'POST',
-                 headers: {
-                     'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify(playerData)
-             });
-             
-             if (!response.ok) {
-                 throw new Error('Không thể tạo người chơi');
-             }
-             const data = await response.json();
-             console.log('Người chơi đã được tạo:', data);
-         } catch (error) {
-             console.error("Lỗi khi tạo người chơi:", error);
-             alert("Đã xảy ra lỗi khi tạo người chơi. Vui lòng thử lại.");
-         }
-     };
- 
-     // Check if player exists in API
-     const checkPlayerExists = async (address) => {
-         try {
-             const response = await fetch('http://localhost:7272/api/v1/player');
-             if (!response.ok) {
-                 throw new Error('Không thể lấy thông tin người chơi');
-             }
-             const data = await response.json();
-             return data.some(player => player.token === address);
-         } catch (error) {
-             console.error("Lỗi khi lấy thông tin người chơi:", error);
-             alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-             return false;
-         }
-     };
-     // Get all players from API
-     const getAllPlayers = async () => {
-         try {
-             const response = await fetch('http://localhost:7272/api/v1/player');
-             if (!response.ok) {
-                 throw new Error('Không thể lấy thông tin người chơi');
-             }
-             const data = await response.json();
-             return data.some(player => player.token === account);
-         } catch (error) {
-             console.error("Lỗi khi lấy thông tin người chơi:", error);
-             alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-             return [];
-         }
-     };
-     // Display all accounts from API
-     const displayAccounts = async () => {
-         const players = await getAllPlayers();
-         savedAccountsList.innerHTML = ''; // Clear previous content
-         
-         if (players && players.length > 0) {
-             players.forEach(player => {
-                 const accountItem = document.createElement('div');
-                 accountItem.style.cssText = `
-                     padding: 10px;
-                     background: rgba(255, 255, 255, 0.8);
-                     border-radius: 5px;
-                     margin-bottom: 5px;
-                     cursor: pointer;
-                     display: flex;
-                     justify-content: space-between;
-                     align-items: center;
-                ` ;
-                 
-                 const accountInfo = document.createElement('div');
-                 accountInfo.textContent = `${player.name} (${player.token.slice(0, 6)}...${player.token.slice(-4)})`;
-
-                 accountItem.appendChild(accountInfo);
-                 
-                 const deleteBtn = document.createElement('button');
-                 deleteBtn.textContent = 'X';
-                 deleteBtn.style.cssText = `
-                     background: #ff4d4d;
-                     color: white;
-                     border: none;
-                     border-radius: 50%;
-                     width: 24px;
-                     height: 24px;
-                     cursor: pointer;
-                     display: flex;
-                     align-items: center;
-                     justify-content: center;
-                    `;
-                 // Delete account button
-                 deleteBtn.onclick = (e) => {
-                     e.stopPropagation();
-                     if (confirm(`Bạn có chắc chắn muốn xóa tài khoản ${player.name}?`)) {
-                         deleteAccount(player.token);
-                     }
-                 };
-                 accountItem.appendChild(deleteBtn);
-                 
-                 // Click on account to try login with it
-                 accountItem.onclick = async () => {
-                     if (window.ethereum) {
-                         try {
-                             // First connect to MetaMask
-                             await window.ethereum.request({ method: 'eth_requestAccounts' });
-                             const accounts = await web3.eth.getAccounts();
-                             const currentAccount = accounts[0];
-                             
-                             // Check if selected account matches MetaMask
-                             if (currentAccount.toLowerCase() === player.token.toLowerCase()) {
-                                account = currentAccount;
-                            
-                            // Since the account exists in the player list from API, 
-                            // we know it already exists, no need to check again
-                            walletName = player.name;
-                            userName.textContent = player.name;
-                            setAvatarInitial(player.name);
-                            sessionStorage.setItem('userName', player.name);
-                            getBalance(account);
-                            showUserProfile();
-                                 
-                                 // Redirect to game page after successful login
-                                 setTimeout(() => {
-                                     window.location.href = "src/index.html";
-                                 }, 50);
-                             } else {
-                                 alert("Vui lòng chọn đúng tài khoản trong MetaMask trước khi đăng nhập.");
-                             }
-                         } catch (error) {
-                             console.error("Lỗi khi kết nối:", error);
-                             alert("Đã xảy ra lỗi khi kết nối MetaMask. Vui lòng thử lại.");
-                         }
-                     } else {
-                         alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
-                     }
-                 };
-                 savedAccountsList.appendChild(accountItem);
-             });
-         } else {
-             const noAccounts = document.createElement('div');
-             noAccounts.textContent = "Không có tài khoản nào được lưu";
-             noAccounts.style.cssText = `
-                 padding: 10px;
-                 text-align: center;
-                 color: #666;
-             `;
-             savedAccountsList.appendChild(noAccounts);
-         }
-     };
-     
-     // Delete account from API
-     const deleteAccount = async (token) => {
-         try {
-             const response = await fetch(`http://localhost:7272/api/v1/player/${token}`, {
-                 method: 'DELETE',
-                 headers: {
-                     'Content-Type': 'application/json'
-                 }
-             });
-             
-             if (!response.ok) {
-                 throw new Error('Không thể xóa tài khoản');
-             }
-             
-             console.log('Tài khoản đã được xóa');
-             alert("Tài khoản đã được xóa thành công.");
-             
-             // Refresh the list after deletion
-             displayAccounts();
-         } catch (error) {
-             console.error("Lỗi khi xóa tài khoản:", error);
-             alert("Đã xảy ra lỗi khi xóa tài khoản. Vui lòng thử lại.");
-         }
-     };
-     
-     // Set avatar initial
-     const setAvatarInitial = (name) => {
-         if (name && name.length > 0) {
-             avatar.textContent = name.charAt(0).toUpperCase();
-             // Store initial in sessionStorage for use in the game page
-             sessionStorage.setItem('userInitial', name.charAt(0).toUpperCase());
-         }
-     };
- 
-     // Show user profile after login
-     const showUserProfile = () => {
-         loginContainer.style.display = 'none';
-         userProfile.style.display = 'flex';
-         shortAddress.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
-         
-         // Store shortened address in sessionStorage for use in the game page
-         sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)});${account.slice(0, 6)}...${account.slice(-4)}`);
-     };
- 
-     // Handle logout
-     const handleLogout = () => {
-         userProfile.style.display = 'none';
-         loginContainer.style.display = 'block';
-         account = '';
-         walletName = '';
-         balance = '0';
-         
-         // Clear session storage
-         sessionStorage.setItem('loggedOut', 'true');
-         sessionStorage.removeItem('userBalance');
-         sessionStorage.removeItem('userAddress');
-         sessionStorage.removeItem('userName');
-         sessionStorage.removeItem('userInitial');
-         sessionStorage.removeItem('shortAddress');
-         
-         // Refresh account list
-         displayAccounts();
-     };
- 
-     // Handle name editing
-     const handleEditName = () => {
-         userName.style.display = 'none';
-         nameInput.style.display = 'block';
-         nameInput.value = walletName;
-         nameInput.focus();
-     };
- 
-     // Handle saving name
-     const handleSaveName = () => {
-         const newName = nameInput.value;
-         if (newName.trim() !== '') {
-             localStorage.setItem(`walletName_${account}`, newName);
-             walletName = newName;
-             userName.textContent = newName;
-             setAvatarInitial(newName);
-             
-             // Update name in sessionStorage
-             sessionStorage.setItem('userName', newName);
-         }
-         nameInput.style.display = 'none';
-         userName.style.display = 'block';
-     };
- 
-     // Add button animation
-     connectButton.addEventListener('mousedown', function() {
-         this.style.transform = 'scale(0.95)';
-     });
-     
-     connectButton.addEventListener('mouseup', function() {
-         this.style.transform = 'scale(1)';
-     });
- 
-     // Event listeners
-     connectButton.addEventListener('click', connectMetaMask);
-     logoutButton.addEventListener('click', handleLogout);
-     
-     // Double click to edit name
-     userName.addEventListener('dblclick', handleEditName);
-     
-     // Save on blur
-     nameInput.addEventListener('blur', handleSaveName);
-     nameInput.addEventListener('keypress', function(e) {
-         if (e.key === 'Enter') {
-             handleSaveName();
-         }
-     });
-     
-     // Show/hide tooltip
-     userProfile.addEventListener('mouseenter', () => {
-         tooltip.style.display = 'block';
-         setTimeout(() => {
-             tooltip.style.transform = 'translateY(0)';
-             tooltip.style.opacity = '1';
-         }, 50);
-     });
-     
-     userProfile.addEventListener('mouseleave', () => {
-         tooltip.style.transform = 'translateY(10px)';
-         tooltip.style.opacity = '0';
-         setTimeout(() => {
-             tooltip.style.display = 'none';
-         }, 300);
-     });
-     
-     // Check saved session on page load
-     const checkSavedSession = async () => {
-         // Skip auto-login if user just logged out
-         if (sessionStorage.getItem('loggedOut') === 'true') {
-             sessionStorage.removeItem('loggedOut');
-             displayAccounts(); // Refresh account list
-             return;
-         }
-         
-         if (window.ethereum) {
-             try {
-                 const accounts = await web3.eth.getAccounts();
-                 if (accounts.length > 0) {
-                     account = accounts[0];
-                     const accountExists = await checkPlayerExists(account);
-                     if (accountExists) {
-                         checkWalletName(account);
-                         getBalance(account);
-                         showUserProfile();
-                     } else {
-                         displayAccounts(); // Show account list if current account is not registered
-                     }
-                 } else {
-                     displayAccounts(); // Show account list if no MetaMask accounts connected
-                 }
-             } catch (error) {
-                 console.error("Không thể kiểm tra phiên đã lưu:", error);
-                 displayAccounts(); // Show account list on error
-             }
-         } else {
-             displayAccounts(); // Show account list if MetaMask not available
-         }
-     };
- 
-     // Load accounts and try to restore session on page load
-     checkSavedSession();
- });
-    </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
- const connectButton = document.getElementById('connectButton');
- const loginContainer = document.getElementById('loginContainer');
- const userProfile = document.getElementById('userProfile');
- const userName = document.getElementById('userName');
- const nameInput = document.getElementById('nameInput');
- const tooltip = document.getElementById('tooltip');
- const shortAddress = document.getElementById('shortAddress');
- const balanceElement = document.getElementById('balance');
- const logoutButton = document.getElementById('logoutButton');
- const avatar = document.getElementById('avatar');
- let account = '';
- let walletName = '';
- let balance = '0';
- let web3;
-
- // Create savedAccountsList element
- const savedAccountsList = document.createElement('div');
- savedAccountsList.id = 'savedAccountsList';
- savedAccountsList.style.cssText = `
-     margin-bottom: 10px;
-     max-height: 150px;
-     overflow-y: auto;
-     width: 100%;
- `;
- loginContainer.insertBefore(savedAccountsList, connectButton);
-
- if (window.ethereum) {
-     web3 = new Web3(window.ethereum);
- }
-// Also need to update connectMetaMask to handle new accounts properly
-const connectMetaMask = async () => {
-    if (window.ethereum) {
-        try {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const accounts = await web3.eth.getAccounts();
-            account = accounts[0];
-            
-            // Check if account exists in API
-            const accountExists = await checkPlayerExists(account);
-            if (accountExists) {
-                // Get player data to get the name
-                const players = await getAllPlayers();
-                const currentPlayer = players.find(player => player.token.toLowerCase() === account.toLowerCase());
-                if (currentPlayer) {
-                    walletName = currentPlayer.name;
-                    userName.textContent = currentPlayer.name;
-                    setAvatarInitial(currentPlayer.name);
-                    sessionStorage.setItem('userName', currentPlayer.name);
-                } else {
-                    // If player exists but we couldn't find details, fall back to localStorage
-                    checkWalletName(account);
-                }
-            } else {
-                // If player doesn't exist, get name from user and create in API
-                const enteredName = prompt("Nhập tên của bạn:");
-                if (enteredName) {
-                    localStorage.setItem(`walletName_${account}`, enteredName);
-                    walletName = enteredName;
-                    userName.textContent = enteredName;
-                    setAvatarInitial(enteredName);
-                    sessionStorage.setItem('userName', enteredName);
-                    await createPlayer({ token: account, name: enteredName });
-                }
+            const connectButton = document.getElementById('connectButton');
+            const loginContainer = document.getElementById('loginContainer');
+            const userProfile = document.getElementById('userProfile');
+            const userName = document.getElementById('userName');
+            const nameInput = document.getElementById('nameInput');
+            const tooltip = document.getElementById('tooltip');
+            const shortAddress = document.getElementById('shortAddress');
+            const balanceElement = document.getElementById('balance');
+            const logoutButton = document.getElementById('logoutButton');
+            const avatar = document.getElementById('avatar');
+            let account = '';
+            let walletName = '';
+            let balance = '0';
+            let web3;
+        
+            const savedAccountsList = document.createElement('div');
+            savedAccountsList.id = 'savedAccountsList';
+            savedAccountsList.style.cssText = `
+                margin-bottom: 10px;
+                max-height: 150px;
+                overflow-y: auto;
+                width: 100%;
+            `;
+            loginContainer.insertBefore(savedAccountsList, connectButton);
+        
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
             }
-            
-            getBalance(account);
-            showUserProfile();
-            
-            // Redirect to game page after successful login
-            setTimeout(() => {
-                window.location.href = "src/index.html";
-            }, 50);
-        } catch (error) {
-            console.error("Lỗi khi kết nối MetaMask:", error);
-            alert("Đã xảy ra lỗi khi kết nối MetaMask. Vui lòng thử lại.");
-        }
-    } else {
-        alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
-    }
-};
-
- // Get wallet balance
- const getBalance = async (address) => {
-     const weiBalance = await web3.eth.getBalance(address);
-     const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
-     balance = parseFloat(ethBalance).toFixed(4);
-     balanceElement.textContent = balance;
-     
-     // Store balance in sessionStorage for use in the game page
-     sessionStorage.setItem('userBalance', balance);
-     sessionStorage.setItem('userAddress', address);
- };
-
- // Check if wallet name exists in localStorage
- const checkWalletName = async (address) => {
-     const savedName = localStorage.getItem(`walletName_${address}`);
-     if (savedName) {
-         walletName = savedName;
-         userName.textContent = savedName;
-         setAvatarInitial(savedName);
-         // Store name in sessionStorage for use in the game page
-         sessionStorage.setItem('userName', savedName);
-         // Check if account exists in the API
-         const accountExists = await checkPlayerExists(address);
-         if(accountExists) {
-             console.log("Tài khoản đã tồn tại trong hệ thống");
-         } else {
-             await createPlayer({ token: address, name: savedName });
-         } 
-     } else {
-         const enteredName = prompt("Nhập tên của bạn:");
-         if (enteredName) {
-             localStorage.setItem(`walletName_${address}`, enteredName);
-             walletName = enteredName;
-             userName.textContent = enteredName;
-             setAvatarInitial(enteredName);
-             sessionStorage.setItem('userName', enteredName);
-             await createPlayer({ token: address, name: enteredName });
-         }
-     }
- };
-
- // Create player and send data to API
- const createPlayer = async (playerData) => {
-     try {
-         const response = await fetch('http://localhost:7272/api/v1/player/create', {
-             method: 'POST',
-             headers: {
-                 'Content-Type': 'application/json'
-             },
-             body: JSON.stringify(playerData)
-         });
-         
-         if (!response.ok) {
-             throw new Error('Không thể tạo người chơi');
-         }
-         
-         const data = await response.json();
-         console.log('Người chơi đã được tạo:', data);
-     } catch (error) {
-         console.error("Lỗi khi tạo người chơi:", error);
-         alert("Đã xảy ra lỗi khi tạo người chơi. Vui lòng thử lại.");
-     }
- };
-
- // Check if player exists in API
- const checkPlayerExists = async (address) => {
-     try {
-         const response = await fetch('http://localhost:7272/api/v1/player');
-         if (!response.ok) {
-             throw new Error('Không thể lấy thông tin người chơi');
-         }
-         const data = await response.json();
-         return data.some(player => player.token === address);
-     } catch (error) {
-         console.error("Lỗi khi lấy thông tin người chơi:", error);
-         alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-         return false;
-     }
- };
-
- // Get all players from API
- const getAllPlayers = async () => {
-     try {
-         const response = await fetch('http://localhost:7272/api/v1/player');
-         if (!response.ok) {
-             throw new Error('Không thể lấy thông tin người chơi');
-         }
-         return await response.json();
-     } catch (error) {
-         console.error("Lỗi khi lấy thông tin người chơi:", error);
-         alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-         return [];
-     }
- };
-// Display all accounts from API
-const displayAccounts = async () => {
-    const players = await getAllPlayers();
-    savedAccountsList.innerHTML = ''; // Clear previous content
-    
-    if (players && players.length > 0) {
-        players.forEach(player => {
-            const accountItem = document.createElement('div');
-            accountItem.style.cssText = `
-                padding: 10px;
-                background: rgba(255, 255, 255, 0.8);
-                border-radius: 5px;
-                margin-bottom: 5px;
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            `;
-            
-            const accountInfo = document.createElement('div');
-            accountInfo.textContent = `${player.name} (${player.token.slice(0, 6)}...${player.token.slice(-4)})`;
-            accountItem.appendChild(accountInfo);
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'X';
-            deleteBtn.style.cssText = `
-                background: #ff4d4d;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 24px;
-                height: 24px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
-            
-            // Delete account button
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                if (confirm(`Bạn có chắc chắn muốn xóa tài khoản ${player.name}?`)) {
-                    deleteAccount(player.token);
-                }
-            };
-            accountItem.appendChild(deleteBtn);
-            
-            // Click on account to try login with it
-            accountItem.onclick = async () => {
+        
+            const connectMetaMask = async () => {
                 if (window.ethereum) {
                     try {
-                        // First connect to MetaMask
                         await window.ethereum.request({ method: 'eth_requestAccounts' });
                         const accounts = await web3.eth.getAccounts();
-                        const currentAccount = accounts[0];
-                        
-                        // Check if selected account matches MetaMask
-                        if (currentAccount.toLowerCase() === player.token.toLowerCase()) {
-                            account = currentAccount;
-                            
-                            // Since the account exists in the player list from API, 
-                            // we know it already exists, no need to check again
-                            walletName = player.name;
-                            userName.textContent = player.name;
-                            setAvatarInitial(player.name);
-                            sessionStorage.setItem('userName', player.name);
-                            getBalance(account);
-                            showUserProfile();
-                            
-                            // Redirect to game page after successful login
-                            setTimeout(() => {
-                                window.location.href = "src/index.html";
-                            }, 50);
+                        account = accounts[0];
+                        const accountExists = await checkPlayerExists(account);
+                        let nameToUse = '';
+                        if (accountExists) {
+                            const players = await getAllPlayers();
+                            const currentPlayer = players.find(player => player.token.toLowerCase() === account.toLowerCase());
+                            if (currentPlayer) {
+                                nameToUse = currentPlayer.name;
+                                const savedName = localStorage.getItem(`walletName_${account}`);
+                                if (savedName && savedName !== nameToUse) {
+                                    nameToUse = savedName;
+                                    await updatePlayerName(account, savedName);
+                                }
+                            } else {
+                                nameToUse = await promptForName(account);
+                                if (!nameToUse) return;
+                            }
                         } else {
-                            alert("Vui lòng chọn đúng tài khoản trong MetaMask trước khi đăng nhập.");
+                            nameToUse = await promptForName(account);
+                            if (!nameToUse) return;
+                            await createPlayer({ token: account, name: nameToUse });
                         }
+                        walletName = nameToUse;
+                        userName.textContent = nameToUse;
+                        setAvatarInitial(nameToUse);
+                        sessionStorage.setItem('userName', nameToUse);
+                        getBalance(account);
+                        showUserProfile();
+                        setTimeout(() => {
+                            window.location.href = "src/index.html";
+                        }, 50);
                     } catch (error) {
-                        console.error("Lỗi khi kết nối:", error);
+                        console.error("Lỗi khi kết nối MetaMask:", error);
                         alert("Đã xảy ra lỗi khi kết nối MetaMask. Vui lòng thử lại.");
                     }
                 } else {
                     alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
                 }
             };
-            
-            savedAccountsList.appendChild(accountItem);
+        
+            const promptForName = async (address) => {
+                const savedName = localStorage.getItem(`walletName_${address}`);
+                if (savedName) return savedName;
+                const enteredName = prompt("Nhập tên của bạn:");
+                if (enteredName && enteredName.trim() !== '') {
+                    localStorage.setItem(`walletName_${address}`, enteredName);
+                    return enteredName;
+                }
+                alert("Bạn cần nhập tên để tiếp tục!");
+                return null;
+            };
+        
+            const updatePlayerName = async (address, newName) => {
+                try {
+                    const response = await fetch(`http://localhost:7272/api/v1/player/update`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ token: address, name: newName })
+                    });
+                    if (!response.ok) {
+                        throw new Error('Không thể cập nhật tên người chơi');
+                    }
+                    console.log('Tên người chơi đã được cập nhật trên backend');
+                } catch (error) {
+                    console.error("Lỗi khi cập nhật tên:", error);
+                    alert("Không thể cập nhật tên trên server: " + error.message);
+                }
+            };
+        
+            const getBalance = async (address) => {
+                const weiBalance = await web3.eth.getBalance(address);
+                const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
+                balance = parseFloat(ethBalance).toFixed(4);
+                balanceElement.textContent = balance;
+                sessionStorage.setItem('userBalance', balance);
+                sessionStorage.setItem('userAddress', address);
+            };
+        
+            const checkWalletName = async (address) => {
+                const savedName = localStorage.getItem(`walletName_${address}`);
+                if (savedName) {
+                    walletName = savedName;
+                    userName.textContent = savedName;
+                    setAvatarInitial(savedName);
+                    sessionStorage.setItem('userName', savedName);
+                    const accountExists = await checkPlayerExists(address);
+                    if (!accountExists) {
+                        await createPlayer({ token: address, name: savedName });
+                    }
+                    return savedName;
+                } else {
+                    const enteredName = prompt("Nhập tên của bạn:");
+                    if (enteredName && enteredName.trim() !== '') {
+                        localStorage.setItem(`walletName_${address}`, enteredName);
+                        walletName = enteredName;
+                        userName.textContent = enteredName;
+                        setAvatarInitial(enteredName);
+                        sessionStorage.setItem('userName', enteredName);
+                        await createPlayer({ token: address, name: enteredName });
+                        return enteredName;
+                    }
+                    return null;
+                }
+            };
+        
+            const createPlayer = async (playerData) => {
+                try {
+                    const response = await fetch('http://localhost:7272/api/v1/player/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(playerData)
+                    });
+                    if (!response.ok) {
+                        throw new Error('Không thể tạo người chơi');
+                    }
+                    const data = await response.json();
+                    console.log('Người chơi đã được tạo:', data);
+                } catch (error) {
+                    console.error("Lỗi khi tạo người chơi:", error);
+                    alert("Đã xảy ra lỗi khi tạo người chơi. Vui lòng thử lại.");
+                    throw error;
+                }
+            };
+        
+            const checkPlayerExists = async (address) => {
+                try {
+                    const response = await fetch('http://localhost:7272/api/v1/player');
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy thông tin người chơi');
+                    }
+                    const data = await response.json();
+                    return data.some(player => player.token === address);
+                } catch (error) {
+                    console.error("Lỗi khi lấy thông tin người chơi:", error);
+                    alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
+                    return false;
+                }
+            };
+        
+            const getAllPlayers = async () => {
+                try {
+                    const response = await fetch('http://localhost:7272/api/v1/player');
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy thông tin người chơi');
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error("Lỗi khi lấy thông tin người chơi:", error);
+                    alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
+                    return [];
+                }
+            };
+        
+            const displayAccounts = async () => {
+                const players = await getAllPlayers();
+                savedAccountsList.innerHTML = '';
+                if (players && players.length > 0) {
+                    players.forEach(player => {
+                        const accountItem = document.createElement('div');
+                        accountItem.style.cssText = `
+                            padding: 10px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 5px;
+                            margin-bottom: 5px;
+                            cursor: pointer;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        `;
+                        const accountInfo = document.createElement('div');
+                        accountInfo.textContent = `${player.name} (${player.token.slice(0, 6)}...${player.token.slice(-4)})`;
+                        accountItem.appendChild(accountInfo);
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'X';
+                        deleteBtn.style.cssText = `
+                            background: #ff4d4d;
+                            color: white;
+                            border: none;
+                            border-radius: 50%;
+                            width: 24px;
+                            height: 24px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        `;
+                        deleteBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            if (confirm(`Bạn có chắc chắn muốn xóa tài khoản ${player.name}?`)) {
+                                deleteAccount(player.token);
+                            }
+                        };
+                        accountItem.appendChild(deleteBtn);
+                        accountItem.onclick = async () => {
+                            if (window.ethereum) {
+                                try {
+                                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                                    const accounts = await web3.eth.getAccounts();
+                                    const currentAccount = accounts[0];
+                                    if (currentAccount.toLowerCase() === player.token.toLowerCase()) {
+                                        account = currentAccount;
+                                        walletName = player.name;
+                                        const savedName = localStorage.getItem(`walletName_${account}`);
+                                        if (savedName && savedName !== walletName) {
+                                            walletName = savedName;
+                                            await updatePlayerName(account, savedName);
+                                        }
+                                        userName.textContent = walletName;
+                                        setAvatarInitial(walletName);
+                                        sessionStorage.setItem('userName', walletName);
+                                        getBalance(account);
+                                        showUserProfile();
+                                        setTimeout(() => {
+                                            window.location.href = "src/index.html";
+                                        }, 50);
+                                    } else {
+                                        alert("Vui lòng chọn đúng tài khoản trong MetaMask trước khi đăng nhập.");
+                                    }
+                                } catch (error) {
+                                    console.error("Lỗi khi kết nối:", error);
+                                    alert("Đã xảy ra lỗi khi kết nối MetaMask. Vui lòng thử lại.");
+                                }
+                            } else {
+                                alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
+                            }
+                        };
+                        savedAccountsList.appendChild(accountItem);
+                    });
+                } else {
+                    const noAccounts = document.createElement('div');
+                    noAccounts.textContent = "Không có tài khoản nào được lưu";
+                    noAccounts.style.cssText = `
+                        padding: 10px;
+                        text-align: center;
+                        color: #666;
+                    `;
+                    savedAccountsList.appendChild(noAccounts);
+                }
+            };
+        
+            const deleteAccount = async (token) => {
+                try {
+                    const response = await fetch(`http://localhost:7272/api/v1/player/${token}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error('Không thể xóa tài khoản');
+                    }
+                    console.log('Tài khoản đã được xóa');
+                    alert("Tài khoản đã được xóa thành công.");
+                    displayAccounts();
+                } catch (error) {
+                    console.error("Lỗi khi xóa tài khoản:", error);
+                    alert("Đã xảy ra lỗi khi xóa tài khoản. Vui lòng thử lại.");
+                }
+            };
+        
+            const setAvatarInitial = (name) => {
+                if (name && name.length > 0) {
+                    avatar.textContent = name.charAt(0).toUpperCase();
+                    sessionStorage.setItem('userInitial', name.charAt(0).toUpperCase());
+                }
+            };
+        
+            const showUserProfile = () => {
+                loginContainer.style.display = 'none';
+                userProfile.style.display = 'flex';
+                shortAddress.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
+                sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)}`);
+            };
+        
+            const handleLogout = () => {
+                userProfile.style.display = 'none';
+                loginContainer.style.display = 'block';
+                account = '';
+                walletName = '';
+                balance = '0';
+                sessionStorage.setItem('loggedOut', 'true');
+                sessionStorage.removeItem('userBalance');
+                sessionStorage.removeItem('userAddress');
+                sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userInitial');
+                sessionStorage.removeItem('shortAddress');
+                displayAccounts();
+            };
+        
+            const handleEditName = () => {
+                userName.style.display = 'none';
+                nameInput.style.display = 'block';
+                nameInput.value = walletName;
+                nameInput.focus();
+            };
+        
+            const handleSaveName = () => {
+                const newName = nameInput.value.trim();
+                if (newName !== '') {
+                    localStorage.setItem(`walletName_${account}`, newName);
+                    walletName = newName;
+                    userName.textContent = newName;
+                    setAvatarInitial(newName);
+                    sessionStorage.setItem('userName', newName);
+                    updatePlayerName(account, newName);
+                }
+                nameInput.style.display = 'none';
+                userName.style.display = 'block';
+            };
+        
+            connectButton.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            connectButton.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+        
+            connectButton.addEventListener('click', connectMetaMask);
+            logoutButton.addEventListener('click', handleLogout);
+            userName.addEventListener('dblclick', handleEditName);
+            nameInput.addEventListener('blur', handleSaveName);
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSaveName();
+                }
+            });
+        
+            userProfile.addEventListener('mouseenter', () => {
+                tooltip.style.display = 'block';
+                setTimeout(() => {
+                    tooltip.style.transform = 'translateY(0)';
+                    tooltip.style.opacity = '1';
+                }, 50);
+            });
+            userProfile.addEventListener('mouseleave', () => {
+                tooltip.style.transform = 'translateY(10px)';
+                tooltip.style.opacity = '0';
+                setTimeout(() => {
+                    tooltip.style.display = 'none';
+                }, 300);
+            });
+        
+            const checkSavedSession = async () => {
+                if (sessionStorage.getItem('loggedOut') === 'true') {
+                    sessionStorage.removeItem('loggedOut');
+                }
+                displayAccounts();
+            };
+        
+            checkSavedSession();
         });
-    } else {
-        const noAccounts = document.createElement('div');
-        noAccounts.textContent = "Không có tài khoản nào được lưu";
-        noAccounts.style.cssText = `
-            padding: 10px;
-            text-align: center;
-            color: #666;
-        `;
-        savedAccountsList.appendChild(noAccounts);
-    }
-};
- // Delete account from API
- const deleteAccount = async (token) => {
-     try {
-         const response = await fetch(`http://localhost:7272/api/v1/player/${token}`, {
-             method: 'DELETE',
-             headers: {
-                 'Content-Type': 'application/json'
-             }
-         });
-         
-         if (!response.ok) {
-             throw new Error('Không thể xóa tài khoản');
-         }
-         
-         console.log('Tài khoản đã được xóa');
-         alert("Tài khoản đã được xóa thành công.");
-         
-         // Refresh the list after deletion
-         displayAccounts();
-     } catch (error) {
-         console.error("Lỗi khi xóa tài khoản:", error);
-         alert("Đã xảy ra lỗi khi xóa tài khoản. Vui lòng thử lại.");
-     }
- };
- 
- // Set avatar initial
- const setAvatarInitial = (name) => {
-     if (name && name.length > 0) {
-         avatar.textContent = name.charAt(0).toUpperCase();
-         
-         // Store initial in sessionStorage for use in the game page
-         sessionStorage.setItem('userInitial', name.charAt(0).toUpperCase());
-     }
- };
-
- // Show user profile after login
- const showUserProfile = () => {
-     loginContainer.style.display = 'none';
-     userProfile.style.display = 'flex';
-     shortAddress.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
-     
-     // Store shortened address in sessionStorage for use in the game page
-     sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)}`);
- };
-
- // Handle logout
- const handleLogout = () => {
-     userProfile.style.display = 'none';
-     loginContainer.style.display = 'block';
-     account = '';
-     walletName = '';
-     balance = '0';
-     
-     // Clear session storage
-     sessionStorage.setItem('loggedOut', 'true');
-     sessionStorage.removeItem('userBalance');
-     sessionStorage.removeItem('userAddress');
-     sessionStorage.removeItem('userName');
-     sessionStorage.removeItem('userInitial');
-     sessionStorage.removeItem('shortAddress');
-     
-     // Refresh account list
-     displayAccounts();
- };
-
- // Handle name editing
- const handleEditName = () => {
-     userName.style.display = 'none';
-     nameInput.style.display = 'block';
-     nameInput.value = walletName;
-     nameInput.focus();
- };
-
- // Handle saving name
- const handleSaveName = () => {
-     const newName = nameInput.value;
-     if (newName.trim() !== '') {
-         localStorage.setItem(`walletName_${account}`, newName);
-         walletName = newName;
-         userName.textContent = newName;
-         setAvatarInitial(newName);
-         
-         // Update name in sessionStorage
-         sessionStorage.setItem('userName', newName);
-     }
-     nameInput.style.display = 'none';
-     userName.style.display = 'block';
- };
-
- // Add button animation
- connectButton.addEventListener('mousedown', function() {
-     this.style.transform = 'scale(0.95)';
- });
- 
- connectButton.addEventListener('mouseup', function() {
-     this.style.transform = 'scale(1)';
- });
-
- // Event listeners
- connectButton.addEventListener('click', connectMetaMask);
- logoutButton.addEventListener('click', handleLogout);
- 
- // Double click to edit name
- userName.addEventListener('dblclick', handleEditName);
- 
- // Save on blur
- nameInput.addEventListener('blur', handleSaveName);
- nameInput.addEventListener('keypress', function(e) {
-     if (e.key === 'Enter') {
-         handleSaveName();
-     }
- });
- 
- // Show/hide tooltip
- userProfile.addEventListener('mouseenter', () => {
-     tooltip.style.display = 'block';
-     setTimeout(() => {
-         tooltip.style.transform = 'translateY(0)';
-         tooltip.style.opacity = '1';
-     }, 50);
- });
- 
- userProfile.addEventListener('mouseleave', () => {
-     tooltip.style.transform = 'translateY(10px)';
-     tooltip.style.opacity = '0';
-     setTimeout(() => {
-         tooltip.style.display = 'none';
-     }, 300);
- });
- 
- // Check saved session on page load
- const checkSavedSession = async () => {
-     // Skip auto-login if user just logged out
-     if (sessionStorage.getItem('loggedOut') === 'true') {
-         sessionStorage.removeItem('loggedOut');
-         displayAccounts(); // Refresh account list
-         return;
-     }
-     
-     if (window.ethereum) {
-         try {
-             const accounts = await web3.eth.getAccounts();
-             if (accounts.length > 0) {
-                 account = accounts[0];
-                 const accountExists = await checkPlayerExists(account);
-                 if (accountExists) {
-                     checkWalletName(account);
-                     getBalance(account);
-                     showUserProfile();
-                 } else {
-                     displayAccounts(); // Show account list if current account is not registered
-                 }
-             } else {
-                 displayAccounts(); // Show account list if no MetaMask accounts connected
-             }
-         } catch (error) {
-             console.error("Không thể kiểm tra phiên đã lưu:", error);
-             displayAccounts(); // Show account list on error
-         }
-     } else {
-         displayAccounts(); // Show account list if MetaMask not available
-     }
- };
-
- // Load accounts and try to restore session on page load
- checkSavedSession();
-});
- </script>
+        </script>
 </body>
 </html>
