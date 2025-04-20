@@ -314,35 +314,34 @@
          sessionStorage.setItem('userAddress', address);
      };
  
-     // Check if wallet name exists in localStorage
      const checkWalletName = async (address) => {
-         const savedName =  address
-         if (savedName) {
-             walletName = savedName;
-             userName.textContent = savedName;
-             setAvatarInitial(savedName);
-             // Store name in sessionStorage for use in the game page
-             sessionStorage.setItem('userName', savedName);
-             // Check if account exists in the API
-             const accountExists = await checkPlayerExists(address);
-             if(accountExists) {
-                 console.log("Tài khoản đã tồn tại trong hệ thống");
-             } else {
-                console.log(accountExists);
-                 await createPlayer({ token: address, name: savedName });
-             } 
-         } else {
-             const enteredName = prompt("Nhập tên của bạn:");
-             if (enteredName) {
-                 localStorage.setItem(`walletName_${address}`, enteredName);
-                 walletName = enteredName;
-                 userName.textContent = enteredName;
-                 setAvatarInitial(enteredName);
-                 sessionStorage.setItem('userName', enteredName);
-                 await createPlayer({ token: address, name: enteredName });
-             }
-         }
-     };
+    const savedName = localStorage.getItem(`walletName_${address}`);
+    if (savedName) {
+        walletName = savedName;
+        userName.textContent = savedName;
+        setAvatarInitial(savedName);
+        // Store name in sessionStorage for use in the game page
+        sessionStorage.setItem('userName', savedName);
+        // Check if account exists in the API
+        const accountExists = await checkPlayerExists(address);
+        if(accountExists) {
+            console.log("Tài khoản đã tồn tại trong hệ thống");
+        } else {
+            await createPlayer({ token: address, name: savedName });
+        } 
+    } else {
+        // Yêu cầu nhập tên khi chưa có trong localStorage
+        const enteredName = prompt("Nhập tên của bạn:");
+        if (enteredName) {
+            localStorage.setItem(`walletName_${address}`, enteredName);
+            walletName = enteredName;
+            userName.textContent = enteredName;
+            setAvatarInitial(enteredName);
+            sessionStorage.setItem('userName', enteredName);
+            await createPlayer({ token: address, name: enteredName });
+        }
+    }
+};
      // Create player and send data to API
      const createPlayer = async (playerData) => {
          try {
