@@ -18,9 +18,9 @@ export const GAME_CONSTANTS = {
         MAX_LEFT: 80,
         MIN_TOP: 30,
         MAX_TOP: 85,
-        DEFAULT_COUNT: 1
+        DEFAULT_COUNT: 3
     }
 };
 
 export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random"];
-
+export const CONTRACT_ADDRESS = "0xcd174f045a410b4d34a19e7293c97c4DbBb547d5";

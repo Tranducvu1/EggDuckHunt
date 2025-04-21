@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="./styles/effects.css">
     <link rel="stylesheet" href="./styles/enviroment.css">
     <link rel="stylesheet" href="./styles/login.css">
-
 </head>
 <body>
     <div class="background-wrapper"></div>
@@ -26,9 +25,10 @@
             <span>0</span>
         </div>
     </div>
+
     <div class="icon-bag">
         <img src="../assets/bag.png" alt="Bag Icon">
-    </div>
+    
     <!-- Bag Popup -->
     <div id="bagPopup" class="bag-popup">Your Store
         <div class="exchange-container">
@@ -58,81 +58,56 @@
             </div>
             
             <div class="control-buttons">
-                <button id="exchangeduckBtn" class="btn btn-exchange">Exchange Ducks</button>
+                <button id="buyDuckButton" class="btn btn-exchange">Buy Ducks</button>
             </div>
-            <div class="resource-display">
-                <div class="resource-item">
-                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
-                    <span id="duckcoinCount" class="resource-value">0</span>
-                </div>
-                <div class="resource-item">
-                    <img src="../assets/duck/relax-yellow/a1.png" alt="Duck" class="resource-icon">
-                    <span id="yellowDuckCount" class="resource-value">0</span>
-                </div>
-            </div>
-            
-            <div class="control-buttons">
-                <button id="exchangeYellowDuckBtn" class="btn btn-exchange">Exchange Ducks</button>
-            </div>
-            <div class="resource-display">
-                <div class="resource-item">
-                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
-                    <span id="duckcoinCount" class="resource-value">0</span>
-                </div>
-                <div class="resource-item">
-                    <img src="../assets/duck/relax-red/a1.png" alt="Duck" class="resource-icon">
-                    <span id="redDuckCount" class="resource-value">0</span>
-                </div>
-            </div>
-            
-            <div class="control-buttons">
-                <button id="exchangeRedDuckBtn" class="btn btn-exchange">Exchange Ducks</button>
+            <div class="">
+                <p>Yellow Ducks: <span id="yellowDuckCount">0</span></p>
+                <p>Red Ducks: <span id="redDuckCount">0</span></p>
+                <p>White Ducks: <span id="whiteDuckCount">0</span></p>
             </div>
         </div>
 
-         <!-- React + Babel -->
+  <!-- React + Babel -->
        <!-- Contract Info -->
       <div>
-        <h2>Contract Balance: <span id="contractBalance">0</span> Token</h2>
+        <h2>Contract Balance: <span id="contractBalance">0</span> ETH</h2>
         <p>Connected Account: <span id="connectedAccount">Not connected</span></p>
         <p>Contract Owner: <span id="contractOwner">Loading...</span></p>
       </div>
+      
    <!-- Nhúng script -->
       <script src="./components/ContractInfo.js" type="module"></script>
 
-
-      
-      <div>
-        <h2>Contract Actions</h2>
-        <p><strong>Your Balance:</strong> <span id="userBalance">0</span> Token</p>
-
-        <!-- Radio chọn hành động -->
         <div>
-            <label>
-                <input type="radio" value="deposit" name="action" id="depositRadio" checked>
-                Deposit
-            </label>
-            <label>
-                <input type="radio" value="withdraw" name="action" id="withdrawRadio">
-                Withdraw
-            </label>
+            <h2>Contract Actions</h2>
+            <p><strong>Your Balance:</strong> <span id="userBalance">0</span> ETH</p>
+    
+            <!-- Radio chọn hành động -->
+            <div>
+                <label>
+                    <input type="radio" value="deposit" name="action" id="depositRadio" checked>
+                    Deposit
+                </label>
+                <label>
+                    <input type="radio" value="withdraw" name="action" id="withdrawRadio">
+                    Withdraw
+                </label>
+            </div>
+    
+            <!-- Input chung -->
+            <div>
+                <input type="text" id="amountInput" placeholder="Amount in ETH">
+                <button id="actionButton">Deposit Funds</button>
+            </div>
+    
+            <!-- Convert Token -> ETH -->
+            <h3>Convert Token to ETH</h3>
+            <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
+            <input type="text" id="convertAmountInput" placeholder="Enter token amount">
+            <button id="convertButton">Convert</button>
         </div>
-
-        <!-- Input chung -->
-        <div>
-            <input type="text" id="amountInput" placeholder="Amount in ETH">
-            <button id="actionButton">Deposit Funds</button>
-        </div>
-
-        <!-- Convert Token -> ETH -->
-        <h3>Convert Token to ETH</h3>
-        <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
-        <input type="text" id="convertAmountInput" placeholder="Enter token amount">
-        <button id="convertButton">Convert</button>
     </div>
-</div>
     </div>
-
     <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
 
     <!-- Settings Menu -->
@@ -142,7 +117,6 @@
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
         </div>
     </div>
-
     <div class="user-profile" id="userProfile">
         <div class="avatar" id="avatar"></div>
         <p class="user-name" id="userName"></p>
@@ -163,15 +137,11 @@
         <source src="./../assets/sound/soundduck.mp3" type="audio/mp3">
     </audio>
  <!-- Scripts -->
- <script type="module" src = "./login.ts"></script>
-<script type="module" src="./Ultils/storage.ts"></script>
  <script type="module" src="./game.ts"></script>
 <script type="module" src="./UI/bad.ts"></script>
+<script type="module" src="./UI/change.ts"></script>
 <script type="module" src="./Egg/eggScheduler.ts"></script>
 <script type="module" src = "./Egg/eggLaying.ts"></script>
-<script type="module" src = "./UI/change.ts"></script>
-<script type="module" src = "./settings/volumns.ts"></script>
-
  <script>
     document.addEventListener('DOMContentLoaded', function() {
         const userProfile = document.getElementById('userProfile');
@@ -182,24 +152,13 @@
         const balanceElement = document.getElementById('balance');
         const logoutButton = document.getElementById('logoutButton');
         const avatar = document.getElementById('avatar');
+
         let web3;
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
     }
 
-    const getPlayer = async() => {
-                try {
-                    const response = await fetch('http://localhost:7272/api/v1/player');
-                    if (!response.ok) {
-                        throw new Error('Không thể lấy thông tin người chơi');
-                    }
-                    const data = await response.json();
-                    return data.some(player => player.token === token);
-                } catch (error) {
-                    console.error("Lỗi khi lấy thông tin người chơi:", error);
-                    alert("Đã xảy ra lỗi khi lấy thông tin người chơi. Vui lòng thử lại.");
-                }
-            }
+    
         const refreshBalance = async () => {
         if (web3) {
             try {
@@ -207,7 +166,8 @@
                 if (userAddress) {
                     const weiBalance = await web3.eth.getBalance(userAddress);
                     const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
-                    const balance = parseFloat(ethBalance).toFixed(4);                   
+                    const balance = parseFloat(ethBalance).toFixed(4);
+                    
                     // Update UI and sessionStorage
                     balanceElement.textContent = balance;
                     sessionStorage.setItem('userBalance', balance);
@@ -217,85 +177,41 @@
             }
         }
     };
-
-
-const updatePlayer = async (username) => {
-    try {
-        const response = await fetch(`http://localhost:7272/api/v1/player/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-               username : name,
-            }),
-        });
-
-        if (response.ok) {
-            console.log("Cập nhật thêm thành công!");
-        } else {
-            console.error("Lỗi cập nhật người chơi");
-            // Nếu cập nhật thất bại, có thể token không còn hợp lệ
-            tokenVerified = false;
-            localStorage.removeItem('verifiedToken');
-        }
-    } catch (err) {
-        console.error("Lỗi khi gửi yêu cầu:", err);
-        // Nếu có lỗi kết nối, đánh dấu token là chưa xác thực để thử lại lần sau
-        tokenVerified = false;
-        localStorage.removeItem('verifiedToken');
-    }
-}; 
-
-    const loadUserData = () => {
-    const storedName = sessionStorage.getItem('userName');
-    const storedAddress = sessionStorage.getItem('shortAddress');
-    const storedBalance = sessionStorage.getItem('userBalance');
-    const storedInitial = sessionStorage.getItem('userInitial');
-    const fullAddress = sessionStorage.getItem('userAddress');
-    
-    if (storedName && storedAddress) {
-        // Hiển thị thông tin người dùng
-        userName.textContent = storedName;
-        shortAddress.textContent = storedAddress;
-        balanceElement.textContent = storedBalance || '0';
+        // Load user data from sessionStorage
+        const loadUserData = () => {
+        const storedName = sessionStorage.getItem('userName');
+        const storedAddress = sessionStorage.getItem('shortAddress');
+        const storedBalance = sessionStorage.getItem('userBalance');
+        const storedInitial = sessionStorage.getItem('userInitial');
+        const fullAddress = sessionStorage.getItem('userAddress');
         
-        if (storedInitial) {
-            avatar.textContent = storedInitial;
-        } else if (storedName) {
-            avatar.textContent = storedName.charAt(0).toUpperCase();
-        }
-        if (fullAddress) {
-            localStorage.removeItem(`walletName_${fullAddress}`);
-        }
-        
-        
-        userProfile.style.display = 'flex';
-        
-        // Cập nhật số dư từ network
-        if (fullAddress) {
-            refreshBalance();
+        // if (storedName && storedAddress) {
+        //     // Display user profile
+        //     userName.textContent = storedName;
+        //     shortAddress.textContent = storedAddress;
+        //     balanceElement.textContent = storedBalance || '0';
+        //     if (storedInitial) {
+        //         avatar.textContent = storedInitial;
+        //     } else if (storedName) {
+        //         avatar.textContent = storedName.charAt(0).toUpperCase();
+        //     }
             
-            // Xóa dữ liệu ví khỏi localStorage ngay sau khi sử dụng
-            removeWalletData(fullAddress);
-        }
-        
-        // Xóa dữ liệu khỏi sessionStorage
-        sessionStorage.removeItem('userBalance');
-        sessionStorage.removeItem('shortAddress');
-        sessionStorage.removeItem('userName');
-        sessionStorage.removeItem('userInitial');
-        sessionStorage.removeItem('userAddress');
-    } else {
-        // Không có dữ liệu người dùng, chuyển hướng đến trang đăng nhập
-        window.location.href = "../index.html";
-    }
-};
-
+        //     userProfile.style.display = 'flex';
+            
+        //     // Refresh balance from network
+        //     if (fullAddress) {
+        //         refreshBalance();
+        //     }
+        // } else {
+        //     // No user data found, redirect to login page
+        //     window.location.href = "../index.html";
+        // }
+    };
         
         const handleLogout = () => {
     // Set logged out flag
     sessionStorage.setItem('loggedOut', 'true');
+    
     // Clear remaining session data
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('userAddress');
@@ -307,14 +223,6 @@ const updatePlayer = async (username) => {
     window.location.href = "../index.html";
 };
         
-const removeWalletData = (address) => {
-    if (address) {
-        // Xóa khóa walletName_ cụ thể cho địa chỉ này
-        localStorage.removeItem(`walletName_${address}`);
-        console.log(`Đã xóa dữ liệu ví: walletName_${address}`);
-    }
-};
-
         // Handle name editing
         const handleEditName = () => {
             userName.style.display = 'none';
@@ -322,6 +230,7 @@ const removeWalletData = (address) => {
             nameInput.value = userName.textContent;
             nameInput.focus();
         };
+        
         // Handle saving name
         const handleSaveName = () => {
             const newName = nameInput.value;
@@ -335,7 +244,6 @@ const removeWalletData = (address) => {
                     // Update name in sessionStorage
                     sessionStorage.setItem('userName', newName);
                     sessionStorage.setItem('userInitial', newName.charAt(0).toUpperCase());
-                    localStorage.removeItem(`walletName_${userAddress}`, newName);
                 }
             }
             nameInput.style.display = 'none';
@@ -355,8 +263,6 @@ const removeWalletData = (address) => {
                 handleSaveName();
             }
         });
-
-
         
         // Show/hide tooltip
         userProfile.addEventListener('mouseenter', () => {
@@ -378,6 +284,9 @@ const removeWalletData = (address) => {
         // Load user data on page load
         loadUserData();
     });
+</script>
+<script type="module">
+    import { initialize } from "./components/ContractActions.js";
 </script>
 </body>
 </html>

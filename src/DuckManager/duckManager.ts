@@ -2,6 +2,7 @@ import { Duck } from '../Types/types';
 import { getRandomMovementType, getRandomDirection, getRandomPosition } from '../Ultils/Ultils';
 import { GAME_CONSTANTS } from '../Constant/constant';
 
+
 export const normalDucks: Duck[] = [];
 
 export function updateDucksBasedOnCount(): void {
@@ -37,7 +38,7 @@ function createNewDuck(index: number): void {
         inPond: false,
         movementType: movementType,
         autoMoveInterval: undefined,
-        selectedBasket: null
+        selectedBasket: null,
     };
     
     // Add movement-specific properties

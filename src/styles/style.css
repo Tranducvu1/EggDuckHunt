@@ -13,7 +13,15 @@ body {
     height: 100%;
     background: url('../../assets/Ground2.png') no-repeat center center fixed;
     background-size: cover;  /* Đảm bảo hình nền phủ toàn màn hình */
+    background-position: center -1450px;
     z-index: -10;  /* Đặt dưới cùng để các phần tử khác không bị che khuất */
+}
+#game-container {
+    width: 800px;
+    height: 600px;
+    border: 1px solid red; /* Debug */
+    position: relative;
+    z-index: 10;
 }
 
 /* Cảnh báo */

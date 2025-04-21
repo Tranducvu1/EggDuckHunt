@@ -1,4 +1,4 @@
-import { depositFund, withdrawFund, getUserBalanceInETH, convertTokenToETH, getUserTokenBalance } from "../Ultils/contractServices.js";
+import { depositFund, withdrawFund, getUserBalanceInETH, convertTokenToETH, getUserTokenBalance, getDuckCount, buyDuck } from "../Ultils/contractServices.js";
 import { toast } from "react-toastify";
 
 // Khởi tạo state
@@ -8,6 +8,11 @@ let state = {
     userBalance: "0",
     convertAmount: "",
     tokenBalance: "0",
+    duckCount: {
+        yellow: "0",
+        red: "0",
+        white: "0"
+    },
 };
 
 // Hàm để cập nhật state
@@ -35,6 +40,35 @@ const updateUI = () => {
     if (actionButton) {
         actionButton.textContent = state.action === "deposit" ? "Deposit Funds" : "Withdraw Funds";
     }
+
+    const { yellow, red, white } = state.duckCount || {};
+    const yellowElement = document.getElementById("yellowDuckCount");
+    const redElement = document.getElementById("redDuckCount");
+    const whiteElement = document.getElementById("whiteDuckCount");
+  
+    if (yellowElement) yellowElement.textContent = yellow || "0";
+    if (redElement) redElement.textContent = red || "0";
+    if (whiteElement) whiteElement.textContent = white || "0";
+};
+
+const updateDuckCount = async () => {
+  try {
+const [yellowCount, redCount, whiteCount] = await Promise.all([
+      getDuckCount("yellow"),
+      getDuckCount("red"),
+      getDuckCount("white"),
+    ]);
+
+    setState({
+      duckCount: {
+        yellow: yellowCount,
+        red: redCount,
+        white: whiteCount,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating duck count by type:", error.message);
+  }
 };
 
 // Cập nhật số dư user
@@ -66,6 +100,7 @@ const updateTokenBalance = async () => {
 const initialize = async () => {
     await updateUserBalance();
     await updateTokenBalance();
+    await updateDuckCount();
     console.log("Token balance updated:", state.tokenBalance);
 
     // Gán sự kiện cho các phần tử HTML
@@ -75,6 +110,7 @@ const initialize = async () => {
     const withdrawRadio = document.getElementById("withdrawRadio");
     const actionButton = document.getElementById("actionButton");
     const convertButton = document.getElementById("convertButton");
+    const buyDuckButton = document.getElementById("buyDuckButton");
 
     if (amountInput) {
         amountInput.addEventListener("input", (e) => {
@@ -107,6 +143,9 @@ const initialize = async () => {
     if (convertButton) {
         convertButton.addEventListener("click", handleConvert);
     }
+    if (buyDuckButton) {
+        buyDuckButton.addEventListener("click", handleBuyDuck);
+    }
 };
 
 // Xử lý hành động deposit/withdraw
@@ -137,6 +176,20 @@ const handleAction = async () => {
         toast.error(errorMessage);
     }
 };
+
+// Xử lý sự kiện mua duck
+const handleBuyDuck = async () => {
+    try {
+      await buyDuck();
+      toast.success("You bought a duck (-5 tokens)!");
+      await updateTokenBalance();
+      await updateDuckCount();
+    } catch (error) {
+      const message = error?.data?.message || error?.reason || "Failed to buy duck";
+      toast.error(message);
+    }
+};
+
 
 // Xử lý convert token sang ETH
 const handleConvert = async () => {
@@ -175,9 +228,13 @@ const setAction = (value) => {
 };
 
 // Khởi tạo khi trang tải
-document.addEventListener("DOMContentLoaded", () => {
-    initialize();
+// document.addEventListener("DOMContentLoaded", () => {
+//     initialize();
+// });
+window.addEventListener("DOMContentLoaded", () => {
+    initialize().catch(console.error);
 });
+
 
 export {
     initialize,
@@ -187,4 +244,5 @@ export {
     setConvertAmount,
     setAction,
     state,
+    handleBuyDuck,
 };

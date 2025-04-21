@@ -1,6 +1,4 @@
-/**
- * Represents a basket where ducks can lay eggs.
- */
+
 export interface Basket {
     id: string;       // Unique identifier for the basket
     left: number;     // Position from the left (percentage or pixels)

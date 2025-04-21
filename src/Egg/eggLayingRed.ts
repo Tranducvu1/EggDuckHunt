@@ -4,7 +4,6 @@ import { Duck, Position } from '../Types/types';
 import { baskets } from '../Basket/baskets';
 import { incrementEggAndCoin } from '../Ultils/storage';
 import { GAME_CONSTANTS } from '../Constant/constant';
-import { updateDisplay } from '../UI/change';
 
 
 let isBoosting = false;

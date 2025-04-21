@@ -1,13 +1,15 @@
 import { BrowserProvider, Contract, parseEther, formatEther } from "ethers";
 import Lock_ABI from "./Lock_ABI.json";
-import { CONTRACT_ADDRESS } from "./constants";
+import { CONTRACT_ADDRESS } from "../Constant/constant";
 
 let provider;
 let signer;
 let contract;
 
+let currentAccount = null;
+
 // Hàm khởi tạo provider, signer, và contract
-const initialize = async () => {
+export const initialize = async () => {
   if (typeof window.ethereum !== "undefined") {
     provider = new BrowserProvider(window.ethereum);
     signer = await provider.getSigner();
@@ -17,6 +19,7 @@ const initialize = async () => {
   }
 };
 
+export const getContract = () => contract;
 // Đảm bảo contract được khởi tạo trước khi dùng
 const ensureInitialized = async () => {
   if (!provider || !signer || !contract) {
@@ -29,11 +32,22 @@ export const requestAccount = async () => {
   try {
     await ensureInitialized();
     const accounts = await provider.send("eth_requestAccounts", []);
-    return accounts[0]; // Trả về địa chỉ tài khoản đầu tiên
+    currentAccount = accounts[0];
+    sessionStorage.setItem("connectedAccount", currentAccount); // Optional
+    return currentAccount;
   } catch (error) {
     console.error("Error requesting account:", error.message);
     return null;
   }
+};
+export const getCurrentAccount = async () => {
+  if (currentAccount) return currentAccount;
+  const saved = sessionStorage.getItem("connectedAccount");
+  if (saved) {
+    currentAccount = saved;
+    return currentAccount;
+  }
+  return await requestAccount(); // fallback
 };
 
 // Kiểm tra chủ sở hữu contract
@@ -50,7 +64,7 @@ export const requestAccount = async () => {
 export const getContractOwner = async () => {
   try {
     await ensureInitialized();
-    const ownerAddress = await contract.owner(); // Sửa từ contract.owner() thành contract.getOwner()
+    const ownerAddress = await contract.getOwner(); 
     return ownerAddress;
   } catch (error) {
     console.error("Error getting contract owner:", error.message);
@@ -60,7 +74,7 @@ export const getContractOwner = async () => {
 export const getUserBalanceInETH = async () => {
   try {
     await ensureInitialized();
-    const account = await requestAccount();
+    const account = await getCurrentAccount();
     if (!account) return "0";
 
     const balanceWei = await contract.getUserBalance(account);
@@ -75,9 +89,8 @@ export const getUserBalanceInETH = async () => {
 export const isOwner = async () => {
   try {
     const owner = await getContractOwner();
-    const currentAccount = await requestAccount();
-
-    return currentAccount?.toLowerCase() === owner?.toLowerCase();
+    const account = await requestAccount();
+    return account?.toLowerCase() === owner?.toLowerCase();
   } catch (error) {
     console.error("Error checking ownership:", error.message);
     return false;
@@ -116,6 +129,28 @@ export const convertTokenToETH = async (amount) => {
   const tx = await contract.convertTokenToETH(amount);
 
   await tx.wait();
+};
+export const collectEgg = async () => {
+  try {
+    await ensureInitialized();
+    const tx = await contract.collectEgg();
+    await tx.wait();
+    console.log("Egg collected! +1 token");
+  } catch (error) {
+    console.error("Error collecting egg:", error.message);
+  }
+};
+
+// Gọi hàm collectDuck từ smart contract
+export const collectDuck = async () => {
+  try {
+    await ensureInitialized();
+    const tx = await contract.collectDuck();
+    await tx.wait();
+    console.log("Duck collected! +3 tokens");
+  } catch (error) {
+    console.error("Error collecting duck:", error.message);
+  }
 };
 
 // Rút tiền từ contract
@@ -189,5 +224,41 @@ export const getUserTokenBalance = async () => {
     console.error("Error fetching token balance:", error);
     return "0";
   }
+  
 };
+export const buyDuck = async () => {
+  //(duckType, quantity, pricePerDuckWei)
+  try {
+    await ensureInitialized();
+    const account = await getCurrentAccount();
+    if (!account) throw new Error("No account connected");
+
+   // const totalCostWei = BigInt(quantity) * BigInt(pricePerDuckWei);
+
+    const tx = await contract.buyDuck("yellow", 1,{
+      gasLimit: 300000, // optional
+    });
+    await tx.wait();
+
+    //console.log(`Bought ${quantity} ${duckType} duck(s) for ${totalCostWei} wei`);
+  } catch (error) {
+    console.error("Error buying duck:", error.message);
+    throw error;
+  }
+};
+export const getDuckCount = async (duckType) => {
+  try {
+    await ensureInitialized();
+    const account = await getCurrentAccount();
+    if (!account) throw new Error("No account connected");
+
+    const count = await contract.getDuckCount(account, duckType);
+    return count.toString();
+  } catch (error) {
+    console.error("Error getting duck count:", error.message);
+    return "0";
+  }
+};
+
+
 
