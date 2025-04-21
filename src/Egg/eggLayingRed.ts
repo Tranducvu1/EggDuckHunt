@@ -158,7 +158,7 @@ function playDuckSound(): void {
   }
 }
 function layEgg(duck: Duck, duckElement: HTMLImageElement): void {
-    const eggCount = isBoostingNow() ? 2 : 1;
+    const eggCount = isBoostingNow() ? 2 : 3;
     const delayBetweenEggs = isBoostingNow() ? 500 : 1000;
   
     for (let i = 0; i < eggCount; i++) {
