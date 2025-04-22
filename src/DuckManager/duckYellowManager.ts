@@ -66,6 +66,7 @@ function createDuckElement(duck: Duck): void {
     duckElement.classList.add('yellowduck');
     duckElement.src = `../../assets/duck/right-left-yellow/a${duck.direction.x > 0 ? 1 : 3}.png`;
     duckElement.style.position = 'absolute';
+    duckElement.style.zIndex = '10';
     duckElement.style.width = '100px';
     duckElement.style.left = `${duck.position.left}%`;
     duckElement.style.top = `${duck.position.top}%`;

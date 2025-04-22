@@ -56,14 +56,42 @@
         background: linear-gradient(135deg, #4facfe, #00f2fe);
     }
 }
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0px 4px 15px rgba(0, 191, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0px 6px 20px rgba(0, 191, 255, 0.7);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0px 4px 15px rgba(0, 191, 255, 0.5);
+    }
+}
+
+@keyframes colorChange {
+    0% {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    50% {
+        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+    100% {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+}
 
 .counter {
     background: linear-gradient(135deg, #4facfe, #00f2fe); /* Blue to aqua gradient */
-    padding: 12px 24px;
-    width: 80px;
-    height: 35px;
-    font-size: 22px;
+     padding: 12px 24px;
+     width: 80px;
+     height: 35px;
+     font-size: 22px;
     font-weight: bold;
+    color: white;
+    text-align: center;
     color: white;
     text-align: center;
     border-radius: 15px;
@@ -84,7 +112,172 @@
 .coin-counter {
     background: rgba(255, 215, 0, 0.8);
 }
+.contract-popup p {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+.icon-contract {
+    display: flex;
+    position: absolute;
+    top: 45px;
+    left: 165px;
+    width: 58px;
+    height: 57px;
+    transform: translate(-50%, -50%); 
+}
 
+.icon-contract img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+    /* Highlight effect */
+    filter: brightness(5); /* Slightly brighten the image */
+    filter: drop-shadow(0px 4px 10px rgb(255, 255, 255));
+}
+
+/* Hover effect */
+.icon-contract img:hover {
+    transform: scale(1.2) rotate(-5deg); /* Enlarge by 1.2 and slightly rotate */
+    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0)); /* Light shadow */
+}
+
+.contract-popup label {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.contract-popup input[type="text"] {
+    width: 60%;
+    padding: 8px 10px;
+    margin: 8px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+.contract-popup button {
+    width: 38%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 4px;
+}
+
+.contract-popup button:hover {
+    background-color: #0056b3;
+}
+.duck-radio-group {
+    display: flex;
+  flex-direction: column; /* CHUYỂN SANG HÀNG DỌC */
+  gap: 20px;
+  padding: 12px;
+  }
+  
+  .duck-radio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .duck-radio input[type="radio"] {
+    display: none;
+  }
+  
+  .duck-radio img {
+    width: 48px;
+    height: 48px;
+    transition: transform 0.2s ease, box-shadow 0.2s;
+  }
+  
+  .yellow-duck {
+    filter: hue-rotate(10deg) saturate(3);
+
+  }
+  
+  .red-duck {
+    filter: hue-rotate(-30deg) saturate(2);
+  }
+  
+  .white-duck {
+    filter: grayscale(100%) brightness(180%);
+  }
+  
+  /* Highlight khi được chọn */
+  .duck-radio input[type="radio"]:checked + img {
+    box-shadow: 0 0 0 3px #a41a25;
+    transform: scale(1.1);
+    border-radius: 50%;
+  }
+  .duck-count {
+    width: 60px;
+    padding: 4px 6px;
+    font-size: 20px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .contract-popup {
+    display: none;
+    position: absolute;
+    top: 90px;
+    left: 10px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 11;
+    transition: opacity 0.3s ease;
+}
+
+.contract-popup h2,
+.contract-popup h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+  .egg-count {
+    width: 60px;
+    padding: 4px 6px;
+    font-size: 20px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+.list-Duck {
+    display: flex;
+    gap: 24px; /* khoảng cách giữa các con vịt */
+    align-items: center;
+    justify-content: flex-start; /* hoặc center nếu bạn muốn giữa */
+    padding: 12px;
+  }
+  
+  .list-Duck > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .list-Duck span {
+    margin-top: 4px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
 .counter img {
     width: 24px;
     height: 24px;
@@ -102,14 +295,32 @@
 .bag-popup {
     display: none;
     position: absolute;
-    top: 80px;
-    right: 6%;
+    top: 90px;
+    left: 70px;
     background: white;
     padding: 10px;
     border: 1px solid black;
     border-radius: 5px;
 }
-
+.list-Duck {
+    display: flex;
+    gap: 24px; /* khoảng cách giữa các con vịt */
+    align-items: center;
+    justify-content: flex-start; /* hoặc center nếu bạn muốn giữa */
+    padding: 12px;
+  }
+  
+  .list-Duck > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .list-Duck span {
+    margin-top: 4px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
 .icon-duck {
     display: flex;
     position: absolute;
@@ -117,30 +328,46 @@
     left: 28%;
     transform: translate(-50%, -50%); 
 }
-
 .icon-duck img {
     width: 20%; 
+    height: auto; 
+}
+
+.icon-duck-yellow img {
+    filter: hue-rotate(20deg) saturate(2.5) brightness(1.1);
+    width: 100%; 
+    height: auto; 
+}
+
+.icon-duck-red img {
+    filter: hue-rotate(-40deg) saturate(2);
+    width: 100%; 
+    height: auto; 
+}
+
+.icon-duck-white img {
+    filter: grayscale(100%) brightness(170%);
+    width: 100%; 
     height: auto; 
 }
 
 .icon-bag {
     display: flex;
     position: absolute;
-    top: 5%;
-    right: -100px;
-    width: 230px;
-    height: 57px;
-    transform: translate(-50%, -50%); 
+    top: 40px;
+     left: 250px;
+     width: 58px;
+     height: 57px;
+     transform: translate(-50%, -50%); 
 }
 
 .icon-bag img {
-    width: 25%;
+    width: 100%;
     height: auto;
     transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
-
     /* Highlight effect */
-    filter: brightness(2); /* Slightly brighten the image */
-    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0));
+    filter: brightness(5); /* Slightly brighten the image */
+    filter: drop-shadow(0px 4px 10px rgb(255, 255, 255));
 }
 
 /* Hover effect */

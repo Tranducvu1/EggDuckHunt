@@ -152,7 +152,7 @@ function updateMovingDuckSprite(duck: Duck, duckElement: HTMLImageElement, start
 }
 
 function playDuckSound(): void {
-  const duckSound = document.getElementById("redDuckCount") as HTMLAudioElement;
+  const duckSound = document.getElementById("duckSound") as HTMLAudioElement;
   if (duckSound) {
     duckSound.play().catch(() => console.log("Tự động phát bị chặn, yêu cầu thao tác từ người dùng."));
   }
@@ -179,7 +179,7 @@ function createEggElement(duck: Duck): void {
   egg.classList.add("egg-basket");
   egg.style.position = "absolute";
   egg.style.width = "30px";
-  egg.style.zIndex = "2"; 
+  egg.style.zIndex = "10"; 
 
   // Vị trí của trứng
   if (duck.selectedBasket && duck.selectedBasket.position) {

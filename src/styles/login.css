@@ -69,6 +69,7 @@
     position: absolute;
     right: 20px;
     display: flex;
+    top: 20px;
     align-items: center;
     cursor: pointer;
     background: rgba(255, 255, 255, 0.9);

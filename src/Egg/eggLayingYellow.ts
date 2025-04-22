@@ -179,7 +179,7 @@ function createEggElement(duck: Duck): void {
   egg.classList.add("egg-basket");
   egg.style.position = "absolute";
   egg.style.width = "30px";
-  egg.style.zIndex = "2"; 
+  egg.style.zIndex = "10"; 
 
   // Vị trí của trứng
   if (duck.selectedBasket && duck.selectedBasket.position) {
