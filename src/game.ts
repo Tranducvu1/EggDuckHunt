@@ -13,40 +13,47 @@ import { initializeGameStorage, updateCounters } from './Ultils/storage';
 
 import { moveDuckToBasket, startWarningCycle } from './Egg/eggLaying';
 import { setupRandomEggLaying } from './Egg/eggScheduler';
+import { createRainEffect, updatedayandnightEffetc } from './weather/weatherEffect';
 
-// Execute when the HTML document has fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize game storage, ensuring saved data is loaded
     initializeGameStorage();
-    // Update UI counters for eggs and coins
     updateCounters();
-    // Start the warning cycle for duck movement
     startWarningCycle();
-    // Update ducks for all types
+
     updateNormalDuckCount();
     updateRedDuckCount();
     updateYellowDuckCount();
-    // Move each duck type
+
     setupNormalDuckMovement();
     setupRedDuckMovement();
     setupYellowDuckMovement();
-    // Initialize background music and duck sounds
+
     initializeAudio();
-    // Randomly generate eggs from ducks
     setupRandomEggLaying();
-    // Set up baskets for egg collection
     initializeBaskets();
+
+    const canvas = document.getElementById("backgroundCanvas") as HTMLCanvasElement | null;
+    const raindrops: any[] = [];
+
+    if (canvas) {
+        const ctx = canvas.getContext("2d");
+        
+        // Ensure ctx is not null before calling the functions
+        if (ctx !== null) {
+            const ctx2D = ctx as CanvasRenderingContext2D;
+            const canvas2d = canvas as HTMLCanvasElement;
+            function environmentLoop() {
+                // TypeScript now knows ctx is not null because we've checked it
+                updatedayandnightEffetc(ctx2D, canvas2d);
+                createRainEffect(ctx2D, raindrops, canvas2d);
+                requestAnimationFrame(environmentLoop);
+            }
+            environmentLoop();
+        }
+    }
 });
-export { 
-    moveNormalDuck,
-    moveRedDuck,
-    moveYellowDuck,
-    moveDuckToBasket,
-    changeNormalDuckMovementType,
-    changeRedDuckMovementType,
-    changeYellowDuckMovementType,
-    setupRandomEggLaying as setuprandomlayegg
-};
+
 
 /**
  * Initializes and plays background music with volume control.
