@@ -116,6 +116,7 @@
     font-size: 14px;
     margin-bottom: 6px;
     color: #555;
+    z-index: 12;
 }
 .icon-contract {
     display: flex;
@@ -249,6 +250,7 @@
     margin-bottom: 10px;
     color: #333;
 }
+
   .egg-count {
     width: 60px;
     padding: 4px 6px;
@@ -301,7 +303,69 @@
     padding: 10px;
     border: 1px solid black;
     border-radius: 5px;
+    z-index: 12;
 }
+
+/* Popup container */
+.task-popup {
+    position: absolute;
+    top: 90px;
+    left: 170px;
+    width: 300px;
+    background-color: #ffffff; /* nền trắng */
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    color: #222; /* chữ tối hơn cho nền sáng */
+    font-family: sans-serif;
+    z-index: 11;
+  }
+  
+  /* Task list */
+  .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Task item */
+  .task-item {
+    background-color: #f3f3f3; /* nền nhẹ hơn */
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+  
+  /* Task button */
+  .task-item button {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Disabled button */
+  .task-item button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Icon-task */
+  .icon-task {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+  .icon-task img {
+    width: 40px;
+    height: 40px;
+  }
+  
 .list-Duck {
     display: flex;
     gap: 24px; /* khoảng cách giữa các con vịt */
@@ -375,7 +439,30 @@
     transform: scale(1.2) rotate(-5deg); /* Enlarge by 1.2 and slightly rotate */
     filter: drop-shadow(0px 4px 10px rgb(74, 197, 231)); /* Light shadow */
 }
+.icon-task {
+    display: flex;
+    position: absolute;
+    top: 45px;
+    left: 335px;
+    width: 58px;
+    height: 57px;
+    transform: translate(-50%, -50%); 
+}
 
+.icon-task img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+    /* Highlight effect */
+    filter: brightness(5); /* Slightly brighten the image */
+    filter: drop-shadow(0px 4px 10px rgb(255, 255, 255));
+}
+
+/* Hover effect */
+.icon-task img:hover {
+    transform: scale(1.2) rotate(-5deg); /* Enlarge by 1.2 and slightly rotate */
+    filter: drop-shadow(0px 4px 10px rgb(255, 234, 0)); /* Light shadow */
+}
 /* Adjust the position of egg basket in the pond */
 .egg-basket {
     position: absolute;

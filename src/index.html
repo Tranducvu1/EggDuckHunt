@@ -35,7 +35,7 @@
             <div class="resource-display">
                 <div class="resource-item">
                     <img src="../assets/duck/egg.png" alt="Egg" class="resource-icon">
-                    <input type="number" min="0" max="99" id="eggCount" class="egg-count" placeholder="0">
+                    <input type="number" min="0" max="99" id="eggCountt" class="egg-count" placeholder="0">
                 </div>
                 <div class="resource-item">
                     <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
@@ -140,6 +140,36 @@
             <button id="convertButton">Convert</button>
         </div>
     </div>
+
+    <!-- Nút mở nhiệm vụ -->
+<!-- Nút mở nhiệm vụ -->
+<div class="icon-task">
+    <img src="../assets/task.png" alt="Task Icon">
+  </div>
+  
+  <!-- Popup nhiệm vụ -->
+  <div id="taskPopup" class="task-popup">
+    <h3>Nhiệm vụ hàng ngày</h3>
+    <ul class="task-list">
+      <li class="task-item">
+        <div>🥚 Thu thập 10 quả trứng</div>
+        <div><small>🎁 Phần thưởng: 5 coins</small></div>
+        <button>Nhận</button>
+      </li>
+      <li class="task-item">
+        <div>📅 Đăng nhập mỗi ngày</div>
+        <div><small>🎁 Phần thưởng: 3 coins</small></div>
+        <button disabled>Chưa hoàn thành</button>
+      </li>
+      <li class="task-item">
+        <div>🕹️ Tham gia 1 trận đấu</div>
+        <div><small>🎁 Phần thưởng: 7 coins</small></div>
+        <button disabled>Đã nhận</button>
+      </li>
+    </ul>
+  </div>
+  
+
     </div>
     <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
     <canvas id="backgroundCanvas" width="2400" height="2400"></canvas>
