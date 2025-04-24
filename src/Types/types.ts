@@ -63,3 +63,18 @@ export interface PlayerData {
     egg: number;
   }
   
+//save task
+export interface Task {
+    id: string; // Unique identifier for the task
+    icon: string; // Icon representing the task
+    text: string; // Description of the task
+    reward: string; // Reward for completing the task
+    type: string; // Type of task (e.g., egg, duck, etc.)
+    goal: number; // Goal to achieve for the task
+}
+
+// Trạng thái người chơi
+interface PlayerState {
+    eggsCollected: number;
+    claimed: { [key: string]: boolean };
+  }

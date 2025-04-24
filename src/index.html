@@ -140,6 +140,21 @@
             <button id="convertButton">Convert</button>
         </div>
     </div>
+       <!-- Nút mở nhiệm vụ -->
+ <!-- Nút mở nhiệm vụ -->
+ <div class="icon-task">
+    <img src="../assets/task.png" alt="Task Icon">
+  </div>
+  
+  <!-- Popup nhiệm vụ -->
+  <div id="taskPopup" class="task-popup">
+    <h3>Nhiệm vụ hàng ngày</h3>
+    <h4 id="eggCounter">🥚 Trứng đã thu thập: 0</h4>
+    <div id="listtasks" class="task-weekend" style="max-height: 400px; overflow-y: auto;"></div>
+  </div>
+  
+  
+  
     </div>
     <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
     <canvas id="backgroundCanvas" width="2400" height="2400"></canvas>
@@ -149,7 +164,7 @@
         <div class="volume-control">
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
         </div>
-    </div>
+    </div>>
     <div class="user-profile" id="userProfile">
         <div class="avatar" id="avatar"></div>
         <p class="user-name" id="userName"></p>
@@ -173,6 +188,7 @@
  <script type="module" src="./Ultils/storage.ts"></script>
  <script type="module" src="./game.ts"></script>
 <script type="module" src="./UI/bad.ts"></script>
+<script type="module" src="./Task/Claim.ts"></script>
 <script type="module" src="./Egg/eggScheduler.ts"></script>
 <script type="module" src = "./Egg/eggLaying.ts"></script>
 <script type="module" src = "./UI/change.ts"></script>

@@ -14,12 +14,14 @@ import { initializeGameStorage, updateCounters } from './Ultils/storage';
 import { moveDuckToBasket, startWarningCycle } from './Egg/eggLaying';
 import { setupRandomEggLaying } from './Egg/eggScheduler';
 import { createRainEffect, updatedayandnightEffetc } from './weather/weatherEffect';
+import { renderAllDayTask } from './Task/Claim';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize game storage, ensuring saved data is loaded
     initializeGameStorage();
     updateCounters();
     startWarningCycle();
+    renderAllDayTask();
 
     updateNormalDuckCount();
     updateRedDuckCount();
