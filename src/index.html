@@ -12,6 +12,55 @@
     <link rel="stylesheet" href="./styles/effects.css">
     <link rel="stylesheet" href="./styles/enviroment.css">
     <link rel="stylesheet" href="./styles/login.css">
+    <style>
+        .profile-popup {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: rgba(51, 51, 51, 0.95);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: left;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: none;
+            width: 200px;
+        }
+
+        .profile-popup p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        .profile-popup p:first-child {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .profile-popup .logout-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .profile-popup .logout-button:hover {
+            background: linear-gradient(90deg, #FF4B2B, #FF416C);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+        }
+    </style>
 </head>
 <body>
     <div class="background-wrapper"></div>
@@ -57,12 +106,10 @@
                           <input type="radio" name="duckColor" value="yellow">
                           <img src="../assets/icon-duck.png" alt="Yellow Duck" class="yellow-duck">
                         </label>
-                      
                         <label class="duck-radio">
                           <input type="radio" name="duckColor" value="red">
                           <img src="../assets/icon-duck.png" alt="Red Duck" class="red-duck">
                         </label>
-                      
                         <label class="duck-radio">
                           <input type="radio" name="duckColor" value="white">
                           <img src="../assets/icon-duck.png" alt="White Duck" class="white-duck">
@@ -88,14 +135,8 @@
                     <img src="../assets/icon-duck.png" alt="Duck Icon">
                     <span id="whiteDuckCount">0</span>
                 </div>
-                <!-- <p>Yellow Ducks: <span id="yellowDuckCount">0</span></p>
-                <p>Red Ducks: <span id="redDuckCount">0</span></p>
-                <p>White Ducks: <span id="whiteDuckCount">0</span></p> -->
             </div>
         </div>
-
-  <!-- React + Babel -->
-       <!-- Contract Info -->
     </div>
 
     <div class="icon-contract">
@@ -107,237 +148,276 @@
         <p>Connected Account: <span id="connectedAccount">Not connected</span></p>
         <p>Contract Owner: <span id="contractOwner">Loading...</span></p>
       </div>
-      
-   <!-- Nhúng script -->
       <script src="./components/ContractInfo.js" type="module"></script>
-
+      <div>
+        <h2>Contract Actions</h2>
+        <p><strong>Your Balance:</strong> <span id="userBalance">0</span> ETH</p>
         <div>
-            <h2>Contract Actions</h2>
-            <p><strong>Your Balance:</strong> <span id="userBalance">0</span> ETH</p>
-    
-            <!-- Radio chọn hành động -->
-            <div>
-                <label>
-                    <input type="radio" value="deposit" name="action" id="depositRadio" checked>
-                    Deposit
-                </label>
-                <label>
-                    <input type="radio" value="withdraw" name="action" id="withdrawRadio">
-                    Withdraw
-                </label>
-            </div>
-    
-            <!-- Input chung -->
-            <div>
-                <input type="text" id="amountInput" placeholder="Amount in ETH">
-                <button id="actionButton">Deposit Funds</button>
-            </div>
-    
-            <!-- Convert Token -> ETH -->
-            <h3>Convert Token to ETH</h3>
-            <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
-            <input type="text" id="convertAmountInput" placeholder="Enter token amount">
-            <button id="convertButton">Convert</button>
+            <label>
+                <input type="radio" value="deposit" name="action" id="depositRadio" checked>
+                Deposit
+            </label>
+            <label>
+                <input type="radio" value="withdraw" name="action" id="withdrawRadio">
+                Withdraw
+            </label>
         </div>
+        <div>
+            <input type="text" id="amountInput" placeholder="Amount in ETH">
+            <button id="actionButton">Deposit Funds</button>
+        </div>
+        <h3>Convert Token to ETH</h3>
+        <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
+        <input type="text" id="convertAmountInput" placeholder="Enter token amount">
+        <button id="convertButton">Convert</button>
+      </div>
     </div>
-       <!-- Nút mở nhiệm vụ -->
- <!-- Nút mở nhiệm vụ -->
- <div class="icon-task">
-    <img src="../assets/task.png" alt="Task Icon">
-  </div>
-  
-  <!-- Popup nhiệm vụ -->
-  <div id="taskPopup" class="task-popup">
-    <h3>Nhiệm vụ hàng ngày</h3>
-    <h4 id="eggCounter">🥚 Trứng đã thu thập: 0</h4>
-    <div id="listtasks" class="task-weekend" style="max-height: 400px; overflow-y: auto;"></div>
-  </div>
-  
-  
-  
+
+    <div class="icon-task">
+        <img src="../assets/task.png" alt="Task Icon">
     </div>
+    <div id="taskPopup" class="task-popup">
+        <h3>Nhiệm vụ hàng ngày</h3>
+        <h4 id="eggCounter">🥚 Trứng đã thu thập: 0</h4>
+        <div id="listtasks" class="task-weekend" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+
     <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
     <canvas id="backgroundCanvas" width="2400" height="2400"></canvas>
-    <!-- Settings Menu -->
     <div class="settings-menu" id="settingsMenuVolumn">
         <h3>Âm lượng</h3>
         <div class="volume-control">
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
         </div>
-    </div>>
+    </div>
+
     <div class="user-profile" id="userProfile">
         <div class="avatar" id="avatar"></div>
         <p class="user-name" id="userName"></p>
         <input type="text" id="nameInput" class="name-input" style="display: none;">
-
-        <div class="tooltip" id="tooltip">
+        <div class="profile-popup" id="profilePopup">
             <p>📌 Địa chỉ ví: <span id="shortAddress"></span></p>
             <p>💰 Số dư: <span id="balance"></span> ETH</p>
             <button id="logoutButton" class="logout-button">Đăng xuất</button>
         </div>
     </div>
 
-    <!-- Audio Elements -->
     <audio id="bgMusic" loop>
         <source src="./../assets/sound/backgroundmusic.mp3" type="audio/mp3">
     </audio>
     <audio id="duckSound">
         <source src="./../assets/sound/soundduck.mp3" type="audio/mp3">
     </audio>
- <!-- Scripts -->
- <script type="module" src="./Ultils/storage.ts"></script>
- <script type="module" src="./game.ts"></script>
-<script type="module" src="./UI/bad.ts"></script>
-<script type="module" src="./Task/Claim.ts"></script>
-<script type="module" src="./Egg/eggScheduler.ts"></script>
-<script type="module" src = "./Egg/eggLaying.ts"></script>
-<script type="module" src = "./UI/change.ts"></script>
-<script type="module" src = "./settings/volumns.ts"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const userProfile = document.getElementById('userProfile');
-        const userName = document.getElementById('userName');
-        const nameInput = document.getElementById('nameInput');
-        const tooltip = document.getElementById('tooltip');
-        const shortAddress = document.getElementById('shortAddress');
-        const balanceElement = document.getElementById('balance');
-        const logoutButton = document.getElementById('logoutButton');
-        const avatar = document.getElementById('avatar');
 
-        let web3;
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-    }
+    <script type="module" src="./Ultils/storage.ts"></script>
+    <script type="module" src="./game.ts"></script>
+    <script type="module" src="./UI/bad.ts"></script>
+    <script type="module" src="./Task/Claim.ts"></script>
+    <script type="module" src="./Egg/eggScheduler.ts"></script>
+    <script type="module" src="./Egg/eggLaying.ts"></script>
+    <script type="module" src="./UI/change.ts"></script>
+    <script type="module" src="./settings/volumns.ts"></script>
+    <script type="module">
+        import { initialize } from "./components/ContractActions.js";
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userProfile = document.getElementById('userProfile');
+            const userName = document.getElementById('userName');
+            const nameInput = document.getElementById('nameInput');
+            const profilePopup = document.getElementById('profilePopup');
+            const shortAddress = document.getElementById('shortAddress');
+            const balanceElement = document.getElementById('balance');
+            const logoutButton = document.getElementById('logoutButton');
+            const avatar = document.getElementById('avatar');
 
-    
-        const refreshBalance = async () => {
-        if (web3) {
-            try {
-                const userAddress = sessionStorage.getItem('userAddress');
-                if (userAddress) {
+            let web3;
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                window.ethereum.on('accountsChanged', (accounts) => {
+                    if (accounts.length > 0) {
+                        const userAddress = accounts[0];
+                        const shortAddressText = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+                        sessionStorage.setItem('userAddress', userAddress);
+                        sessionStorage.setItem('shortAddress', shortAddressText);
+                        const storedName = localStorage.getItem(`walletName_${userAddress}`);
+                        if (storedName) {
+                            sessionStorage.setItem('userName', storedName);
+                            sessionStorage.setItem('userInitial', storedName.charAt(0).toUpperCase());
+                        }
+                        refreshBalance();
+                    } else {
+                        handleLogout();
+                    }
+                });
+            }
+
+            const updatePlayerName = async (address, newName) => {
+                try {
+                    console.log('Updating player name:', { token: address, name: newName });
+                    const response = await fetch(`http://localhost:7272/api/v1/player/update`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: address, name: newName })
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Update player name failed:', response.status, errorText);
+                        throw new Error(`Không thể cập nhật tên: ${response.status} ${errorText}`);
+                    }
+                    console.log('Player name updated successfully in database.');
+                    return true;
+                } catch (error) {
+                    console.error("Error in updatePlayerName:", error);
+                    return false;
+                }
+            };
+
+            const refreshBalance = async () => {
+                if (!web3) {
+                    console.error('Web3 not initialized. Please ensure MetaMask is installed.');
+                    if (balanceElement) {
+                        balanceElement.textContent = '0';
+                    }
+                    return;
+                }
+
+                try {
+                    const userAddress = sessionStorage.getItem('userAddress');
+                    if (!userAddress) {
+                        console.warn('No user address found in sessionStorage');
+                        if (balanceElement) {
+                            balanceElement.textContent = '0';
+                        }
+                        if (document.getElementById('userBalance')) {
+                            document.getElementById('userBalance').textContent = '0';
+                        }
+                        return;
+                    }
+
                     const weiBalance = await web3.eth.getBalance(userAddress);
                     const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
                     const balance = parseFloat(ethBalance).toFixed(4);
-                    
-                    // Update UI and sessionStorage
-                    balanceElement.textContent = balance;
+
+                    if (balanceElement) {
+                        balanceElement.textContent = balance;
+                    }
                     sessionStorage.setItem('userBalance', balance);
+
+                    const userBalanceElement = document.getElementById('userBalance');
+                    if (userBalanceElement) {
+                        userBalanceElement.textContent = balance;
+                    }
+                } catch (error) {
+                    console.error('Error refreshing balance:', error);
+                    if (balanceElement) {
+                        balanceElement.textContent = '0';
+                    }
+                    if (document.getElementById('userBalance')) {
+                        document.getElementById('userBalance').textContent = '0';
+                    }
                 }
-            } catch (error) {
-                console.error("Error refreshing balance:", error);
-            }
-        }
-    };
-        // Load user data from sessionStorage
-        const loadUserData = () => {
-        const storedName = sessionStorage.getItem('userName');
-        const storedAddress = sessionStorage.getItem('shortAddress');
-        const storedBalance = sessionStorage.getItem('userBalance');
-        const storedInitial = sessionStorage.getItem('userInitial');
-        const fullAddress = sessionStorage.getItem('userAddress');
-        
-        // if (storedName && storedAddress) {
-        //     // Display user profile
-        //     userName.textContent = storedName;
-        //     shortAddress.textContent = storedAddress;
-        //     balanceElement.textContent = storedBalance || '0';
-        //     if (storedInitial) {
-        //         avatar.textContent = storedInitial;
-        //     } else if (storedName) {
-        //         avatar.textContent = storedName.charAt(0).toUpperCase();
-        //     }
-            
-        //     userProfile.style.display = 'flex';
-            
-        //     // Refresh balance from network
-        //     if (fullAddress) {
-        //         refreshBalance();
-        //     }
-        // } else {
-        //     // No user data found, redirect to login page
-        //     window.location.href = "../index.html";
-        // }
-    };
-        
-        const handleLogout = () => {
-    // Set logged out flag
-    sessionStorage.setItem('loggedOut', 'true');
-    
-    // Clear remaining session data
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('userAddress');
-    sessionStorage.removeItem('shortAddress');
-    sessionStorage.removeItem('userBalance');
-    sessionStorage.removeItem('userInitial');
-    
-    // Redirect to login page
-    window.location.href = "../index.html";
-};
-        
-        // Handle name editing
-        const handleEditName = () => {
-            userName.style.display = 'none';
-            nameInput.style.display = 'block';
-            nameInput.value = userName.textContent;
-            nameInput.focus();
-        };
-        
-        // Handle saving name
-        const handleSaveName = () => {
-            const newName = nameInput.value;
-            if (newName.trim() !== '') {
-                const userAddress = sessionStorage.getItem('userAddress');
-                if (userAddress) {
-                    localStorage.setItem(`walletName_${userAddress}`, newName);
-                    userName.textContent = newName;
-                    avatar.textContent = newName.charAt(0).toUpperCase();
-                    
-                    // Update name in sessionStorage
-                    sessionStorage.setItem('userName', newName);
-                    sessionStorage.setItem('userInitial', newName.charAt(0).toUpperCase());
+            };
+
+            const loadUserData = () => {
+                const storedAddress = sessionStorage.getItem('shortAddress');
+                const storedBalance = sessionStorage.getItem('userBalance');
+                const storedInitial = sessionStorage.getItem('userInitial');
+                const fullAddress = sessionStorage.getItem('userAddress');
+
+                let storedName = sessionStorage.getItem('userName');
+                if (!storedName && fullAddress) {
+                    storedName = localStorage.getItem(`walletName_${fullAddress}`);
+                    if (storedName) {
+                        sessionStorage.setItem('userName', storedName);
+                        sessionStorage.setItem('userInitial', storedName.charAt(0).toUpperCase());
+                    }
                 }
-            }
-            nameInput.style.display = 'none';
-            userName.style.display = 'block';
-        };
-        
-        // Event listeners
-        logoutButton.addEventListener('click', handleLogout);
-        
-        // Double click to edit name
-        userName.addEventListener('dblclick', handleEditName);
-        
-        // Save on blur
-        nameInput.addEventListener('blur', handleSaveName);
-        nameInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleSaveName();
-            }
+
+                userName.textContent = storedName || 'Guest';
+                shortAddress.textContent = storedAddress || 'Not connected';
+                balanceElement.textContent = storedBalance || '0';
+                avatar.textContent = storedInitial || storedName?.charAt(0).toUpperCase() || 'G';
+
+                userProfile.style.display = 'flex';
+
+                if (fullAddress) {
+                    refreshBalance();
+                } else {
+                    console.warn('No user address found in sessionStorage');
+                }
+            };
+
+            const handleLogout = () => {
+                sessionStorage.setItem('loggedOut', 'true');
+                sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userAddress');
+                sessionStorage.removeItem('shortAddress');
+                sessionStorage.removeItem('userBalance');
+                sessionStorage.removeItem('userInitial');
+                window.location.href = '../index.html';
+            };
+
+            const handleEditName = () => {
+                userName.style.display = 'none';
+                nameInput.style.display = 'block';
+                nameInput.value = userName.textContent;
+                nameInput.focus();
+            };
+
+            const handleSaveName = async () => {
+                const newName = nameInput.value.trim();
+                if (newName !== '') {
+                    const userAddress = sessionStorage.getItem('userAddress');
+                    if (userAddress) {
+                        try {
+                            console.log('Saving new name:', newName);
+                            localStorage.setItem(`walletName_${userAddress}`, newName);
+                            const updateSuccess = await updatePlayerName(userAddress, newName);
+                            if (!updateSuccess) {
+                                throw new Error('Failed to update name in database');
+                            }
+                            userName.textContent = newName;
+                            avatar.textContent = newName.charAt(0).toUpperCase();
+                            sessionStorage.setItem('userName', newName);
+                            sessionStorage.setItem('userInitial', newName.charAt(0).toUpperCase());
+                        } catch (error) {
+                            console.error('Error saving name:', error);
+                            alert('Không thể lưu tên mới vào database: ' + error.message);
+                        }
+                    } else {
+                        console.warn('No user address found for saving name');
+                        alert('Không thể lưu tên vì không tìm thấy địa chỉ ví.');
+                    }
+                }
+                nameInput.style.display = 'none';
+                userName.style.display = 'block';
+            };
+
+            const toggleProfilePopup = (e) => {
+                e.stopPropagation();
+                profilePopup.style.display = profilePopup.style.display === 'block' ? 'none' : 'block';
+            };
+
+            userProfile.addEventListener('click', toggleProfilePopup);
+
+            document.addEventListener('click', (e) => {
+                if (!userProfile.contains(e.target) && !profilePopup.contains(e.target)) {
+                    profilePopup.style.display = 'none';
+                }
+            });
+
+            logoutButton.addEventListener('click', handleLogout);
+            userName.addEventListener('dblclick', handleEditName);
+            nameInput.addEventListener('blur', handleSaveName);
+            nameInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    handleSaveName();
+                }
+            });
+
+            loadUserData();
         });
-        
-        // Show/hide tooltip
-        userProfile.addEventListener('mouseenter', () => {
-            tooltip.style.display = 'block';
-            setTimeout(() => {
-                tooltip.style.transform = 'translateY(0)';
-                tooltip.style.opacity = '1';
-            }, 50);
-        });
-        
-        userProfile.addEventListener('mouseleave', () => {
-            tooltip.style.transform = 'translateY(10px)';
-            tooltip.style.opacity = '0';
-            setTimeout(() => {
-                tooltip.style.display = 'none';
-            }, 300);
-        });
-        
-        // Load user data on page load
-        loadUserData();
-    });
-</script>
-<script type="module">
-    import { initialize } from "./components/ContractActions.js";
-</script>
+    </script>
 </body>
 </html>
