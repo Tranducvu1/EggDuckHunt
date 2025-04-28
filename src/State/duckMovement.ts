@@ -245,6 +245,7 @@ export function setupDuckMovement() {
     duckMovementIntervals.forEach(interval => clearInterval(interval));
     duckMovementIntervals.length = 0;  
     // Set up new intervals for each duck
+    
     normalDucks.forEach(duck => {
         const interval = setInterval(() => moveDuck(duck), 150);
         duckMovementIntervals.push(interval);

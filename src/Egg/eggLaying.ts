@@ -1,5 +1,7 @@
 // game.ts
-
+import { toast } from "react-toastify";
+ // @ts-ignore
+ import { handlecollectEgg } from '../components/ContractActions.js';
 import { Duck, Position } from '../Types/types';
 import { baskets } from '../Basket/baskets';
 import { incrementEggAndCoin } from '../Ultils/storage';
@@ -195,12 +197,16 @@ function createEggElement(duck: Duck): void {
 
   egg.style.cursor = "pointer";
 
-  // Thêm sự kiện click vào trứng
-  egg.addEventListener('click', () => {
-    incrementEggAndCoin();
-    collectEgg()
-    document.body.removeChild(egg);
-  });
+  egg.addEventListener('click', async() => {
+    try {
+        await handlecollectEgg(); // Gọi từ action
+        incrementEggAndCoin();    // Cập nhật UI hoặc localStorage
+        document.body.removeChild(egg); // Xóa trứng khỏi giao diện
+      } catch (error) {
+        console.error("Error collecting egg:", error);
+        toast.error("Something went wrong while collecting the egg!");
+      }
+});
 
   document.body.appendChild(egg);
 }

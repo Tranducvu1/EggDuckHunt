@@ -23,4 +23,4 @@ export const GAME_CONSTANTS = {
 };
 
 export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random"];
-export const CONTRACT_ADDRESS = "0xcd174f045a410b4d34a19e7293c97c4DbBb547d5";
+export const CONTRACT_ADDRESS = "0xeAef18c7A7228FBA33D93ce2f614a47DA0878F82";

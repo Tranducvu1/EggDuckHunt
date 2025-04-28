@@ -72,12 +72,20 @@ export function renderAllDayTask(): void {
 
         // Update the egg count with the task goal
         eggCount += taskGoal;
+      
+        updateEggUI(eggCount);
         localStorage.setItem("eggCount", eggCount.toString());
 
         alert("🎉 Nhận thưởng thành công!");
       }
     });
   });
+}
+
+function updateEggUI(newEggCount: number) {
+  const eggMain = document.getElementById("eggCounter");
+
+  if (eggMain) eggMain.textContent = newEggCount.toString();
 }
 
 export function collectEgg() {

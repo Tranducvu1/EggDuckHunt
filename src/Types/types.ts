@@ -74,7 +74,7 @@ export interface Task {
 }
 
 // Trạng thái người chơi
-interface PlayerState {
+export interface PlayerState {
     eggsCollected: number;
     claimed: { [key: string]: boolean };
   }
