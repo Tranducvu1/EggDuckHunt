@@ -235,30 +235,41 @@ function returnToOriginal(duck: Duck, duckElement: HTMLImageElement): void {
   const startPosition = { left: duck.position.left, top: duck.position.top };
   const targetPosition = duck.originalPosition;
 
-  const startTime = Date.now();
+  const startTime = performance.now();
   const duration = GAME_CONSTANTS.MOVEMENT.RETURN_DURATION;
+  let lastFrameChange = 0;
 
-  const returnInterval = setInterval(() => {
-    const elapsedTime = Date.now() - startTime;
-    const progress = Math.min(elapsedTime / duration, 1);
+  function animate(time: number) {
+    const elapsed = time - startTime;
+    let progress = Math.min(elapsed / duration, 1);
 
-    if (progress >= 1) {
-      clearInterval(returnInterval);
-      duck.position.left = targetPosition.left;
-      duck.position.top = targetPosition.top;
-      duck.moving = true;
-      return;
-    }
+    // Ease-in movement (nếu muốn)
+    progress = progress * progress;
 
-    // Di chuyển về vị trí gốc
+    // Cập nhật vị trí
     duck.position.left = startPosition.left + (targetPosition.left - startPosition.left) * progress;
     duck.position.top = startPosition.top + (targetPosition.top - startPosition.top) * progress;
 
     duckElement.style.left = `${duck.position.left}%`;
     duckElement.style.top = `${duck.position.top}%`;
 
-    const currentDirection = duck.position.left > startPosition.left ? 1 : -1;
-    duckElement.src = `../assets/duck/right-left/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
-    duck.frame = duck.frame === 1 ? 2 : 1;
-  }, 50);
+    // Đổi frame mỗi 200ms
+    if (time - lastFrameChange > 200) {
+      duck.frame = duck.frame === 1 ? 2 : 1;
+      lastFrameChange = time;
+    }
+
+    // Cập nhật sprite theo hướng
+    const currentDirection = targetPosition.left > startPosition.left ? 1 : -1;
+    duckElement.src = `../assets/duck/fly/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
+
+    // Kết thúc nếu đã đến nơi
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      duck.moving = true;
+    }
+  }
+
+  requestAnimationFrame(animate);
 }

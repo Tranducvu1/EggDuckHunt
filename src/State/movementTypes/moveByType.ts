@@ -1,4 +1,6 @@
 import { Duck } from '../../Types/Duck';
+import { moveFly } from '../fly';
+
 import { moveCircular } from './moveCircular';
 import { moveLinear } from './moveLinear';
 import { moveRandom } from './moveRandom';
@@ -18,6 +20,12 @@ export function moveByType(duck: Duck): void {
             break;
         case "random":
             moveRandom(duck);
+            break;
+        case "fly":
+            moveFly(duck);
+            break;
+        default:
+            console.error(`Unknown movement type: ${duck.movementType}`);
             break;
     }
 }

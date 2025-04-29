@@ -30,7 +30,7 @@ export const GAME_CONSTANTS = {
 };
 
 // Array containing possible movement types for ducks
-export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random"];
+export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random","fly"];
 
 // The contract address on the blockchain for interactions (e.g., game transactions, NFT management)
 export const CONTRACT_ADDRESS = "0xeAef18c7A7228FBA33D93ce2f614a47DA0878F82";

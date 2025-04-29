@@ -1,7 +1,7 @@
 import { Basket } from './Basket';
 import { DuckType } from './DuckType';
 
-export type MovementType = "linear" | "circular" | "zigzag" | "random";
+export type MovementType = "linear" | "circular" | "zigzag" | "random" | "fly";
 
 export interface Duck {
   id: string;
