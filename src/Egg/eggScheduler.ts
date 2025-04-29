@@ -1,11 +1,9 @@
-import { Duck } from '../Types/types';
-import { moveDuckToBasket as moveNormalDuckToBasket } from './eggLaying';
-import { moveDuckToBasket as moveYellowDuckToBasket } from './eggLayingYellow';
-import { moveDuckToBasket as moveRedDuckToBasket } from './eggLayingRed';
+import { moveDuckToBasket  } from './eggLaying';
+
+
 import { GAME_CONSTANTS } from '../Constant/constant';
-import { normalDucks} from '../DuckManager/duckManager';
-import { redDucks} from '../DuckManager/duckRedManager';
-import { yellowDucks } from '../DuckManager/duckYellowManager';
+import { normalDucks, redDucks, yellowDucks } from '../DuckManager/duckManager';
+import { Duck } from '../Types/Duck';
 
 export function setupRandomEggLaying(): void {
     normalDucks.forEach(scheduleEggLayingForDuck);
@@ -25,11 +23,11 @@ function scheduleEggLayingForDuck(duck: Duck): void {
     duck.autoMoveInterval = setTimeout(() => {
         if (duck.moving) {
             if (normalDucks.includes(duck)) {
-                moveNormalDuckToBasket(duck);
+                moveDuckToBasket(duck);
             } else if (redDucks.includes(duck)) {
-                moveRedDuckToBasket(duck);
+                moveDuckToBasket(duck);
             } else if (yellowDucks.includes(duck)) {
-                moveYellowDuckToBasket(duck);
+                moveDuckToBasket(duck);
             }
 
             setTimeout(() => {

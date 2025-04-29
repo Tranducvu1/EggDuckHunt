@@ -220,6 +220,7 @@ const handleBuyDuck = async () => {
       toast.success("You bought a duck successfull)!");
       await updateTokenBalance();
       await updateDuckCount();
+      
     } catch (error) {
       const message = error?.data?.message || error?.reason || "Failed to buy duck";
       toast.error(message);

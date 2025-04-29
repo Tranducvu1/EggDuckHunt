@@ -1,4 +1,5 @@
-import { PlayerState } from "../Types/types";
+
+import { PlayerState } from "../Types/Player";
 import { dailyTasks } from "./dailyTask";
 
 const dailyofweek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

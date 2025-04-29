@@ -47,31 +47,39 @@
                 <button id="exchangeBtn" class="btn btn-exchange">Exchange Coins</button>
             </div>
             <div class="resource-display">
-                <div class="resource-item">
-                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
-                    <span id="duckcoinCount" class="resource-value">0</span>
+               
+                <div class="resource-item1" style="display: grid; grid-template-columns: auto auto; row-gap: 8px; column-gap: 16px; font-size: 16px;">
+                    <span class="duck-label">White:</span>
+                    <span class="duck-value"><span id="white" class="resource-value"></span> 0.005 ETH</span>
+                
+                    <span class="duck-label">Yellow:</span>
+                    <span class="duck-value"><span id="yellowPrice" class="resource-value"></span> 0.01 ETH</span>
+                
+                    <span class="duck-label">Red:</span>
+                    <span class="duck-value"><span id="redPrice" class="resource-value"></span> 0.015 ETH</span>
                 </div>
+                
                 <div class="resource-item">
                     <div class="duck-radio-group">
                         <label class="duck-radio">
-                          <input type="radio" name="duckColor" value="yellow">
-                          <img src="../assets/icon-duck.png" alt="Yellow Duck" class="yellow-duck">
+                            <input type="radio" name="duckColor" value="yellow">
+                            <img src="../assets/icon-duck.png" alt="Yellow Duck" class="yellow-duck">
                         </label>
-                      
+
                         <label class="duck-radio">
-                          <input type="radio" name="duckColor" value="red">
-                          <img src="../assets/icon-duck.png" alt="Red Duck" class="red-duck">
+                            <input type="radio" name="duckColor" value="red">
+                            <img src="../assets/icon-duck.png" alt="Red Duck" class="red-duck">
                         </label>
-                      
+
                         <label class="duck-radio">
-                          <input type="radio" name="duckColor" value="white">
-                          <img src="../assets/icon-duck.png" alt="White Duck" class="white-duck">
+                            <input type="radio" name="duckColor" value="white">
+                            <img src="../assets/icon-duck.png" alt="White Duck" class="white-duck">
                         </label>
-                      </div>
-                      <input type="number" min="0" max="99" class="duck-count" placeholder="0">
+                    </div>
+                    <input type="number" min="0" max="99" id="duckCount" placeholder="0">
                 </div>
             </div>
-            
+
             <div class="control-buttons">
                 <button id="buyDuckButton" class="btn btn-exchange">Buy Ducks</button>
             </div>

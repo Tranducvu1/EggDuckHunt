@@ -1,4 +1,5 @@
-import { Task } from "../Types/types";
+import { Task } from "../Types/Task";
+
 
 export const dailyTasks: Record<number, Task[]> = {
     1: [{ id: 'egg10', icon: "🥚", text: "Thu thập 10 trứng", reward: "5 coins", type: "egg", goal: 10 }],

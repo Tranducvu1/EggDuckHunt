@@ -2,11 +2,14 @@
 import { toast } from "react-toastify";
  // @ts-ignore
  import { handlecollectEgg } from '../components/ContractActions.js';
-import { Duck, Position } from '../Types/types';
 import { baskets } from '../Basket/baskets';
 import { incrementEggAndCoin } from '../Ultils/storage';
 import { GAME_CONSTANTS } from '../Constant/constant';
 import { collectEgg } from '../Task/Claim';
+import { Duck } from "../Types/Duck.js";
+import { Position } from "../Types/Position.js";
+import { DUCK_CONFIGS } from "../Types/duckConfigs.js";
+import { DuckType } from "../Types/DuckType.js";
 
 
 let isBoosting = false;
@@ -160,21 +163,36 @@ function playDuckSound(): void {
     duckSound.play().catch(() => console.log("Tự động phát bị chặn, yêu cầu thao tác từ người dùng."));
   }
 }
+
 function layEgg(duck: Duck, duckElement: HTMLImageElement): void {
-    const eggCount = isBoostingNow() ? 2 : 1;
-    const delayBetweenEggs = isBoostingNow() ? 500 : 1000;
-  
-    for (let i = 0; i < eggCount; i++) {
-      setTimeout(() => {
-        createEggElement(duck);
-        if (i === eggCount - 1) {
-          
-          setTimeout(() => returnToOriginal(duck, duckElement), 1000);
-        }
-      }, i * delayBetweenEggs);
-    }
+  let baseEggCount = 1; // Mặc định là 1 trứng (vịt trắng)
+
+  // Xác định số trứng theo loại vịt
+  switch (duck.type) {
+    case DuckType.YELLOW:
+      baseEggCount = 2;
+      break;
+    case DuckType.RED:
+      baseEggCount = 3;
+      break;
+    default:
+      baseEggCount = 1;
+      break;
   }
-  
+
+  const eggCount = isBoostingNow() ? baseEggCount + 1 : baseEggCount; 
+  const delayBetweenEggs = isBoostingNow() ? 500 : 1000;
+
+  for (let i = 0; i < eggCount; i++) {
+    setTimeout(() => {
+      createEggElement(duck);
+      if (i === eggCount - 1) {
+        setTimeout(() => returnToOriginal(duck, duckElement), 1000);
+      }
+    }, i * delayBetweenEggs);
+  }
+}
+
 
 function createEggElement(duck: Duck): void {
   const egg = document.createElement("img");
