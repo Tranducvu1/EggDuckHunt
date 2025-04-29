@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,17 +20,9 @@
         }
 
         @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .App {
@@ -156,7 +147,7 @@
             color: #333;
         }
 
-        .tooltip {
+        .popup {
             position: absolute;
             top: 60px;
             right: 0;
@@ -171,18 +162,15 @@
             display: none;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateY(10px);
-            transition: all 0.3s ease;
             z-index: 1000;
-            opacity: 0;
         }
 
-        .tooltip p {
+        .popup p {
             margin: 0;
             padding: 5px 0;
         }
 
-        .tooltip p:first-child {
+        .popup p:first-child {
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 8px;
             margin-bottom: 8px;
@@ -224,38 +212,563 @@
             height: 80px;
             fill: white;
         }
+
+        #savedAccountsList {
+            margin-bottom: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        #savedAccountsList > div {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #savedAccountsList > div button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #savedAccountsList > div.no-accounts {
+            padding: 10px;
+            text-align: center;
+            color: #666;
+        }
     </style>
 </head>
-
 <body>
     <div class="App" id="app">
         <div class="login-container" id="loginContainer">
             <div class="game-logo">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                        d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                    <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
                 </svg>
             </div>
             <h1>Duck Egg Hunt</h1>
+            <div id="savedAccountsList"></div>
             <button id="connectButton" class="login-button">Connect MetaMask & Play</button>
         </div>
-
+        
         <div class="user-profile" id="userProfile" style="display: none;">
             <div class="avatar" id="avatar"></div>
             <p class="user-name" id="userName"></p>
             <input type="text" id="nameInput" class="name-input" style="display: none;">
-
-            <div class="tooltip" id="tooltip">
+            <div class="popup" id="popup">
                 <p>📌 Địa chỉ ví: <span id="shortAddress"></span></p>
                 <p>💰 Số dư: <span id="balance"></span> ETH</p>
                 <button id="logoutButton" class="logout-button">Đăng xuất</button>
             </div>
         </div>
     </div>
+    <script type="module">
+        import { initialize, getContract } from "./src/Ultils/contractServices.js";
 
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-    <script type="module" src="./src/components/ConnectWallet.js"></script>
-    
+        document.addEventListener('DOMContentLoaded', function() {
+            const connectButton = document.getElementById('connectButton');
+            const loginContainer = document.getElementById('loginContainer');
+            const userProfile = document.getElementById('userProfile');
+            const userName = document.getElementById('userName');
+            const nameInput = document.getElementById('nameInput');
+            const popup = document.getElementById('popup');
+            const shortAddress = document.getElementById('shortAddress');
+            const balanceElement = document.getElementById('balance');
+            const logoutButton = document.getElementById('logoutButton');
+            const avatar = document.getElementById('avatar');
+            const savedAccountsList = document.getElementById('savedAccountsList');
+            let account = '';
+            let walletName = '';
+            let balance = '0';
+            let web3;
+            let isPopupOpen = false;
+
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+            } else {
+                console.error('MetaMask not detected.');
+                alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
+            }
+
+            const connectMetaMask = async () => {
+                if (!window.ethereum) {
+                    alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
+                    return;
+                }
+
+                try {
+                    console.log('Initializing contract...');
+                    await initialize();
+                    console.log('Contract initialized.');
+
+                    console.log('Requesting MetaMask accounts...');
+                    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+                    account = accounts[0];
+                    if (!account) {
+                        console.error('No account received.');
+                        alert('Không nhận được tài khoản từ MetaMask.');
+                        return;
+                    }
+                    console.log("Account received:", account);
+
+                    walletName = localStorage.getItem(`walletName_${account}`);
+                    if (!walletName) {
+                        walletName = prompt("Nhập tên của bạn:");
+                        if (!walletName || walletName.trim() === '') {
+                            console.error('No name provided.');
+                            alert("Bạn cần nhập tên để tiếp tục!");
+                            return;
+                        }
+                        localStorage.setItem(`walletName_${account}`, walletName);
+                    }
+                    console.log("Wallet name:", walletName);
+
+                    console.log('Checking if player exists...');
+                    const accountExists = await checkPlayerExists(account);
+                    console.log('Player exists:', accountExists);
+                    if (!accountExists) {
+                        console.log('Creating new player...');
+                        const createSuccess = await createPlayer({ token: account, name: walletName });
+                        if (!createSuccess) {
+                            console.error('Failed to create player.');
+                            alert('Không thể lưu tài khoản vào database. Vui lòng thử lại.');
+                            return;
+                        }
+                        console.log('Player created successfully.');
+                    } else {
+                        console.log('Updating player name...');
+                        await updatePlayerName(account, walletName);
+                        console.log('Player name updated.');
+                    }
+
+                    userName.textContent = walletName;
+                    setAvatarInitial(walletName);
+                    sessionStorage.setItem('userName', walletName);
+                    sessionStorage.setItem('userInitial', walletName.charAt(0).toUpperCase());
+
+                    sessionStorage.setItem("userAddress", account);
+                    sessionStorage.setItem("shortAddress", `${account.slice(0, 6)}...${account.slice(-4)}`);
+
+                    console.log('Fetching balance...');
+                    await getBalance(account);
+                    console.log('Balance fetched:', balance);
+
+                    console.log('Checking duck count...');
+                    try {
+                        const contract = getContract();
+                        const duckCount = await contract.getDuckCount(account, "white");
+                        console.log("Duck count:", Number(duckCount));
+                        if (Number(duckCount) > 0) {
+                            console.log("Duck already initialized:", duckCount);
+                        } else {
+                            console.log("No duck found, initializing...");
+                            const tx = await contract.initDuck();
+                            await tx.wait();
+                            console.log("Duck initialized successfully.");
+                        }
+                    } catch (error) {
+                        console.error('Error initializing duck:', error);
+                        alert('Lỗi khi khởi tạo duck, nhưng bạn vẫn có thể vào game.');
+                    }
+
+                    console.log('Showing user profile and redirecting...');
+                    showUserProfile();
+                    setTimeout(() => {
+                        console.log('Redirecting to game...');
+                        window.location.href = "src/index.html";
+                    }, 500);
+                } catch (error) {
+                    console.error("Error in connectMetaMask:", error);
+                    alert("Đã xảy ra lỗi khi kết nối MetaMask hoặc lưu tài khoản: " + error.message);
+                }
+            };
+
+            const getBalance = async (address) => {
+                try {
+                    const weiBalance = await web3.eth.getBalance(address);
+                    const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
+                    balance = parseFloat(ethBalance).toFixed(4);
+                    balanceElement.textContent = balance;
+                    sessionStorage.setItem('userBalance', balance);
+                } catch (error) {
+                    console.error("Error fetching balance:", error);
+                    balanceElement.textContent = '0';
+                    sessionStorage.setItem('userBalance', '0');
+                }
+            };
+
+            const setAvatarInitial = (name) => {
+                if (name && name.length > 0) {
+                    avatar.textContent = name.charAt(0).toUpperCase();
+                    sessionStorage.setItem('userInitial', name.charAt(0).toUpperCase());
+                }
+            };
+
+            const showUserProfile = () => {
+                loginContainer.style.display = 'none';
+                userProfile.style.display = 'flex';
+                shortAddress.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
+            };
+
+            const handleLogout = () => {
+                console.log('Logging out...');
+                userProfile.style.display = 'none';
+                loginContainer.style.display = 'block';
+                account = '';
+                walletName = '';
+                balance = '0';
+                sessionStorage.setItem('loggedOut', 'true');
+                sessionStorage.removeItem('userBalance');
+                sessionStorage.removeItem('userAddress');
+                sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userInitial');
+                sessionStorage.removeItem('shortAddress');
+                displayAccounts();
+                console.log('Logout complete.');
+            };
+
+            const handleEditName = () => {
+                userName.style.display = 'none';
+                nameInput.style.display = 'block';
+                nameInput.value = walletName;
+                nameInput.focus();
+            };
+
+            const handleSaveName = async () => {
+                const newName = nameInput.value.trim();
+                if (newName !== '') {
+                    try {
+                        console.log('Saving new name:', newName);
+                        localStorage.setItem(`walletName_${account}`, newName);
+                        const updateSuccess = await updatePlayerName(account, newName);
+                        if (!updateSuccess) {
+                            throw new Error('Failed to update name in database');
+                        }
+                        walletName = newName;
+                        userName.textContent = newName;
+                        setAvatarInitial(newName);
+                        sessionStorage.setItem('userName', newName);
+                    } catch (error) {
+                        console.error('Error saving name:', error);
+                        alert('Không thể lưu tên mới vào database: ' + error.message);
+                    }
+                }
+                nameInput.style.display = 'none';
+                userName.style.display = 'block';
+            };
+
+            const createPlayer = async (playerData) => {
+                try {
+                    console.log('Sending create player request:', playerData);
+                    const response = await fetch('http://localhost:7272/api/v1/player/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(playerData)
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Create player failed:', response.status, errorText);
+                        throw new Error(`Không thể tạo người chơi: ${response.status} ${errorText}`);
+                    }
+                    const data = await response.json();
+                    console.log('Player created:', data);
+                    return true;
+                } catch (error) {
+                    console.error("Error in createPlayer:", error);
+                    return false;
+                }
+            };
+
+            const checkPlayerExists = async (address) => {
+                try {
+                    console.log('Fetching players to check existence:', address);
+                    const response = await fetch('http://localhost:7272/api/v1/player');
+                    if (!response.ok) {
+                        console.error('Fetch players failed:', response.status);
+                        throw new Error('Không thể lấy thông tin người chơi');
+                    }
+                    const data = await response.json();
+                    console.log('Players fetched:', data);
+                    const exists = data.some(player => player.token.toLowerCase() === address.toLowerCase());
+                    console.log('Player exists check result:', exists);
+                    return exists;
+                } catch (error) {
+                    console.error("Error in checkPlayerExists:", error);
+                    console.warn('Assuming player does not exist due to error.');
+                    return false;
+                }
+            };
+
+            const getAllPlayers = async () => {
+                try {
+                    console.log('Fetching all players...');
+                    const response = await fetch('http://localhost:7272/api/v1/player');
+                    if (!response.ok) {
+                        console.error('Fetch all players failed:', response.status);
+                        throw new Error('Không thể lấy thông tin người chơi');
+                    }
+                    const data = await response.json();
+                    console.log('All players:', data);
+                    return data;
+                } catch (error) {
+                    console.error("Error in getAllPlayers:", error);
+                    return [];
+                }
+            };
+
+            const updatePlayerName = async (address, newName) => {
+                try {
+                    console.log('Updating player name:', { token: address, name: newName });
+                    const response = await fetch(`http://localhost:7272/api/v1/player/${address}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: newName })
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Update player name failed:', response.status, errorText);
+                        throw new Error(`Không thể cập nhật tên: ${response.status} ${errorText}`);
+                    }
+                    console.log('Player name updated successfully in database.');
+                    return true;
+                } catch (error) {
+                    console.error("Error in updatePlayerName:", error);
+                    return false;
+                }
+            };
+
+            const deleteAccount = async (token) => {
+                try {
+                    console.log('Deleting account:', token);
+                    const response = await fetch(`http://localhost:7272/api/v1/player/${token}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (!response.ok) {
+                        console.error('Delete account failed:', response.status);
+                        throw new Error('Không thể xóa tài khoản');
+                    }
+                    console.log('Account deleted successfully.');
+                    displayAccounts();
+                } catch (error) {
+                    console.error("Error in deleteAccount:", error);
+                    alert("Đã xảy ra lỗi khi xóa tài khoản: " + error.message);
+                }
+            };
+
+            const connectWithRetry = async (maxRetries = 2) => {
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        return await web3.eth.getAccounts();
+                    } catch (error) {
+                        console.warn(`Retry ${i + 1} failed:`, error);
+                        if (i === maxRetries - 1) throw error;
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+            };
+
+            const displayAccounts = async () => {
+                console.log('Displaying saved accounts...');
+                savedAccountsList.innerHTML = '';
+                const players = await getAllPlayers();
+                if (players && players.length > 0) {
+                    players.forEach(player => {
+                        const accountItem = document.createElement('div');
+                        accountItem.style.cssText = `
+                            padding: 10px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 5px;
+                            margin-bottom: 5px;
+                            cursor: pointer;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        `;
+                        const accountInfo = document.createElement('div');
+                        const savedName = localStorage.getItem(`walletName_${player.token}`);
+                        const displayName = savedName || player.name;
+                        accountInfo.textContent = `${displayName} (${player.token.slice(0, 6)}...${player.token.slice(-4)})`;
+                        accountItem.appendChild(accountInfo);
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'X';
+                        deleteBtn.style.cssText = `
+                            background: #ff4d4d;
+                            color: white;
+                            border: none;
+                            border-radius: 50%;
+                            width: 24px;
+                            height: 24px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        `;
+                        deleteBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            if (confirm(`Bạn có chắc chắn muốn xóa tài khoản ${displayName}?`)) {
+                                deleteAccount(player.token);
+                            }
+                        };
+                        accountItem.appendChild(deleteBtn);
+                        accountItem.onclick = async () => {
+                            if (!window.ethereum) {
+                                alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
+                                return;
+                            }
+                            try {
+                                console.log('Initializing contract for saved account:', player.token);
+                                await initialize();
+                                console.log('Contract initialized.');
+
+                                console.log('Requesting MetaMask accounts...');
+                                const accounts = await connectWithRetry();
+                                account = accounts[0];
+                                if (!account) {
+                                    console.error('No account received from MetaMask.');
+                                    alert('Không nhận được tài khoản từ MetaMask.');
+                                    return;
+                                }
+                                console.log('Account received:', account);
+
+                                if (account.toLowerCase() !== player.token.toLowerCase()) {
+                                    console.warn('Selected account does not match saved account:', account, player.token);
+                                    alert('Tài khoản MetaMask không khớp với tài khoản đã lưu. Đang sử dụng tài khoản hiện tại.');
+                                }
+
+                                walletName = savedName || player.name;
+                                if (savedName && savedName !== player.name) {
+                                    console.log('Updating player name to localStorage name:', savedName);
+                                    const updateSuccess = await updatePlayerName(account, savedName);
+                                    if (!updateSuccess) {
+                                        console.warn('Failed to sync name with database, using localStorage name');
+                                    }
+                                    walletName = savedName;
+                                }
+                                console.log('Wallet name:', walletName);
+
+                                userName.textContent = walletName;
+                                setAvatarInitial(walletName);
+                                sessionStorage.setItem('userName', walletName);
+                                sessionStorage.setItem('userInitial', walletName.charAt(0).toUpperCase());
+                                sessionStorage.setItem('userAddress', account);
+                                sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)}`);
+
+                                console.log('Fetching balance...');
+                                await getBalance(account);
+                                console.log('Balance fetched:', balance);
+
+                                console.log('Checking duck count...');
+                                try {
+                                    const contract = getContract();
+                                    if (!contract) {
+                                        console.error('Contract not initialized.');
+                                        alert('Hợp đồng không được khởi tạo. Vẫn vào game.');
+                                    } else {
+                                        const duckCount = await contract.getDuckCount(account, "white");
+                                        console.log('Duck count:', Number(duckCount));
+                                        if (Number(duckCount) > 0) {
+                                            console.log('Duck already initialized:', duckCount);
+                                        } else {
+                                            console.log('No duck found, initializing...');
+                                            const tx = await contract.initDuck();
+                                            await tx.wait();
+                                            console.log('Duck initialized successfully.');
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error('Error initializing duck:', error);
+                                    alert('Lỗi khi khởi tạo duck, nhưng bạn vẫn có thể vào game.');
+                                }
+
+                                console.log('Showing user profile and redirecting...');
+                                showUserProfile();
+                                setTimeout(() => {
+                                    console.log('Redirecting to game...');
+                                    window.location.href = "src/index.html";
+                                }, 500);
+                            } catch (error) {
+                                console.error('Error connecting saved account:', error);
+                                alert('Đã xảy ra lỗi khi kết nối tài khoản: ' + error.message);
+                            }
+                        };
+                        savedAccountsList.appendChild(accountItem);
+                    });
+                } else {
+                    const noAccounts = document.createElement('div');
+                    noAccounts.textContent = "Không có tài khoản nào được lưu";
+                    noAccounts.className = 'no-accounts';
+                    savedAccountsList.appendChild(noAccounts);
+                }
+                console.log('Saved accounts displayed.');
+            };
+
+            // Popup handling
+            const togglePopup = () => {
+                isPopupOpen = !isPopupOpen;
+                console.log('Toggling popup:', isPopupOpen);
+                popup.style.display = isPopupOpen ? 'block' : 'none';
+            };
+
+            const closePopup = () => {
+                isPopupOpen = false;
+                console.log('Closing popup');
+                popup.style.display = 'none';
+            };
+
+            userProfile.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePopup();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (isPopupOpen && !popup.contains(e.target) && !userProfile.contains(e.target)) {
+                    closePopup();
+                }
+            });
+
+            connectButton.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            connectButton.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+
+            connectButton.addEventListener('click', connectMetaMask);
+            logoutButton.addEventListener('click', handleLogout);
+            userName.addEventListener('dblclick', handleEditName);
+            nameInput.addEventListener('blur', handleSaveName);
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSaveName();
+                }
+            });
+
+            const checkSavedSession = async () => {
+                console.log('Checking saved session...');
+                if (sessionStorage.getItem('loggedOut') === 'true') {
+                    sessionStorage.removeItem('loggedOut');
+                }
+                await displayAccounts();
+                console.log('Saved session checked and accounts displayed.');
+            };
+
+            checkSavedSession();
+        });
+    </script>
 </body>
-
 </html>

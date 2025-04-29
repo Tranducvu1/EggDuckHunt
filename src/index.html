@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./styles/effects.css">
     <link rel="stylesheet" href="./styles/enviroment.css">
     <link rel="stylesheet" href="./styles/login.css">
+    <link rel="stylesheet" href="./styles/tutorial-styles.css">  <!-- Thêm CSS cho tutorial -->
 </head>
 <body>
     <div class="background-wrapper"></div>
@@ -47,39 +48,29 @@
                 <button id="exchangeBtn" class="btn btn-exchange">Exchange Coins</button>
             </div>
             <div class="resource-display">
-               
-                <div class="resource-item1" style="display: grid; grid-template-columns: auto auto; row-gap: 8px; column-gap: 16px; font-size: 16px;">
-                    <span class="duck-label">White:</span>
-                    <span class="duck-value"><span id="white" class="resource-value"></span> 0.005 ETH</span>
-                
-                    <span class="duck-label">Yellow:</span>
-                    <span class="duck-value"><span id="yellowPrice" class="resource-value"></span> 0.01 ETH</span>
-                
-                    <span class="duck-label">Red:</span>
-                    <span class="duck-value"><span id="redPrice" class="resource-value"></span> 0.015 ETH</span>
+                <div class="resource-item">
+                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
+                    <span id="duckcoinCount" class="resource-value">0</span>
                 </div>
-                
                 <div class="resource-item">
                     <div class="duck-radio-group">
                         <label class="duck-radio">
-                            <input type="radio" name="duckColor" value="yellow">
-                            <img src="../assets/icon-duck.png" alt="Yellow Duck" class="yellow-duck">
+                          <input type="radio" name="duckColor" value="yellow">
+                          <img src="../assets/icon-duck.png" alt="Yellow Duck" class="yellow-duck">
                         </label>
-
                         <label class="duck-radio">
-                            <input type="radio" name="duckColor" value="red">
-                            <img src="../assets/icon-duck.png" alt="Red Duck" class="red-duck">
+                          <input type="radio" name="duckColor" value="red">
+                          <img src="../assets/icon-duck.png" alt="Red Duck" class="red-duck">
                         </label>
-
                         <label class="duck-radio">
-                            <input type="radio" name="duckColor" value="white">
-                            <img src="../assets/icon-duck.png" alt="White Duck" class="white-duck">
+                          <input type="radio" name="duckColor" value="white">
+                          <img src="../assets/icon-duck.png" alt="White Duck" class="white-duck">
                         </label>
-                    </div>
-                    <input type="number" min="0" max="99" id="duckCount" placeholder="0">
+                      </div>
+                      <input type="number" min="0" max="99" class="duck-count" placeholder="0">
                 </div>
             </div>
-
+            
             <div class="control-buttons">
                 <button id="buyDuckButton" class="btn btn-exchange">Buy Ducks</button>
             </div>
@@ -96,14 +87,8 @@
                     <img src="../assets/icon-duck.png" alt="Duck Icon">
                     <span id="whiteDuckCount">0</span>
                 </div>
-                <!-- <p>Yellow Ducks: <span id="yellowDuckCount">0</span></p>
-                <p>Red Ducks: <span id="redDuckCount">0</span></p>
-                <p>White Ducks: <span id="whiteDuckCount">0</span></p> -->
             </div>
         </div>
-
-  <!-- React + Babel -->
-       <!-- Contract Info -->
     </div>
 
     <div class="icon-contract">
@@ -115,237 +100,86 @@
         <p>Connected Account: <span id="connectedAccount">Not connected</span></p>
         <p>Contract Owner: <span id="contractOwner">Loading...</span></p>
       </div>
-      
-   <!-- Nhúng script -->
       <script src="./components/ContractInfo.js" type="module"></script>
-
+      <div>
+        <h2>Contract Actions</h2>
+        <p><strong>Your Balance:</strong> <span id="userBalance">0</span> ETH</p>
         <div>
-            <h2>Contract Actions</h2>
-            <p><strong>Your Balance:</strong> <span id="userBalance">0</span> ETH</p>
-    
-            <!-- Radio chọn hành động -->
-            <div>
-                <label>
-                    <input type="radio" value="deposit" name="action" id="depositRadio" checked>
-                    Deposit
-                </label>
-                <label>
-                    <input type="radio" value="withdraw" name="action" id="withdrawRadio">
-                    Withdraw
-                </label>
-            </div>
-    
-            <!-- Input chung -->
-            <div>
-                <input type="text" id="amountInput" placeholder="Amount in ETH">
-                <button id="actionButton">Deposit Funds</button>
-            </div>
-    
-            <!-- Convert Token -> ETH -->
-            <h3>Convert Token to ETH</h3>
-            <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
-            <input type="text" id="convertAmountInput" placeholder="Enter token amount">
-            <button id="convertButton">Convert</button>
+            <label>
+                <input type="radio" value="deposit" name="action" id="depositRadio" checked>
+                Deposit
+            </label>
+            <label>
+                <input type="radio" value="withdraw" name="action" id="withdrawRadio">
+                Withdraw
+            </label>
         </div>
+        <div>
+            <input type="text" id="amountInput" placeholder="Amount in ETH">
+            <button id="actionButton">Deposit Funds</button>
+        </div>
+        <h3>Convert Token to ETH</h3>
+        <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
+        <input type="text" id="convertAmountInput" placeholder="Enter token amount">
+        <button id="convertButton">Convert</button>
+      </div>
     </div>
-       <!-- Nút mở nhiệm vụ -->
- <!-- Nút mở nhiệm vụ -->
- <div class="icon-task">
-    <img src="../assets/task.png" alt="Task Icon">
-  </div>
-  
-  <!-- Popup nhiệm vụ -->
-  <div id="taskPopup" class="task-popup">
-    <h3>Nhiệm vụ hàng ngày</h3>
-    <h4 id="eggCounter">🥚 Trứng đã thu thập: 0</h4>
-    <div id="listtasks" class="task-weekend" style="max-height: 400px; overflow-y: auto;"></div>
-  </div>
-  
-  
-  
+
+    <!-- Tutorial Button -->
+    <button id="startTutorialBtn" class="btn tutorial-btn">❓ Hướng dẫn chơi</button>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorialOverlay" class="tutorial-overlay" style="display: none;">
+        <div class="tutorial-message" id="tutorialMessage"></div>
+        <button id="nextTutorialBtn" class="btn">Tiếp tục</button>
     </div>
+
+    <div class="icon-task">
+        <img src="../assets/task.png" alt="Task Icon">
+    </div>
+    <div id="taskPopup" class="task-popup">
+        <h3>Nhiệm vụ hàng ngày</h3>
+        <h4 id="eggCounter">🥚 Trứng đã thu thập: 0</h4>
+        <div id="listtasks" class="task-weekend" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+
     <button class="settings-btn" id="settingvolumnsBtn">⚙️</button>
     <canvas id="backgroundCanvas" width="2400" height="2400"></canvas>
-    <!-- Settings Menu -->
     <div class="settings-menu" id="settingsMenuVolumn">
         <h3>Âm lượng</h3>
         <div class="volume-control">
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
         </div>
-    </div>>
+    </div>
+
     <div class="user-profile" id="userProfile">
         <div class="avatar" id="avatar"></div>
         <p class="user-name" id="userName"></p>
         <input type="text" id="nameInput" class="name-input" style="display: none;">
-
-        <div class="tooltip" id="tooltip">
+        <div class="profile-popup" id="profilePopup">
             <p>📌 Địa chỉ ví: <span id="shortAddress"></span></p>
             <p>💰 Số dư: <span id="balance"></span> ETH</p>
             <button id="logoutButton" class="logout-button">Đăng xuất</button>
         </div>
     </div>
 
-    <!-- Audio Elements -->
     <audio id="bgMusic" loop>
         <source src="./../assets/sound/backgroundmusic.mp3" type="audio/mp3">
     </audio>
     <audio id="duckSound">
         <source src="./../assets/sound/soundduck.mp3" type="audio/mp3">
     </audio>
- <!-- Scripts -->
- <script type="module" src="./Ultils/storage.ts"></script>
- <script type="module" src="./game.ts"></script>
-<script type="module" src="./UI/bad.ts"></script>
-<script type="module" src="./Task/Claim.ts"></script>
-<script type="module" src="./Egg/eggScheduler.ts"></script>
-<script type="module" src = "./Egg/eggLaying.ts"></script>
-<script type="module" src = "./UI/change.ts"></script>
-<script type="module" src = "./settings/volumns.ts"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const userProfile = document.getElementById('userProfile');
-        const userName = document.getElementById('userName');
-        const nameInput = document.getElementById('nameInput');
-        const tooltip = document.getElementById('tooltip');
-        const shortAddress = document.getElementById('shortAddress');
-        const balanceElement = document.getElementById('balance');
-        const logoutButton = document.getElementById('logoutButton');
-        const avatar = document.getElementById('avatar');
 
-        let web3;
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-    }
+    <script type="module" src="./Ultils/storage.ts"></script>
+    <script type="module" src="./game.ts"></script>
+    <script type="module" src="./UI/bad.ts"></script>
+    <script type="module" src="./Task/Claim.ts"></script>
+    <script type="module" src="./Egg/eggScheduler.ts"></script>
+    <script type="module" src="./Egg/eggLaying.ts"></script>
+    <script type="module" src="./UI/change.ts"></script>
+    <script type="module" src="./settings/volumns.ts"></script>
+    <script type="module" src="./login.js"></script>
+    <script type="module" src="./Tutorial.ts"></script>
 
-    
-        const refreshBalance = async () => {
-        if (web3) {
-            try {
-                const userAddress = sessionStorage.getItem('userAddress');
-                if (userAddress) {
-                    const weiBalance = await web3.eth.getBalance(userAddress);
-                    const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
-                    const balance = parseFloat(ethBalance).toFixed(4);
-                    
-                    // Update UI and sessionStorage
-                    balanceElement.textContent = balance;
-                    sessionStorage.setItem('userBalance', balance);
-                }
-            } catch (error) {
-                console.error("Error refreshing balance:", error);
-            }
-        }
-    };
-        // Load user data from sessionStorage
-        const loadUserData = () => {
-        const storedName = sessionStorage.getItem('userName');
-        const storedAddress = sessionStorage.getItem('shortAddress');
-        const storedBalance = sessionStorage.getItem('userBalance');
-        const storedInitial = sessionStorage.getItem('userInitial');
-        const fullAddress = sessionStorage.getItem('userAddress');
-        
-        // if (storedName && storedAddress) {
-        //     // Display user profile
-        //     userName.textContent = storedName;
-        //     shortAddress.textContent = storedAddress;
-        //     balanceElement.textContent = storedBalance || '0';
-        //     if (storedInitial) {
-        //         avatar.textContent = storedInitial;
-        //     } else if (storedName) {
-        //         avatar.textContent = storedName.charAt(0).toUpperCase();
-        //     }
-            
-        //     userProfile.style.display = 'flex';
-            
-        //     // Refresh balance from network
-        //     if (fullAddress) {
-        //         refreshBalance();
-        //     }
-        // } else {
-        //     // No user data found, redirect to login page
-        //     window.location.href = "../index.html";
-        // }
-    };
-        
-        const handleLogout = () => {
-    // Set logged out flag
-    sessionStorage.setItem('loggedOut', 'true');
-    
-    // Clear remaining session data
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('userAddress');
-    sessionStorage.removeItem('shortAddress');
-    sessionStorage.removeItem('userBalance');
-    sessionStorage.removeItem('userInitial');
-    
-    // Redirect to login page
-    window.location.href = "../index.html";
-};
-        
-        // Handle name editing
-        const handleEditName = () => {
-            userName.style.display = 'none';
-            nameInput.style.display = 'block';
-            nameInput.value = userName.textContent;
-            nameInput.focus();
-        };
-        
-        // Handle saving name
-        const handleSaveName = () => {
-            const newName = nameInput.value;
-            if (newName.trim() !== '') {
-                const userAddress = sessionStorage.getItem('userAddress');
-                if (userAddress) {
-                    localStorage.setItem(`walletName_${userAddress}`, newName);
-                    userName.textContent = newName;
-                    avatar.textContent = newName.charAt(0).toUpperCase();
-                    
-                    // Update name in sessionStorage
-                    sessionStorage.setItem('userName', newName);
-                    sessionStorage.setItem('userInitial', newName.charAt(0).toUpperCase());
-                }
-            }
-            nameInput.style.display = 'none';
-            userName.style.display = 'block';
-        };
-        
-        // Event listeners
-        logoutButton.addEventListener('click', handleLogout);
-        
-        // Double click to edit name
-        userName.addEventListener('dblclick', handleEditName);
-        
-        // Save on blur
-        nameInput.addEventListener('blur', handleSaveName);
-        nameInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleSaveName();
-            }
-        });
-        
-        // Show/hide tooltip
-        userProfile.addEventListener('mouseenter', () => {
-            tooltip.style.display = 'block';
-            setTimeout(() => {
-                tooltip.style.transform = 'translateY(0)';
-                tooltip.style.opacity = '1';
-            }, 50);
-        });
-        
-        userProfile.addEventListener('mouseleave', () => {
-            tooltip.style.transform = 'translateY(10px)';
-            tooltip.style.opacity = '0';
-            setTimeout(() => {
-                tooltip.style.display = 'none';
-            }, 300);
-        });
-        
-        // Load user data on page load
-        loadUserData();
-    });
-</script>
-<script type="module">
-    import { initialize } from "./components/ContractActions.js";
-</script>
 </body>
 </html>
