@@ -91,6 +91,6 @@ function updateEggUI(newEggCount: number) {
 
 export function collectEgg() {
   playerstate.eggsCollected += 1;
-  savePlayerState();         // Lưu vào localStorage
-  renderAllDayTask();        // Cập nhật lại giao diện nhiệm vụ
+  savePlayerState();         // save state to localStorage
+  renderAllDayTask();        // update UI
 }

@@ -1,14 +1,4 @@
-// Tutorial.ts
-// Định nghĩa các bước hướng dẫn game
-
-// Interface định nghĩa một bước hướng dẫn
-interface TutorialStep {
-    message: string;          // Nội dung tin nhắn hướng dẫn
-    targetElement: string;    // ID hoặc class của phần tử cần highlight
-    position?: 'top' | 'bottom' | 'left' | 'right'; // Vị trí hiển thị tin nhắn
-}
-
-// Danh sách các bước hướng dẫn
+// List of tutorial steps
 const tutorialSteps: TutorialStep[] = [
     {
         message: "Chào mừng bạn đến với Duck Egg Hunt! Hãy khám phá trò chơi qua hướng dẫn này.",
@@ -52,7 +42,7 @@ const tutorialSteps: TutorialStep[] = [
     }
 ];
 
-// Lớp quản lý hướng dẫn
+// Tutorial management class
 class TutorialManager {
     private currentStep = 0;
     private overlay: HTMLElement;
@@ -63,6 +53,7 @@ class TutorialManager {
     private highlightElement: HTMLElement | null = null;
 
     constructor() {
+        // Get DOM elements for tutorial UI
         this.overlay = document.getElementById('tutorialOverlay') as HTMLElement;
         this.message = document.getElementById('tutorialMessage') as HTMLElement;
         this.nextButton = document.getElementById('nextTutorialBtn') as HTMLElement;
@@ -72,13 +63,13 @@ class TutorialManager {
     }
 
     private initEventListeners(): void {
-        // Nút bắt đầu hướng dẫn
+        // Start tutorial button
         this.startButton.addEventListener('click', () => this.startTutorial());
         
-        // Nút tiếp tục sang bước tiếp theo
+        // Next step button
         this.nextButton.addEventListener('click', () => this.nextStep());
 
-        // Tùy chọn: Cho phép nhấp vào overlay để tiếp tục
+        // Optional: Click the overlay to proceed
         this.overlay.addEventListener('click', (e) => {
             if (e.target === this.overlay) {
                 this.nextStep();
@@ -86,7 +77,7 @@ class TutorialManager {
         });
     }
 
-    // Bắt đầu hướng dẫn
+    // Start the tutorial
     public startTutorial(): void {
         if (this.isActive) return;
         
@@ -95,7 +86,7 @@ class TutorialManager {
         this.showStep();
     }
 
-    // Chuyển sang bước tiếp theo
+    // Move to the next step
     private nextStep(): void {
         this.currentStep++;
         
@@ -106,29 +97,29 @@ class TutorialManager {
         }
     }
 
-    // Hiển thị bước hiện tại
+    // Show the current step's tutorial message
     private showStep(): void {
         const step = tutorialSteps[this.currentStep];
         this.message.textContent = step.message;
         
-        // Hiển thị overlay
+        // Show overlay
         this.overlay.style.display = 'flex';
         
-        // Highlight phần tử được chỉ định
+        // Highlight the target element
         this.highlightElement = this.createHighlight(step.targetElement);
         
-        // Định vị tin nhắn hướng dẫn tương đối với phần tử được highlight
+        // Position the message relative to the target element
         this.positionMessage(this.highlightElement, step.position || 'bottom');
     }
 
-    // Tạo hiệu ứng highlight cho phần tử
+    // Create a highlight effect for the target element
     private createHighlight(selector: string): HTMLElement {
-        // Xóa highlight cũ nếu có
+        // Remove old highlight if any
         if (this.highlightElement) {
             document.body.removeChild(this.highlightElement);
         }
 
-        // Tìm phần tử cần highlight
+        // Find the target element
         const targetElement = selector === 'body' 
             ? document.body 
             : document.querySelector(selector) as HTMLElement;
@@ -137,10 +128,10 @@ class TutorialManager {
             throw new Error(`Target element not found for selector: ${selector}`);
         }
 
-        // Lấy vị trí và kích thước của phần tử
+        // Get the element's position and size
         const rect = targetElement.getBoundingClientRect();
         
-        // Tạo phần tử highlight
+        // Create the highlight element
         const highlight = document.createElement('div');
         highlight.className = 'tutorial-highlight';
         highlight.style.position = 'absolute';
@@ -159,14 +150,14 @@ class TutorialManager {
         return highlight;
     }
 
-    // Định vị tin nhắn hướng dẫn
+    // Position the tutorial message relative to the target element
     private positionMessage(targetElement: HTMLElement, position: string): void {
         if (!targetElement) return;
         
         const rect = targetElement.getBoundingClientRect();
         const messageRect = this.message.getBoundingClientRect();
         
-        // Tính toán vị trí dựa trên tùy chọn
+        // Calculate the position of the message based on the selected position
         let top, left;
         
         switch (position) {
@@ -191,7 +182,7 @@ class TutorialManager {
                 left = rect.left + (rect.width - messageRect.width) / 2;
         }
         
-        // Đảm bảo tin nhắn luôn nằm trong viewport
+        // Ensure the message stays within the viewport
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         
@@ -200,45 +191,44 @@ class TutorialManager {
         if (top < 10) top = 10;
         if (top + messageRect.height > viewportHeight - 10) top = viewportHeight - messageRect.height - 10;
         
-        // Cập nhật vị trí của tin nhắn
+        // Update the message position
         this.message.style.position = 'absolute';
         this.message.style.top = `${top}px`;
         this.message.style.left = `${left}px`;
     }
 
-    // Kết thúc hướng dẫn
+    // End the tutorial
     private endTutorial(): void {
         this.isActive = false;
         
-        // Ẩn overlay
+        // Hide the overlay
         this.overlay.style.display = 'none';
         
-        // Xóa highlight
+        // Remove the highlight
         if (this.highlightElement) {
             document.body.removeChild(this.highlightElement);
             this.highlightElement = null;
         }
         
-        // Lưu trạng thái đã hoàn thành hướng dẫn
+        // Save the tutorial completion state
         localStorage.setItem('tutorialCompleted', 'true');
     }
 
-    // Kiểm tra xem người dùng đã hoàn thành hướng dẫn chưa
+    // Check if the user has completed the tutorial
     public checkTutorialStatus(): void {
         const completed = localStorage.getItem('tutorialCompleted') === 'true';
         
-        // Nếu đây là lần đầu tiên người dùng truy cập, tự động hiển thị hướng dẫn
+        // If this is the user's first visit, start the tutorial automatically
         if (!completed && !this.isActive) {
-            // Đợi một chút để đảm bảo trang đã tải xong
             setTimeout(() => this.startTutorial(), 1000);
         }
     }
 }
 
-// Khởi tạo và xuất đối tượng quản lý hướng dẫn
+// Initialize and export the tutorial manager object
 const tutorialManager = new TutorialManager();
 
-// Kiểm tra trạng thái hướng dẫn khi trang được tải
+// Check tutorial status when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
     tutorialManager.checkTutorialStatus();
 });

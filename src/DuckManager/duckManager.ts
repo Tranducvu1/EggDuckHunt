@@ -1,124 +1,128 @@
+// Import utility functions for random movement, direction, and position
 import { getRandomMovementType, getRandomDirection, getRandomPosition } from '../Ultils/Ultils';
+// Import game constants and duck configurations
 import { GAME_CONSTANTS } from '../Constant/constant';
 import { DuckType } from '../Types/DuckType';
 import { DUCK_CONFIGS, ducks } from '../Types/duckConfigs';
 import { Duck } from '../Types/Duck';
 
 /**
- * Cập nhật số lượng vịt dựa trên giá trị trong localStorage
- * @param duckType Loại vịt cần cập nhật
+ * Update the number of ducks based on the value stored in localStorage.
+ * @param duckType The type of duck to update.
  */
 export function updateDucksBasedOnCount(duckType: DuckType): void {
-    const config = DUCK_CONFIGS[duckType];
+    const config = DUCK_CONFIGS[duckType]; // Retrieve duck type configuration
     const duckCount = parseInt(localStorage.getItem(config.storageKey) || GAME_CONSTANTS.DUCK.DEFAULT_COUNT.toString());
     const currentDuckCount = ducks[duckType].length;
-    
-    // Thêm vịt nếu cần
+
+    // Add ducks if needed
     if (duckCount > currentDuckCount) {
         for (let i = currentDuckCount; i < duckCount; i++) {
-            createNewDuck(duckType, i + 1);
+            createNewDuck(duckType, i + 1); // Create new duck based on type
         }
     }
-    // Xóa vịt nếu có quá nhiều
+    // Remove excess ducks if too many
     else if (duckCount < currentDuckCount && duckCount >= GAME_CONSTANTS.DUCK.DEFAULT_COUNT) {
-        removeExcessDucks(duckType, currentDuckCount - duckCount);
+        removeExcessDucks(duckType, currentDuckCount - duckCount); // Remove excess ducks
     }
 }
 
 /**
- * Tạo một con vịt mới với loại và chỉ số xác định
- * @param duckType Loại vịt cần tạo
- * @param index Chỉ số của vịt
+ * Create a new duck with a specified type and index.
+ * @param duckType The type of duck to create.
+ * @param index The index for the new duck.
  */
 function createNewDuck(duckType: DuckType, index: number): void {
-    const config = DUCK_CONFIGS[duckType];
-    const position = getRandomPosition();
-    const movementType = getRandomMovementType();
-    
-    // Tạo vịt mới với các thuộc tính ngẫu nhiên
+    const config = DUCK_CONFIGS[duckType]; // Retrieve configuration for duck type
+    const position = getRandomPosition(); // Get a random position for the duck
+    const movementType = getRandomMovementType(); // Get a random movement type for the duck
+
+    // Create a new duck object with random properties
     const newDuck: Duck = {
         id: `${config.idPrefix}${index}`,
         type: duckType,
         size: 100,
         position: position,
-        direction: getRandomDirection(),
-        speed: 0.2 + Math.random() * 0.2,
+        direction: getRandomDirection(), // Get a random direction for the duck
+        speed: 0.2 + Math.random() * 0.2, // Random speed between 0.2 and 0.4
         frame: 1,
         moving: true,
         inPond: false,
-        movementType: movementType,
+        movementType: movementType, // Set the movement type
         autoMoveInterval: undefined,
         selectedBasket: null
     };
-    
-    // Thêm các thuộc tính chuyển động cụ thể
+
+    // Initialize specific movement properties
     initializeMovementProperties(newDuck);
-    
-    // Thêm vào mảng vịt
+
+    // Add the new duck to the ducks array
     ducks[duckType].push(newDuck);
-    
-    // Tạo phần tử DOM
+
+    // Create a DOM element for the new duck
     createDuckElement(duckType, newDuck);
 }
 
 /**
- * Khởi tạo thuộc tính chuyển động cho vịt
- * @param duck Đối tượng vịt cần khởi tạo
+ * Initialize movement properties for a duck based on its movement type.
+ * @param duck The duck object to initialize.
  */
 function initializeMovementProperties(duck: Duck): void {
     if (duck.movementType === "circular") {
+        // Circular movement: Set center, radius, and path progress
         duck.centerPoint = { left: duck.position.left, top: duck.position.top };
-        duck.radius = 10 + Math.random() * 10;
-        duck.pathProgress = Math.random() * Math.PI * 2;
+        duck.radius = 10 + Math.random() * 10; // Random radius between 10 and 20
+        duck.pathProgress = Math.random() * Math.PI * 2; // Random path progress
     } else if (duck.movementType === "zigzag") {
-        duck.zigzagAmplitude = 3 + Math.random() * 5;
+        // Zigzag movement: Set amplitude
+        duck.zigzagAmplitude = 3 + Math.random() * 5; // Random amplitude between 3 and 8
     }
 }
 
 /**
- * Tạo phần tử DOM cho vịt
- * @param duckType Loại vịt
- * @param duck Đối tượng vịt
+ * Create the DOM element for a duck and place it on the screen.
+ * @param duckType The type of duck.
+ * @param duck The duck object.
  */
 function createDuckElement(duckType: DuckType, duck: Duck): void {
-    const config = DUCK_CONFIGS[duckType];
-    const duckElement = document.createElement('img');
+    const config = DUCK_CONFIGS[duckType]; // Retrieve the duck configuration
+    const duckElement = document.createElement('img'); // Create an image element for the duck
     duckElement.id = duck.id;
-    duckElement.classList.add(config.className);
-    duckElement.src = `${config.imagePath}${duck.direction.x > 0 ? 1 : 3}.png`;
-    duckElement.style.position = 'absolute';
+    duckElement.classList.add(config.className); // Add the appropriate CSS class
+    duckElement.src = `${config.imagePath}${duck.direction.x > 0 ? 1 : 3}.png`; // Set the image based on the direction
+    duckElement.style.position = 'absolute'; // Position the duck on the screen
     duckElement.style.width = '100px';
-    duckElement.style.zIndex = '10';
-    duckElement.style.left = `${duck.position.left}%`;
-    duckElement.style.top = `${duck.position.top}%`;
-    duckElement.style.cursor = 'pointer';
-    
-    // Thêm vào DOM
+    duckElement.style.zIndex = '10'; // Set the z-index for layering
+    duckElement.style.left = `${duck.position.left}%`; // Set the left position
+    duckElement.style.top = `${duck.position.top}%`; // Set the top position
+    duckElement.style.cursor = 'pointer'; // Make the duck clickable
+
+    // Append the duck element to the DOM
     document.body.appendChild(duckElement);
 }
 
 /**
- * Xóa số lượng vịt thừa
- * @param duckType Loại vịt
- * @param count Số lượng vịt cần xóa
+ * Remove excess ducks from the pond based on the specified count.
+ * @param duckType The type of duck.
+ * @param count The number of ducks to remove.
  */
 function removeExcessDucks(duckType: DuckType, count: number): void {
-    const duckArray = ducks[duckType];
+    const duckArray = ducks[duckType]; // Get the array of ducks of the specified type
     for (let i = 0; i < count; i++) {
-        const duckToRemove = duckArray.pop();
+        const duckToRemove = duckArray.pop(); // Remove the last duck in the array
         if (duckToRemove) {
-            const element = document.getElementById(duckToRemove.id);
-            if (element) element.remove();
-            
-            // Xóa bất kỳ bộ hẹn giờ nào cho vịt bị xóa
+            const element = document.getElementById(duckToRemove.id); // Find the corresponding DOM element
+            if (element) element.remove(); // Remove the element from the DOM
+
+            // Clear any timers associated with the duck
             clearDuckTimers(duckToRemove);
         }
     }
 }
 
 /**
- * Xóa bộ hẹn giờ cho vịt
- * @param duck Đối tượng vịt
+ * Clear all timers associated with a duck.
+ * @param duck The duck object whose timers need to be cleared.
  */
 function clearDuckTimers(duck: Duck): void {
     if (duck.autoMoveInterval) clearTimeout(duck.autoMoveInterval);
@@ -127,47 +131,44 @@ function clearDuckTimers(duck: Duck): void {
 }
 
 /**
- * Thay đổi kiểu chuyển động của vịt
- * @param duckType Loại vịt
- * @param duckId ID của vịt
- * @param newMovementType Kiểu chuyển động mới
+ * Change the movement type of a duck.
+ * @param duckType The type of duck.
+ * @param duckId The ID of the duck to change.
+ * @param newMovementType The new movement type to set.
  */
 export function changeDuckMovementType(duckType: DuckType, duckId: string, newMovementType: Duck["movementType"]): void {
-    const duck = ducks[duckType].find(d => d.id === duckId);
-    if (!duck) return;
+    const duck = ducks[duckType].find(d => d.id === duckId); // Find the duck by ID
+    if (!duck) return; // If no duck is found, do nothing
     
-    duck.movementType = newMovementType;
+    duck.movementType = newMovementType; // Set the new movement type
     
-    // Đặt lại các thuộc tính chuyển động cụ thể
+    // Initialize movement properties based on the new movement type
     if (newMovementType === "circular") {
         duck.centerPoint = { 
             left: duck.position.left, 
             top: duck.position.top 
         };
-        duck.radius = 15;
-        duck.pathProgress = 0;
+        duck.radius = 15; // Set the radius for circular movement
+        duck.pathProgress = 0; // Reset the path progress
     }
 }
 
 /**
- * Hàm tiện ích để cập nhật tất cả các loại vịt
+ * Utility function to update all duck types based on their counts.
  */
 export function updateAllDuckTypes(): void {
-    updateDucksBasedOnCount(DuckType.NORMAL); 
-    updateDucksBasedOnCount(DuckType.RED);
-updateDucksBasedOnCount(DuckType.YELLOW);
-
-    updateDucksBasedOnCount(DuckType.NORMAL); 
+    // Update each type of duck
+    updateDucksBasedOnCount(DuckType.NORMAL);
     updateDucksBasedOnCount(DuckType.RED);
     updateDucksBasedOnCount(DuckType.YELLOW);
 }
 
-// Các hàm tiện ích bổ sung để tương thích ngược với mã hiện có
-
-// Xuất các mảng vịt riêng lẻ để tương thích với mã hiện có
+// Additional utility functions for updating ducks based on type
 export const normalDucks = ducks.normal;
 export const redDucks = ducks.red;
 export const yellowDucks = ducks.yellow;
+
+// Functions for updating specific duck types
 export function updateNormalDucksBasedOnCount(): void {
     updateDucksBasedOnCount(DuckType.NORMAL);
 }
@@ -180,7 +181,7 @@ export function updateYellowDucksBasedOnCount(): void {
     updateDucksBasedOnCount(DuckType.YELLOW);
 }
 
-// Các hàm thay đổi kiểu chuyển động cụ thể cho mỗi loại vịt
+// Functions for changing the movement type of specific duck types
 export function changeNormalDuckMovementType(duckId: string, newMovementType: Duck["movementType"]): void {
     changeDuckMovementType(DuckType.NORMAL, duckId, newMovementType);
 }
