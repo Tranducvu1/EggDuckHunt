@@ -84,24 +84,17 @@
     <div id="bagPopup" class="bag-popup">Your Store
         <div class="exchange-container">
             <div class="resource-display">
-                <div class="resource-item">
-                    <img src="../assets/duck/egg.png" alt="Egg" class="resource-icon">
-                    <input type="number" min="0" max="99" id="eggCount" class="egg-count" placeholder="0">
+                <div class="resource-item1" style="display: grid; grid-template-columns: auto auto; row-gap: 8px; column-gap: 16px; font-size: 16px;">
+                    <span class="duck-label">White:</span>
+                    <span class="duck-value"><span id="white" class="resource-value"></span> 0.005 ETH</span>
+                
+                    <span class="duck-label">Yellow:</span>
+                    <span class="duck-value"><span id="yellowPrice" class="resource-value"></span> 0.01 ETH</span>
+                
+                    <span class="duck-label">Red:</span>
+                    <span class="duck-value"><span id="redPrice" class="resource-value"></span> 0.015 ETH</span>
                 </div>
-                <div class="resource-item">
-                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
-                    <span id="coinCount" class="resource-value">0</span>
-                </div>
-            </div>
-            
-            <div class="control-buttons">
-                <button id="exchangeBtn" class="btn btn-exchange">Exchange Coins</button>
-            </div>
-            <div class="resource-display">
-                <div class="resource-item">
-                    <img src="../assets/duck/coins/coin.png" alt="Coin" class="resource-icon">
-                    <span id="duckcoinCount" class="resource-value">0</span>
-                </div>
+                
                 <div class="resource-item">
                     <div class="duck-radio-group">
                         <label class="duck-radio">
@@ -144,13 +137,16 @@
     <div class="icon-contract">
         <img src="../assets/contract.png" alt="Contract Icon">
     </div>
+    <button id="startTutorialBtn" class="btn tutorial-btn">❓ Hướng dẫn chơi</button>
+ 
+     <!-- Tutorial Overlay -->
+     <div id="tutorialOverlay" class="tutorial-overlay" style="display: none;">
+         <div class="tutorial-message" id="tutorialMessage"></div>
+         <button id="nextTutorialBtn" class="btn">Tiếp tục</button>
+     </div>
     <div id="contractPopup" class="contract-popup">
-      <div>
-        <h2>Contract Balance: <span id="contractBalance">0</span> ETH</h2>
-        <p>Connected Account: <span id="connectedAccount">Not connected</span></p>
-        <p>Contract Owner: <span id="contractOwner">Loading...</span></p>
-      </div>
-      <script src="./components/ContractInfo.js" type="module"></script>
+     
+     
       <div>
         <h2>Contract Actions</h2>
         <p><strong>Your Balance:</strong> <span id="userBalance">0</span> ETH</p>
@@ -168,8 +164,8 @@
             <input type="text" id="amountInput" placeholder="Amount in ETH">
             <button id="actionButton">Deposit Funds</button>
         </div>
-        <h3>Convert Token to ETH</h3>
-        <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Xu</p>
+        <h3>Convert Egg to ETH</h3>
+        <p><strong>Token Balance:</strong> <span id="tokenBalance">0</span> Egg</p>
         <input type="text" id="convertAmountInput" placeholder="Enter token amount">
         <button id="convertButton">Convert</button>
       </div>
@@ -210,6 +206,7 @@
     <audio id="duckSound">
         <source src="./../assets/sound/soundduck.mp3" type="audio/mp3">
     </audio>
+    <script src="./components/ContractInfo.js" type="module"></script>
     <script type="module" src="./Tutorial.ts"></script>
     <script type="module" src="./Ultils/storage.ts"></script>
     <script type="module" src="./game.ts"></script>
