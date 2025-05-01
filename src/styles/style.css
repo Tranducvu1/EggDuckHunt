@@ -1,25 +1,27 @@
-/* Cấu hình nền của trang */
+    /* Cấu hình nền của trang */
 body {
     margin: 0;
     padding: 0;
+     touch-action: none;
 }
 
 /* Wrapper cho hình nền */
 .background-wrapper {
-    position: fixed;  /* Đảm bảo nền cố định */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: url('../../assets/Ground2.png') no-repeat center center fixed;
-    background-size: cover;  /* Đảm bảo hình nền phủ toàn màn hình */
+    background-size: cover;
     background-position: center -1450px;
-    z-index: -10;  /* Đặt dưới cùng để các phần tử khác không bị che khuất */
+    z-index: -10;
 }
+
 #game-container {
     width: 800px;
     height: 600px;
-    border: 1px solid red; /* Debug */
+    border: 1px solid red;
     position: relative;
     z-index: 10;
 }
@@ -31,8 +33,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 0, 0, 0.5);  /* Màu nền đỏ với độ trong suốt */
-    z-index: 9999;  /* Đảm bảo cảnh báo luôn nằm trên tất cả các phần tử khác */
+    background-color: rgba(255, 0, 0, 0.5);
+    z-index: 9999;
     animation: warningFlash 1s infinite;
 }
 
@@ -42,11 +44,12 @@ body {
     50% { background-color: rgba(255, 0, 0, 0.4); }
 }
 
-/* Các phần tử khác của trang (nội dung) */
+/* Các phần tử khác của trang */
 .content {
     position: relative;
-    z-index: 1;  /* Đảm bảo nội dung luôn nằm trên nền nhưng dưới cảnh báo */
+    z-index: 1;
 }
+
 .profile-popup {
     position: absolute;
     top: 60px;
@@ -94,8 +97,6 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
 }
-
-/* tutorial-styles.css - Thêm vào thư mục styles của bạn */
 
 /* Nút bắt đầu hướng dẫn */
 .tutorial-btn {
@@ -190,14 +191,32 @@ body {
         max-width: 90%;
         padding: 12px 15px;
     }
-    
+
     #nextTutorialBtn {
         padding: 8px 15px;
         font-size: 14px;
     }
-    
+
     .tutorial-btn {
         padding: 8px 12px;
         font-size: 14px;
     }
 }
+.xp-bar {
+    display: flex;
+    gap: 4px;
+    margin: 10px 0;
+  }
+  
+  .xp-unit {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    background-color: lightgray;
+    transition: background-color 0.3s;
+  }
+  
+  .xp-unit.filled {
+    background-color: limegreen;
+  }
+  

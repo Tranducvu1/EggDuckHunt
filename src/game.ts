@@ -2,12 +2,13 @@
 import { initializeBaskets } from './Basket/baskets';                // Import the function to initialize baskets
 import { updateDucksBasedOnCount, updateDucksBasedOnCount as updateNormalDuckCount } from './DuckManager/duckManager';  // Import duck update functions
 import { initializeGameStorage, updateCounters } from './Ultils/storage';  // Import functions for game storage and counters
-import { moveDuckToBasket, startWarningCycle } from './Egg/eggLaying';  // Import egg laying related functions
+import { moveDuckToBasket, setupUFO, startWarningCycle } from './Egg/eggLaying';  // Import egg laying related functions
 import { setupRandomEggLaying } from './Egg/eggScheduler';  // Import function to setup random egg laying
 import { createRainEffect, updatedayandnightEffetc } from './weather/weatherEffect';  // Import weather effect functions (rain and day/night)
 import { renderAllDayTask } from './Task/Claim';  // Import function to render tasks for the day
 import { DuckType } from './Types/DuckType';  // Import DuckType enum for different duck types
 import { setupNormalDuckMovement } from './State/moveDuck';  // Import duck movement setup for normal ducks
+import { createXPBar } from './Experient/Experient';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize game storage and update counters
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update the count of ducks based on DuckType enum (e.g., NORMAL ducks)
     updateDucksBasedOnCount(DuckType.NORMAL);  // Use DuckType enum for clarity
-
+    setupUFO()
     // Set up normal duck movement logic
     setupNormalDuckMovement();
 
@@ -31,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set up random egg laying for the game
     setupRandomEggLaying();
+
+// Gọi khởi tạo khi load
+createXPBar();
 
     // Initialize baskets for collecting eggs
     initializeBaskets();
