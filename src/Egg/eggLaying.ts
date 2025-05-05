@@ -3,18 +3,12 @@ import { toast } from "react-toastify";
  // @ts-ignore
  import { handlecollectEgg } from '../components/ContractActions.js';
 import { baskets } from '../Basket/baskets';
-import { incrementEggAndCoin } from '../Ultils/storage';
 import { GAME_CONSTANTS } from '../Constant/constant';
-import { collectEgg } from '../Task/Claim';
 import { Duck } from "../Types/Duck.js";
 import { Position } from "../Types/Position.js";
-import { DUCK_CONFIGS } from "../Types/duckConfigs.js";
 import { DuckType } from "../Types/DuckType.js";
-import { addXP, updateXPBar } from "../Experient/Experient.js";
-
+import { addXP } from "../Experient/Experient.js";
 let isBoosting = false;
-
-
 
 // Hàm khởi động boost mỗi 6 giây
 export function startWarningCycle() {
@@ -167,15 +161,15 @@ function playDuckSound(): void {
 }
 
 function layEgg(duck: Duck, duckElement: HTMLImageElement): void {
-  let baseEggCount = 1; // Mặc định là 1 trứng (vịt trắng)
+  let baseEggCount = duck.level;
 
   // Xác định số trứng theo loại vịt
   switch (duck.type) {
     case DuckType.YELLOW:
-      baseEggCount = 2;
+      baseEggCount += 1;
       break;
     case DuckType.RED:
-      baseEggCount = 3;
+      baseEggCount += 2;
       break;
     default:
       baseEggCount = 1;
@@ -226,7 +220,7 @@ function createEggElement(duck: Duck): void {
       await new Promise((resolve) => setTimeout(resolve, 600));
   
       await handlecollectEgg();       // Gọi smart contract
-      incrementEggAndCoin();          // Cập nhật dữ liệu
+      
   
       
       addXP(1);
@@ -428,11 +422,12 @@ export function setupUFO(): void {
     flyingUfo.style.position = 'fixed';
     flyingUfo.style.left = `${ufoRect.left}px`;
     flyingUfo.style.top = `${ufoRect.top}px`;
-    flyingUfo.style.zIndex = '999';
     flyingUfo.style.transform = 'scale(0.1)';
+    flyingUfo.style.zIndex = '999';
     flyingUfo.style.filter = 'drop-shadow(0 0 10px rgba(0, 255, 0, 0.7))'; // Thêm hiệu ứng ánh sáng xanh
     document.body.appendChild(flyingUfo);
-
+    flyingUfo.style.animation = 'flyUpDown 2s ease-in-out infinite';
+  
     // Tạo văn bản thông báo
     const statusText = document.createElement('div');
     statusText.id = 'ufoStatus';
@@ -477,15 +472,15 @@ export function setupUFO(): void {
         
         setTimeout(() => {
           const beam = document.createElement('div');
-beam.style.position = 'fixed';
-beam.style.left = `${eggRect.left + eggRect.width / 2 - 10}px`; // Giảm width
-beam.style.top = `${eggRect.top - 20}px`; // Đặt trên trứng một chút
-beam.style.width = '20px'; // Beam nhỏ
-beam.style.height = '30px';
-beam.style.background = 'radial-gradient(ellipse at center, rgba(0,255,0,0.6) 0%, rgba(0,255,0,0) 80%)';
-beam.style.zIndex = '998';
-beam.style.pointerEvents = 'none';
-document.body.appendChild(beam);
+          beam.style.position = 'fixed';
+          beam.style.left = `${eggRect.left + eggRect.width / 2 - 10}px`; // Giảm width
+          beam.style.top = `${eggRect.top +100}px`; // Đặt trên trứng một chút
+          beam.style.width = '20px'; // Beam nhỏ
+          beam.style.height = '30px';
+          beam.style.background = 'radial-gradient(ellipse at center, rgba(0,255,0,0.6) 0%, rgba(0,255,0,0) 80%)';
+          beam.style.zIndex = '998';
+          beam.style.pointerEvents = 'none';
+          document.body.appendChild(beam);
           
           // Hiệu ứng trứng biến mất
           egg.style.transition = 'transform 0.5s ease-in-out, opacity 0.5s';
@@ -521,6 +516,7 @@ document.body.appendChild(beam);
       // Xóa UFO và thông báo
       flyingUfo.style.transition = 'all 1s ease-in-out';
       flyingUfo.style.transform = 'translateY(-100px)';
+      flyingUfo.style.transform = 'scale(0.1)';
       flyingUfo.style.opacity = '0';
       
       if (statusText) {
@@ -540,7 +536,8 @@ document.body.appendChild(beam);
   // Thêm CSS cho trạng thái cooldown của UFO
   const style = document.createElement('style');
   style.textContent = `
-    .ufo-cooldown {
+    
+  .ufo-cooldown {
       filter: grayscale(100%) brightness(50%);
       cursor: not-allowed;
     }

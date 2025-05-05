@@ -1,7 +1,8 @@
 // moveDuck.ts
 
-import { normalDucks } from '../DuckManager/duckManager';
+import { normalDucks, redDucks, yellowDucks } from '../DuckManager/duckManager';
 import { Duck } from '../Types/Duck';
+import { DuckType } from '../Types/DuckType';
 import { applyBoundaryConstraints } from './boundary';
 import { updateActualDirection } from './directionUpdate';
 import { moveByType } from './movementTypes/moveByType';
@@ -61,3 +62,19 @@ export function setupNormalDuckMovement(): void {
         duckMovementIntervals.push(interval);
     });
 }
+
+export function setupYellowDuckMovement(): void {
+    yellowDucks.forEach(duck => {
+        const interval = setInterval(() => moveDuck(duck), 150);
+        duckMovementIntervals.push(interval);
+    });
+}
+
+
+export function setupRedDuckMovement(): void {
+    redDucks.forEach(duck => {
+        const interval = setInterval(() => moveDuck(duck), 150);
+        duckMovementIntervals.push(interval);
+    });
+}
+

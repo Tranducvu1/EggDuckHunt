@@ -10,5 +10,5 @@ export interface DuckTypeConfig {
 export enum DuckType {
   RED = "red",       // Red duck
   YELLOW = "yellow", // Yellow duck
-  NORMAL = "normal"  // Normal duck
+  WHITE = "white"  // Normal duck
 }

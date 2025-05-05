@@ -15,6 +15,7 @@ export interface Duck {
   moving: boolean;
   inPond: boolean;
   relaxState?: number;
+  level: number;
   movementType: MovementType;
   pathProgress?: number;
   centerPoint?: { left: number; top: number };

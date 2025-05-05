@@ -1,5 +1,11 @@
-// Importing Duck type from the Types directory
-import { Duck } from "../Types/Duck";
+import { Duck } from "../Types/Duck";  // Importing Duck type
+//@ts-ignore
+
+import { state,updateDuckCount } from '../components/ContractActions.js';
+updateDuckCount();
+
+// Lấy số lượng vịt từ state.duckCount
+const { yellow = 0, red = 0, white = 0 } = state.duckCount || {};
 
 // Constants defining game-related values and settings
 export const GAME_CONSTANTS = {
@@ -25,12 +31,14 @@ export const GAME_CONSTANTS = {
         MAX_LEFT: 80,       // Maximum horizontal position for ducks
         MIN_TOP: 30,        // Minimum vertical position for ducks
         MAX_TOP: 85,        // Maximum vertical position for ducks
-        DEFAULT_COUNT: 3    // Default number of ducks at the start of the game
+        WHITECOUNT: white,  // Default number of white ducks at the start of the game
+        REDCOUNT: red,      // Default number of red ducks at the start of the game
+        YELLOWCOUNT: yellow // Default number of yellow ducks at the start of the game
     }
 };
 
 // Array containing possible movement types for ducks
-export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random","fly"];
+export const MOVEMENT_TYPES: Duck["movementType"][] = ["linear", "circular", "zigzag", "random", "fly"];
 
 // The contract address on the blockchain for interactions (e.g., game transactions, NFT management)
 export const CONTRACT_ADDRESS = "0xeAef18c7A7228FBA33D93ce2f614a47DA0878F82";

@@ -1,15 +1,25 @@
 import { GAME_CONSTANTS } from "../Constant/constant";
+import { redDucks, yellowDucks } from "../DuckManager/duckManager";
 import { Duck } from "../Types/Duck";
 
 function updateDuckSprite(duck: Duck, duckElement: HTMLImageElement): void {
-    // Chuyển sprite bay thay vì đi bộ
-    if (duck.direction.x === -1) {
-        duckElement.src = `../assets/duck/fly/a${duck.frame+ 2}.png`; // a1, a2
+    let basePath = "../assets/duck";
+
+    const isRed = redDucks.some(r => r.id === duck.id);
+    const isYellow = yellowDucks.some(y => y.id === duck.id);
+
+    if (isRed) {
+        basePath += "/fly-red";
+    } else if (isYellow) {
+        basePath += "/fly-yellow";
     } else {
-        duckElement.src = `../assets/duck/fly/a${duck.frame}.png`; // a3, a4
+        basePath += "/fly"; // trắng mặc định
     }
 
-    // Đổi frame liên tục để vỗ cánh
+    const frame = duck.direction.x === -1 ? duck.frame + 2 : duck.frame; // a1, a2, a3, a4
+    duckElement.src = `${basePath}/a${frame}.png`;
+
+    // Toggle frame to animate wings
     duck.frame = duck.frame === 1 ? 2 : 1;
 }
 

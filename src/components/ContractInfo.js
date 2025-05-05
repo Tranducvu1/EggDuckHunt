@@ -18,6 +18,7 @@
 // //       return null;
 // //     }
 // //   }
+
 // async function getConnectedAccount() {
 //     const savedAccount = sessionStorage.getItem("userAddress");
 //     if (savedAccount) {

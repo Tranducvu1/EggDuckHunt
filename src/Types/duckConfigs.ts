@@ -2,20 +2,20 @@ import { DuckType, DuckTypeConfig } from './DuckType';
 import { Duck } from './Duck';
 
 export const DUCK_CONFIGS: Record<DuckType, DuckTypeConfig> = {
-  normal: {
-    idPrefix: 'duck',
+  white: {
+    idPrefix: 'white',
     className: 'duck',
     imagePath: '../../assets/duck/right-left/a',
     storageKey: 'duckCount'
   },
   red: {
-    idPrefix: 'redduck',
+    idPrefix: 'red',
     className: 'redduck',
     imagePath: '../../assets/duck/right-left-red/a',
     storageKey: 'redDuckCount'
   },
   yellow: {
-    idPrefix: 'yellowduck',
+    idPrefix: 'yellow ',
     className: 'yellowduck',
     imagePath: '../../assets/duck/right-left-yellow/a',
     storageKey: 'yellowDuckCount'
@@ -23,7 +23,7 @@ export const DUCK_CONFIGS: Record<DuckType, DuckTypeConfig> = {
 };
 
 export const ducks: Record<DuckType, Duck[]> = {
-  normal: [],
+  white: [],
   red: [],
   yellow: []
 };

@@ -5,26 +5,35 @@ import { GAME_CONSTANTS } from '../Constant/constant';
 import { DuckType } from '../Types/DuckType';
 import { DUCK_CONFIGS, ducks } from '../Types/duckConfigs';
 import { Duck } from '../Types/Duck';
+//@ts-ignore
+import { state } from '../components/ContractActions.js';
 
-/**
- * Update the number of ducks based on the value stored in localStorage.
- * @param duckType The type of duck to update.
- */
-export function updateDucksBasedOnCount(duckType: DuckType): void {
-    const config = DUCK_CONFIGS[duckType]; // Retrieve duck type configuration
-    const duckCount = parseInt(localStorage.getItem(config.storageKey) || GAME_CONSTANTS.DUCK.DEFAULT_COUNT.toString());
+export async function updateDucksBasedOnCount(duckType: DuckType): Promise<void> {
+   
+
+    const { yellow = 0, red = 0, white = 0 } = state.duckCount || {};
+
+    console.log("so vit la " + white + red + yellow);
+
+    // const config = DUCK_CONFIGS[duckType];
     const currentDuckCount = ducks[duckType].length;
 
-    // Add ducks if needed
-    if (duckCount > currentDuckCount) {
-        for (let i = currentDuckCount; i < duckCount; i++) {
-            createNewDuck(duckType, i + 1); // Create new duck based on type
+    // Lấy số lượng cần từ contract theo loại vịt
+    let targetCount = 0;
+    if (duckType === DuckType.WHITE) targetCount = white;
+    if (duckType === DuckType.YELLOW) targetCount = yellow;
+    if (duckType === DuckType.RED) targetCount = red;
+
+    // Nếu thiếu vịt, thêm mới
+    if (targetCount > currentDuckCount) {
+        for (let i = currentDuckCount; i < targetCount; i++) {
+            createNewDuck(duckType, i + 1);
         }
     }
-    // Remove excess ducks if too many
-    else if (duckCount < currentDuckCount && duckCount >= GAME_CONSTANTS.DUCK.DEFAULT_COUNT) {
-        removeExcessDucks(duckType, currentDuckCount - duckCount); // Remove excess ducks
-    }
+    
+    console.log(`Updating ducks of type ${duckType}, current=${currentDuckCount}, target=${targetCount}`);
+
+
 }
 
 /**
@@ -41,6 +50,7 @@ function createNewDuck(duckType: DuckType, index: number): void {
     const newDuck: Duck = {
         id: `${config.idPrefix}${index}`,
         type: duckType,
+        level: 1,
         size: 100,
         position: position,
         direction: getRandomDirection(), // Get a random direction for the duck
@@ -96,7 +106,9 @@ function createDuckElement(duckType: DuckType, duck: Duck): void {
     duckElement.style.left = `${duck.position.left}%`; // Set the left position
     duckElement.style.top = `${duck.position.top}%`; // Set the top position
     duckElement.style.cursor = 'pointer'; // Make the duck clickable
-
+    duckElement.addEventListener('click', () => {
+        showUpgradeButton(duckType, duck);
+    });
     // Append the duck element to the DOM
     document.body.appendChild(duckElement);
 }
@@ -130,6 +142,58 @@ function clearDuckTimers(duck: Duck): void {
     if (duck.relaxTimer2) clearTimeout(duck.relaxTimer2);
 }
 
+function showUpgradeButton(duckType: DuckType, duck: Duck): void {
+    const existingButton = document.getElementById(`upgrade-${duck.id}`);
+    if (existingButton) return; // tránh tạo lại
+
+    const upgradeBtn = document.createElement('button');
+    upgradeBtn.id = `upgrade-${duck.id}`;
+    upgradeBtn.textContent = '⬆️ Nâng cấp';
+    upgradeBtn.style.position = 'absolute';
+    upgradeBtn.style.left = `${duck.position.left}%`;
+    upgradeBtn.style.top = `${duck.position.top - 1}%`; // phía trên vịt
+    upgradeBtn.style.zIndex = '20';
+    upgradeBtn.style.backgroundColor = 'gold';
+    upgradeBtn.style.border = 'none';
+    upgradeBtn.style.padding = '4px';
+    upgradeBtn.style.cursor = 'pointer';
+
+    upgradeBtn.onclick = () => {
+        duck.level += 1;
+
+        // Hiển thị dòng chữ màu xanh
+        const upgradeText = document.createElement('div');
+        upgradeText.textContent = `Level ${duck.level} đã được mở khóa!`;
+        upgradeText.style.position = 'absolute';
+        upgradeText.style.left = `${duck.position.left}%`;
+        upgradeText.style.top = `${duck.position.top - 5}%`; // Thêm khoảng cách phía trên vịt
+        upgradeText.style.color = 'green';
+        upgradeText.style.fontSize = '16px';
+        upgradeText.style.fontWeight = 'bold';
+        upgradeText.style.zIndex = '30';
+        upgradeText.style.transition = 'opacity 1s ease-out';
+
+        // Thêm hiệu ứng mờ dần (fade out) và loại bỏ sau 2 giây
+        document.body.appendChild(upgradeText);
+        setTimeout(() => {
+            upgradeText.style.opacity = '0';
+        }, 1000); // Sau 1 giây bắt đầu fade out
+
+        setTimeout(() => {
+            upgradeText.remove();
+        }, 2000); // Sau 2 giây, loại bỏ hoàn toàn
+        
+
+        upgradeBtn.remove();
+    };
+
+    document.body.appendChild(upgradeBtn);
+
+    // Tự động ẩn sau 5 giây
+    setTimeout(() => upgradeBtn.remove(), 5000);
+}
+
+
 /**
  * Change the movement type of a duck.
  * @param duckType The type of duck.
@@ -158,19 +222,20 @@ export function changeDuckMovementType(duckType: DuckType, duckId: string, newMo
  */
 export function updateAllDuckTypes(): void {
     // Update each type of duck
-    updateDucksBasedOnCount(DuckType.NORMAL);
+    updateDucksBasedOnCount(DuckType.WHITE);
     updateDucksBasedOnCount(DuckType.RED);
     updateDucksBasedOnCount(DuckType.YELLOW);
+
 }
 
 // Additional utility functions for updating ducks based on type
-export const normalDucks = ducks.normal;
+export const normalDucks = ducks.white;
 export const redDucks = ducks.red;
 export const yellowDucks = ducks.yellow;
 
 // Functions for updating specific duck types
 export function updateNormalDucksBasedOnCount(): void {
-    updateDucksBasedOnCount(DuckType.NORMAL);
+    updateDucksBasedOnCount(DuckType.WHITE);
 }
 
 export function updateRedDucksBasedOnCount(): void {
@@ -183,7 +248,7 @@ export function updateYellowDucksBasedOnCount(): void {
 
 // Functions for changing the movement type of specific duck types
 export function changeNormalDuckMovementType(duckId: string, newMovementType: Duck["movementType"]): void {
-    changeDuckMovementType(DuckType.NORMAL, duckId, newMovementType);
+    changeDuckMovementType(DuckType.WHITE, duckId, newMovementType);
 }
 
 export function changeRedDuckMovementType(duckId: string, newMovementType: Duck["movementType"]): void {
