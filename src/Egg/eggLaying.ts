@@ -71,6 +71,35 @@ export function moveDuckToBasket(duck: Duck): void {
 
   animateDuckToBasket(duck, duckElement, targetLeft, targetTop, pathType);
 }
+// Updated functions for duck sprite paths based on duck type
+
+// Get the correct path prefix based on duck type
+function getDuckPathPrefix(duck: Duck): string {
+  switch (duck.type) {
+    case DuckType.WHITE:
+      return "../assets/duck/right-left";
+    case DuckType.RED:
+      return "../assets/duck/right-left-red";
+    case DuckType.YELLOW:
+      return "../assets/duck/right-left-yellow";
+    default:
+      return "../assets/duck/right-left";
+  }
+}
+
+// Get the correct flying path prefix based on duck type
+function getDuckFlyingPathPrefix(duck: Duck): string {
+  switch (duck.type) {
+    case DuckType.WHITE:
+      return "../assets/duck/fly";
+    case DuckType.RED:
+      return "../assets/duck/fly-red";
+    case DuckType.YELLOW:
+      return "../assets/duck/fly-yellow";
+    default:
+      return "../assets/duck/fly";
+  }
+}
 
 function animateDuckToBasket(
   duck: Duck,
@@ -91,7 +120,9 @@ function animateDuckToBasket(
 
   // Cập nhật sprite của vịt dựa trên hướng di chuyển
   const initialDirection = targetLeft > duck.position.left ? 1 : -1;
-  duckElement.src = `../assets/duck/right-left/a${initialDirection > 0 ? 1 : 3}.png`;
+  // Use the correct path based on duck type
+  const duckPathPrefix = getDuckPathPrefix(duck);
+  duckElement.src = `${duckPathPrefix}/a${initialDirection > 0 ? 1 : 3}.png`;
 
   const moveInterval = setInterval(() => {
     const elapsedTime = Date.now() - startTime;
@@ -118,12 +149,65 @@ function animateDuckToBasket(
     duckElement.style.left = `${duck.position.left}%`;
     duckElement.style.top = `${duck.position.top}%`;
 
-    // Cập nhật sprite của vịt
+    // Cập nhật sprite của vịt với màu sắc tương ứng
     updateMovingDuckSprite(duck, duckElement, startPosition);
 
   }, 100);
 }
 
+function updateMovingDuckSprite(duck: Duck, duckElement: HTMLImageElement, startPosition: Position): void {
+  const currentDirection = duck.position.left > startPosition.left ? 1 : -1;
+  // Use the correct path based on duck type
+  const duckPathPrefix = getDuckPathPrefix(duck);
+  duckElement.src = `${duckPathPrefix}/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
+  duck.frame = duck.frame === 1 ? 2 : 1;
+}
+
+function returnToOriginal(duck: Duck, duckElement: HTMLImageElement): void {
+  if (!duck.originalPosition) return;
+
+  const startPosition = { left: duck.position.left, top: duck.position.top };
+  const targetPosition = duck.originalPosition;
+
+  const startTime = performance.now();
+  const duration = GAME_CONSTANTS.MOVEMENT.RETURN_DURATION;
+  let lastFrameChange = 0;
+
+  function animate(time: number) {
+    const elapsed = time - startTime;
+    let progress = Math.min(elapsed / duration, 1);
+
+    // Ease-in movement (nếu muốn)
+    progress = progress * progress;
+
+    // Cập nhật vị trí
+    duck.position.left = startPosition.left + (targetPosition.left - startPosition.left) * progress;
+    duck.position.top = startPosition.top + (targetPosition.top - startPosition.top) * progress;
+
+    duckElement.style.left = `${duck.position.left}%`;
+    duckElement.style.top = `${duck.position.top}%`;
+
+    // Đổi frame mỗi 200ms
+    if (time - lastFrameChange > 200) {
+      duck.frame = duck.frame === 1 ? 2 : 1;
+      lastFrameChange = time;
+    }
+
+    // Cập nhật sprite theo hướng và màu sắc của vịt
+    const currentDirection = targetPosition.left > startPosition.left ? 1 : -1;
+    const duckFlyingPathPrefix = getDuckFlyingPathPrefix(duck);
+    duckElement.src = `${duckFlyingPathPrefix}/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
+
+    // Kết thúc nếu đã đến nơi
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      duck.moving = true;
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
 function calculateMovementPosition(
   duck: Duck,
   startPosition: Position,
@@ -147,11 +231,6 @@ function calculateMovementPosition(
   }
 }
 
-function updateMovingDuckSprite(duck: Duck, duckElement: HTMLImageElement, startPosition: Position): void {
-  const currentDirection = duck.position.left > startPosition.left ? 1 : -1;
-  duckElement.src = `../assets/duck/right-left/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
-  duck.frame = duck.frame === 1 ? 2 : 1;
-}
 
 function playDuckSound(): void {
   const duckSound = document.getElementById("duckSound") as HTMLAudioElement;
@@ -235,52 +314,6 @@ function createEggElement(duck: Duck): void {
 
   document.body.appendChild(egg);
 }
-
-function returnToOriginal(duck: Duck, duckElement: HTMLImageElement): void {
-  if (!duck.originalPosition) return;
-
-  const startPosition = { left: duck.position.left, top: duck.position.top };
-  const targetPosition = duck.originalPosition;
-
-  const startTime = performance.now();
-  const duration = GAME_CONSTANTS.MOVEMENT.RETURN_DURATION;
-  let lastFrameChange = 0;
-
-  function animate(time: number) {
-    const elapsed = time - startTime;
-    let progress = Math.min(elapsed / duration, 1);
-
-    // Ease-in movement (nếu muốn)
-    progress = progress * progress;
-
-    // Cập nhật vị trí
-    duck.position.left = startPosition.left + (targetPosition.left - startPosition.left) * progress;
-    duck.position.top = startPosition.top + (targetPosition.top - startPosition.top) * progress;
-
-    duckElement.style.left = `${duck.position.left}%`;
-    duckElement.style.top = `${duck.position.top}%`;
-
-    // Đổi frame mỗi 200ms
-    if (time - lastFrameChange > 200) {
-      duck.frame = duck.frame === 1 ? 2 : 1;
-      lastFrameChange = time;
-    }
-
-    // Cập nhật sprite theo hướng
-    const currentDirection = targetPosition.left > startPosition.left ? 1 : -1;
-    duckElement.src = `../assets/duck/fly/a${duck.frame + (currentDirection === -1 ? 2 : 0)}.png`;
-
-    // Kết thúc nếu đã đến nơi
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      duck.moving = true;
-    }
-  }
-
-  requestAnimationFrame(animate);
-}
-
 export function setupUFO(): void {
   const ufo = document.getElementById('ufoIcon')!;
   if (!ufo) {
@@ -469,7 +502,7 @@ export function setupUFO(): void {
         const eggRect = egg.getBoundingClientRect();
         
       
-        
+
         setTimeout(() => {
           const beam = document.createElement('div');
           beam.style.position = 'fixed';
