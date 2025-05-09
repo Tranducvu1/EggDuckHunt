@@ -1,18 +1,21 @@
 import { GAME_CONSTANTS } from "../Constant/constant";
 import { redDucks, yellowDucks } from "../DuckManager/duckManager";
 import { Duck } from "../Types/Duck";
+import { ducks } from "../Types/duckConfigs";
+import { DuckType } from "../Types/DuckType";
 
 function updateDuckSprite(duck: Duck, duckElement: HTMLImageElement): void {
     let basePath = "../assets/duck";
 
-    const isRed = redDucks.some(r => r.id === duck.id);
-    const isYellow = yellowDucks.some(y => y.id === duck.id);
-
-    if (isRed) {
+   
+    const isRedDuck = ducks[DuckType.RED]?.some(rduck => rduck.id === duck.id);
+    const isYellowDuck = ducks[DuckType.YELLOW]?.some(yduck => yduck.id === duck.id);
+    const isWhiteDuck = ducks[DuckType.WHITE]?.some(wduck => wduck.id === duck.id);
+    if (isRedDuck) {
         basePath += "/fly-red";
-    } else if (isYellow) {
+    } else if (isYellowDuck) {
         basePath += "/fly-yellow";
-    } else {
+    } else if(isWhiteDuck) {
         basePath += "/fly"; // trắng mặc định
     }
 

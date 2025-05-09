@@ -38,6 +38,7 @@
 //         coinCount += coinsToAdd;
 //         eggCount %= EGGS_PER_COIN; // Remaining eggs
 
+
 //         localStorage.setItem('eggCount', eggCount.toString());
 //         localStorage.setItem('coinCount', coinCount.toString());
 //         updateDisplay(); // Refresh UI

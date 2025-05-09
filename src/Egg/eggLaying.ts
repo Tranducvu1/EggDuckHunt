@@ -9,7 +9,6 @@ import { Position } from "../Types/Position.js";
 import { DuckType } from "../Types/DuckType.js";
 import { addXP } from "../Experient/Experient.js";
 let isBoosting = false;
-
 // Hàm khởi động boost mỗi 6 giây
 export function startWarningCycle() {
     // Đặt khoảng thời gian đúng là 6 giây
@@ -27,7 +26,6 @@ export function startWarningCycle() {
     
     console.log("Warning triggered!"); // Thông báo khi kích hoạt cảnh báo
     isBoosting = true;
-  
     // Gỡ warning sau 10 giây
     setTimeout(() => {
       const warningElement = document.getElementById('screenWarning');
@@ -177,7 +175,7 @@ function returnToOriginal(duck: Duck, duckElement: HTMLImageElement): void {
     const elapsed = time - startTime;
     let progress = Math.min(elapsed / duration, 1);
 
-    // Ease-in movement (nếu muốn)
+    // Ease-in movement 
     progress = progress * progress;
 
     // Cập nhật vị trí
@@ -301,9 +299,9 @@ function createEggElement(duck: Duck): void {
       await handlecollectEgg();       // Gọi smart contract
       
   
-      
+      // theem 1 điểm kinh nghiệm
       addXP(1);
-      // Xóa phần tử khỏi DOM sau animation
+      // sau khi click xóa trứng khỏi dom
       document.body.removeChild(egg);
     } catch (error) {
       console.error("Error collecting egg:", error);
@@ -332,7 +330,7 @@ export function setupUFO(): void {
   function isUFOReady(): boolean {
     const lastUseTime = localStorage.getItem(lastUseTimeKey);
     if (!lastUseTime) return true;
-    
+    // kiểm tra thời gian chờ sau khi sử dụng
     const cooldownMs = cooldownMinutes * 60 * 1000;
     const currentTime = new Date().getTime();
     const timeSinceLastUse = currentTime - parseInt(lastUseTime);
@@ -365,7 +363,7 @@ export function setupUFO(): void {
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
       
-      // Tạo hoặc cập nhật tooltip
+      // Tạo hoặc cập nhật tooltip (  thời gian chờ của đĩa bay sẽ tạo hình ảnh đếm ngược lần sử dụng tiếp theo)
       let cooldownTooltip = document.getElementById('ufoCooldownTooltip');
       if (!cooldownTooltip) {
         cooldownTooltip = document.createElement('div');
@@ -433,7 +431,7 @@ export function setupUFO(): void {
 
     const eggCount = parseInt(eggCountElem.innerText);
     console.log("Current egg count:", eggCount);
-    
+    // kiểm tra só lượng trứng nếu là người chơi đầu mới vào sẽ không được dùng
     if (eggCount < 5) {
       alert("Bạn cần ít nhất 5 trứng để kích hoạt UFO!");
       return;
@@ -504,11 +502,12 @@ export function setupUFO(): void {
       
 
         setTimeout(() => {
+          // tao hiệu ứng
           const beam = document.createElement('div');
           beam.style.position = 'fixed';
-          beam.style.left = `${eggRect.left + eggRect.width / 2 - 10}px`; // Giảm width
-          beam.style.top = `${eggRect.top +100}px`; // Đặt trên trứng một chút
-          beam.style.width = '20px'; // Beam nhỏ
+          beam.style.left = `${eggRect.left + eggRect.width / 2 - 10}px`;
+          beam.style.top = `${eggRect.top +100}px`; 
+          beam.style.width = '20px'; 
           beam.style.height = '30px';
           beam.style.background = 'radial-gradient(ellipse at center, rgba(0,255,0,0.6) 0%, rgba(0,255,0,0) 80%)';
           beam.style.zIndex = '998';
@@ -566,7 +565,7 @@ export function setupUFO(): void {
     }, 50000);
   });
   
-  // Thêm CSS cho trạng thái cooldown của UFO
+  // CSS cho trạng thái cooldown của UFO
   const style = document.createElement('style');
   style.textContent = `
     

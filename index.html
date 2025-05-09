@@ -626,85 +626,87 @@
                         };
                         accountItem.appendChild(deleteBtn);
                         accountItem.onclick = async () => {
-                            if (!window.ethereum) {
-                                alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
-                                return;
-                            }
-                            try {
-                                console.log('Initializing contract for saved account:', player.token);
-                                await initialize();
-                                console.log('Contract initialized.');
+    if (!window.ethereum) {
+        alert('Vui lòng cài đặt MetaMask để sử dụng ứng dụng này.');
+        return;
+    }
+    try {
+        console.log('Initializing contract for saved account:', player.token);
+        await initialize();
+        console.log('Contract initialized.');
 
-                                console.log('Requesting MetaMask accounts...');
-                                const accounts = await connectWithRetry();
-                                account = accounts[0];
-                                if (!account) {
-                                    console.error('No account received from MetaMask.');
-                                    alert('Không nhận được tài khoản từ MetaMask.');
-                                    return;
-                                }
-                                console.log('Account received:', account);
+        console.log('Requesting MetaMask accounts...');
+        const accounts = await connectWithRetry();
+        account = accounts[0];
+        if (!account) {
+            console.error('No account received from MetaMask.');
+            alert('Không nhận được tài khoản từ MetaMask.');
+            return;
+        }
+        console.log('Account received:', account);
 
-                                if (account.toLowerCase() !== player.token.toLowerCase()) {
-                                    console.warn('Selected account does not match saved account:', account, player.token);
-                                }
+        if (account.toLowerCase() !== player.token.toLowerCase()) {
+            console.warn('Selected account does not match saved account:', account, player.token);
+            alert('Tài khoản MetaMask không khớp với tài khoản đã lưu. Vui lòng chuyển sang tài khoản đúng trong MetaMask và thử lại.');
+            return; // Dừng quy trình đăng nhập
+        }
 
-                                walletName = savedName || player.name;
-                                if (savedName && savedName !== player.name) {
-                                    console.log('Updating player name to localStorage name:', savedName);
-                                    const updateSuccess = await updatePlayerName(account, savedName);
-                                    if (!updateSuccess) {
-                                        console.warn('Failed to sync name with database, using localStorage name');
-                                    }
-                                    walletName = savedName;
-                                }
-                                console.log('Wallet name:', walletName);
+        walletName = savedName || player.name;
+        if (savedName && savedName !== player.name) {
+            console.log('Updating player name to localStorage name:', savedName);
+            const updateSuccess = await updatePlayerName(account, savedName);
+            if (!updateSuccess) {
+                console.warn('Failed to sync name with database, using localStorage name');
+            }
+            walletName = savedName;
+        }
+        console.log('Wallet name:', walletName);
 
-                                userName.textContent = walletName;
-                                setAvatarInitial(walletName);
-                                sessionStorage.setItem('userName', walletName);
-                                sessionStorage.setItem('userInitial', walletName.charAt(0).toUpperCase());
-                                sessionStorage.setItem('userAddress', account);
-                                sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)}`);
+        userName.textContent = walletName;
+        setAvatarInitial(walletName);
+        sessionStorage.setItem('userName', walletName);
+        sessionStorage.setItem('userInitial', walletName.charAt(0).toUpperCase());
+        sessionStorage.setItem('userAddress', account);
+        sessionStorage.setItem('shortAddress', `${account.slice(0, 6)}...${account.slice(-4)}`);
 
-                                console.log('Fetching balance...');
-                                await getBalance(account);
-                                console.log('Balance fetched:', balance);
+        console.log('Fetching balance...');
+        await getBalance(account);
+        console.log('Balance fetched:', balance);
 
-                                console.log('Checking duck count...');
-                                try {
-                                    const contract = getContract();
-                                    if (!contract) {
-                                        console.error('Contract not initialized.');
-                                        alert('Hợp đồng không được khởi tạo. Vẫn vào game.');
-                                    } else {
-                                        const duckCount = await contract.getDuckCount(account, "white");
-                                        console.log('Duck count:', Number(duckCount));
-                                        if (Number(duckCount) > 0) {
-                                            console.log('Duck already initialized:', duckCount);
-                                        } else {
-                                            console.log('No duck found, initializing...');
-                                            const tx = await contract.initDuck();
-                                            await tx.wait();
-                                            console.log('Duck initialized successfully.');
-                                        }
-                                    }
-                                } catch (error) {
-                                    console.error('Error initializing duck:', error);
-                                    alert('Lỗi khi khởi tạo duck, nhưng bạn vẫn có thể vào game.');
-                                }
+        console.log('Checking duck count...');
+        try {
+            const contract = getContract();
+            if (!contract) {
+                console.error('Contract not initialized.');
+                alert('Hợp đồng không được khởi tạo. Vẫn vào game.');
+            } else {
+                const duckCount = await contract.getDuckCount(account, "white");
+                console.log('Duck count:', Number(duckCount));
+                if (Number(duckCount) > 0) {
+                    console.log('Duck already initialized:', duckCount);
+                } else {
+                    console.log('No duck found, initializing...');
+                    const tx = await contract.initDuck();
+                    await tx.wait();
+                    console.log('Duck initialized successfully.');
+                }
+            }
+        } catch (error) {
+            console.error('Error initializing duck:', error);
+            alert('Lỗi khi khởi tạo duck, nhưng bạn vẫn có thể vào game.');
+        }
 
-                                console.log('Showing user profile and redirecting...');
-                                showUserProfile();
-                                setTimeout(() => {
-                                    console.log('Redirecting to game...');
-                                    window.location.href = "src/index.html";
-                                }, 500);
-                            } catch (error) {
-                                console.error('Error connecting saved account:', error);
-                                alert('Đã xảy ra lỗi khi kết nối tài khoản: ' + error.message);
-                            }
-                        };
+        console.log('Showing user profile and redirecting...');
+        showUserProfile();
+        setTimeout(() => {
+            console.log('Redirecting to game...');
+            window.location.href = "src/index.html";
+        }, 500);
+    } catch (error) {
+        console.error('Error connecting saved account:', error);
+        alert('Đã xảy ra lỗi khi kết nối tài khoản: ' + error.message);
+    }
+};
                         savedAccountsList.appendChild(accountItem);
                     });
                 } else {

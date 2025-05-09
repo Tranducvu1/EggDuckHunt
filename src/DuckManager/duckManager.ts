@@ -8,9 +8,10 @@ import { Duck } from '../Types/Duck';
 //@ts-ignore
 import { state } from '../components/ContractActions.js';
 
+
+// update duck base on count yellow, red , white, in contract
 export async function updateDucksBasedOnCount(duckType: DuckType): Promise<void> {
    
-
     const { yellow = 0, red = 0, white = 0 } = state.duckCount || {};
 
     console.log("so vit la " + white + red + yellow);

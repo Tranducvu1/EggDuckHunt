@@ -1,9 +1,7 @@
 // Initialize player's starting level
-let level = 1;
-
+let level = 3;
 // Current XP the player has
 export let currentXP = 0;
-
 // XP required to level up; initially 10
 let xpPerLevel = 10;
 
@@ -14,9 +12,7 @@ let xpPerLevel = 10;
 export function createXPBar(): void {
   const xpBar = document.getElementById("xpBar");
   if (!xpBar) return; // Exit if the XP bar element is not found
-
   xpBar.innerHTML = ""; // Clear existing XP units
-
   // Create and append XP units (empty blocks)
   for (let i = 0; i < xpPerLevel; i++) {
     const unit = document.createElement("div");

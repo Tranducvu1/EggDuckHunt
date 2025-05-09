@@ -1,6 +1,5 @@
 import { Duck } from "../Types/Duck";  // Importing Duck type
-//@ts-ignore
-
+//@ts-ignore bỏ qua lỗi kiểu dữ liệu mà TypeScript 
 import { state,updateDuckCount } from '../components/ContractActions.js';
 updateDuckCount();
 
